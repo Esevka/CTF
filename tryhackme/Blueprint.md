@@ -168,8 +168,7 @@ Toda la info del exploit lo tenemos en la url -> https://www.exploit-db.com/expl
 
 ## Explotamos la falla de seguridad
 
-  Como vemos al ejecutar exploit este nos devuelve una shell en la cual ejecutamos comandos con permisos de administrador del equipo windows. 
-  Datos que nos podrian interesar de cara al futuro.
+Como vemos al ejecutar el exploit este nos permite ejecutar comandos en la maquina windows como Administrador. 
 
     ┌──(root㉿kali)-[/home/…/Desktop/ctf/blueprint/script]
     └─# python3 50128.py http://10.10.5.46:8080/oscommerce-2.3.4/catalog
@@ -186,9 +185,9 @@ Toda la info del exploit lo tenemos en la url -> https://www.exploit-db.com/expl
     OS Version:                6.1.7601 Service Pack 1 Build 7601
     System Type:               X86-based PC
 
-El tipo de shell que nos entrega este exploit no nos permite mucha movilidad.
+Este exploit en si no nos permite mucha movilidad en el sistema ya que se trata de un RCE, podemos ejecutar comandos pero no nos da la movilidad que necesitamos.
 
-## Conseguimos un RCE
+## Conseguimos una Reverse Shell
 
 Ya que somos admin del equipo podrimos descargar con la ayuda del comando certutil un fichero en php que nos permita ejecutar comandos a traves de la web(URL), para posteriormente ejecutar una reverse shell y poder trabajar comodamente.  
 
@@ -233,8 +232,6 @@ Nos descargamos el fichero desde la maquina windows con certutil
 ![image](https://github.com/Esevka/CTF/assets/139042999/9eb7dd93-cd4d-4a3a-8b43-c69eee5d5d99)
     
 ![image](https://github.com/Esevka/CTF/assets/139042999/39a79773-a338-4be0-976c-705efc80cabf)
-
-## Conseguimos una Reverse Shell
 
 Pues siguiendo el proceso anterior creamos una reverse shell con msfvenom, seguidamente nos la descargamos a la maquina windows y la ejecutamos desde nuestro fichero rce.php, obteniendo una reverse shell.
 
