@@ -360,10 +360,10 @@ Alternariva para copiar los ficheros Sam y System
 
 Para crakear el hash del usuario Lab de una manera rapida podemos utilizar esta web https://crackstation.net/ 
 
+---
 
 
-
-    
+---> Maquina  Blueprint completa <---
     
 
 
