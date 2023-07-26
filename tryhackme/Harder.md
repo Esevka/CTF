@@ -331,7 +331,7 @@ Bingo el script trae sorpresa credenciales para conectarnos por ssh  con el usua
 	# ToDo: create a backup script, that saves the /www directory to our internal server
 	# for authentication use ssh with user "evs" and password "U6j1brxGqbsU-------uIodnb$SZB4$bw14"
 
- Mediante las estas credenciales podemos realizar un movimiento lateral del usuario www a evs, el cual tiene mayores privilegios en la maquina.
+ Mediante estas credenciales podemos realizar un movimiento lateral del usuario www a evs, el cual tiene mayores privilegios sobre la maquina.
  Nos logueamos en el servico ssh puerto 22 que encontramos en la enumeracion de puertos
  
 	┌──(root㉿kali)-[/home/kali]
