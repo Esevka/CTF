@@ -223,7 +223,7 @@ Al ejecutar la url, la web nos devulve un resultado muy interesante.
 	url 				username 	password (cleartext)
 	http://shell.harder.local 	evs 		9FRe8VUuh----Wn0e9RfSGv7xm
 
-## Nuevo dominio encontrado.
+## Explotando Nuevo dominio encontrado.
 
 Anadimos dicho dominio encontrado a nuestro fichero /etc/hosts.
 
@@ -245,4 +245,33 @@ Como nos dice que solo estan permitidas las ips 10.10.10.xx, vamos a hacer uso d
 
 	 La cabecera X-Forwarded-For (XFF) es un estándar para identificar el origen de la dirección IP de un cliente conectado a un servidor web a través de un proxy HTTP o un balanceador de carga.
 	
-![Uploading image.png…]()
+![image](https://github.com/Esevka/CTF/assets/139042999/2626e33e-bd2d-41fc-b4e7-ce90378d507d)
+
+Esto nos permite poder visualizar la pagina correctamente, mostrandonos un form que nos permite ejecutar comandos del sistema RCE.
+
+	<form method="POST">
+		<div class="form-group">
+			<label for="cmd"><strong>Command</strong></label>
+			<input type="text" class="form-control" name="cmd" id="cmd" value="" required>                
+		</div>
+		<button type="submit" class="btn btn-primary">Execute</button>
+        </form>
+
+Analizamos el form y vemos que mediante el metodo POST envia una variable cmd que es igualada al comando que queremos ejecutar, editamos la request para poder ejecutar comandos.
+
+![image](https://github.com/Esevka/CTF/assets/139042999/4d122698-0e14-4bb2-bc14-449ceb54227b)
+
+Hemos conseguido ejecutar comandos en la maquina victima, response de nuestra request modificada.
+
+	       <div class="pb-2 mt-4 mb-2">
+            		<h2> Output </h2>
+        	</div>
+        	<pre>
+			auth.php
+			index.php
+			ip.php
+			vendor
+        	</pre>
+
+
+
