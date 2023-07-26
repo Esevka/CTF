@@ -133,12 +133,14 @@ Despues de analizar los ficheros, vemos lo siguiente
 
 	auth.php --> es el fichero que procesa todo. el formulario de login.
 
-	hmac.php --> este fichero es el interesante, ya que lo podemos bypasear, utiliza una funciona hash_hmac.
+	hmac.php --> este fichero es el interesante lo podemos bypasear, utiliza una funciona hash_hmac.
 
 Enlace funcion hash_mac --> https://www.php.net/manual/es/function.hash-hmac.php)
 
 
 ## Explotando/Bypass funcion hash_mac PHP
+
+
 
 
 
