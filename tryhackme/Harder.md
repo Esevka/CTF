@@ -101,7 +101,11 @@ Accedermos a la web
 
 ![image](https://github.com/Esevka/CTF/assets/139042999/a912ced3-8d0a-4a43-ae25-a5b73d44c7c6)
 
-Despues de revisar el codigo de la web y probar varias credenciales por defecto no conseguimos nada, por lo que vamos a fuzzear el dominio en busca de directorios.
+Despues de revisar el codigo de la web y probar varias credenciales por defecto(admin:admin,admin:1234 ...) lo unico que conseguimos es el siguiente mensaje, el cual ya no nos permite volver a cargar el login.
+
+	extra security in place. our source code will be reviewed soon ...
+
+Por lo que vamos a fuzzear el dominio en busca de directorios.
 
     ┌──(root㉿kali)-[/home/kali/Desktop/ctf/harder]
     └─# gobuster dir -u http://pwd.harder.local/ -w /usr/share/wordlists/dirb/common.txt -o fuzz_dominio  
@@ -127,7 +131,7 @@ Ficheros obtenidos despues del dumpeo.
     └─# ls
     auth.php  hmac.php  index.php
 
-Despues de analizar los ficheros, vemos lo siguiente
+Analizamos los ficheros, estos tres ficheros son los encargador del panel de login encontrado anteriormente.
 
     index.php --> require (auth.php,hmac.php y credentials.php), el fichero credentials.php no lo tenemos.
 
@@ -140,7 +144,9 @@ Enlace funcion hash_mac --> https://www.php.net/manual/es/function.hash-hmac.php
 
 ## Explotando/Bypass funcion hash_mac PHP
 
-Fichero hmac.php, lo esplicaremos por tramos.
+Enlace Bypass--> https://www.securify.nl/blog/spot-the-bug-challenge-2018-warm-up/
+
+Fichero hmac.php, lo esplicaremos por secciones.
 
 	<?php
 		(1)
@@ -169,35 +175,12 @@ Fichero hmac.php, lo esplicaremos por tramos.
 		}
 	?>
 
-			(1) if ---> comprueba si las variables h y host estan vacias, por lo que son necesarias en nuestra url.
-
-				http://pwd.harder.local/index.php?h=''&host=''
-
-					extra security check failed -->vemos que entramos dentro.
-
-			(2) if --> comprueba que existe la variable n, para almacenar el resultado de la funcion hash_mac en la variable $secrets, que posteriormente sera utilizada en el (3)if como key de la funcion hash_mac, por lo que nuestra url debe tener la variable n tambien.
-
-				http://pwd.harder.local/index.php?h=%27%27&host=%27%27&n=''
+ (1) if ---> comprueba si las variables h o host estan vacias, por lo que son necesarias en nuestra url si  queremos saltar el primer if.
+ 	Si enviamos las variables vacias entraremos en el if como nos muestra el ejemplo.
+ 
+ 	http://pwd.harder.local/index.php?h=''&host=''
+  
+  ![Uploading image.png…]()
 
 
-				como funciona hash_mac ---> hash_hmac(algoritmo,data,key)
-
-				algoritmo	-> algoritmo para cifrar.
-				data		-> Mensaje para cifrar.
-				key 		-> Clave secreta compartida que se usará para generar el mensaje cifrado.
-
-			(3) if ---> comprueba que tanto la variable $hm(resultado de la funciona hash_mac donde utiliza domo data la variable host y como key la variable $secret resultado de la funciona hach_mac del (2) if) como la varialbe h que pasamos por la url sean iguales tanto en tipo como en valor.
-
-			Enlace de como bypasear este typo de funcion --> https://www.securify.nl/blog/spot-the-bug-challenge-2018-warm-up/
-
-
-
-
-
-
-
-
-
-
-
-
+			
