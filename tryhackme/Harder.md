@@ -121,6 +121,8 @@ Para dumpear el directorio /.git vamos a utlizar la herramienta git-dumper. Enla
     [-] Fetching common files
     ...
 
+Ficheros obtenidos despues del dumpeo.
+
     ┌──(root㉿kali)-[/home/…/Desktop/ctf/harder/dump_git]
     └─# ls
     auth.php  hmac.php  index.php
