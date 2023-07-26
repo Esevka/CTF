@@ -129,7 +129,7 @@ Ficheros obtenidos despues del dumpeo.
 
 Despues de analizar los ficheros, vemos lo siguiente
 
-    index.php --> require (auth.php,hmac.php y credentials.php), el fichero credentials.php no lo tenemos
+    index.php --> require (auth.php,hmac.php y credentials.php), el fichero credentials.php no lo tenemos.
 
 	auth.php --> es el fichero que procesa todo. el formulario de login.
 
@@ -139,6 +139,57 @@ Enlace funcion hash_mac --> https://www.php.net/manual/es/function.hash-hmac.php
 
 
 ## Explotando/Bypass funcion hash_mac PHP
+
+Fichero hmac.php, lo esplicaremos por tramos.
+
+	<?php
+		(1)
+		 if (empty($_GET['h']) || empty($_GET['host'])) 
+		 {
+			header('HTTP/1.0 400 Bad Request');
+			print("missing get parameter");
+			die();
+		}
+		require("secret.php"); //set $secret var
+		
+		(2)
+		if (isset($_GET['n'])) 
+		{
+			$secret = hash_hmac('sha256', $_GET['n'], $secret);
+		}
+		
+		$hm = hash_hmac('sha256', $_GET['host'], $secret);
+		
+		(3)
+		if ($hm !== $_GET['h'])
+		{
+			header('HTTP/1.0 403 Forbidden');
+			print("extra security check failed");
+			die();
+		}
+	?>
+
+			(1) if ---> comprueba si las variables h y host estan vacias, por lo que son necesarias en nuestra url.
+
+				http://pwd.harder.local/index.php?h=''&host=''
+
+					extra security check failed -->vemos que entramos dentro.
+
+			(2) if --> comprueba que existe la variable n, para almacenar el resultado de la funcion hash_mac en la variable $secrets, que posteriormente sera utilizada en el (3)if como key de la funcion hash_mac, por lo que nuestra url debe tener la variable n tambien.
+
+				http://pwd.harder.local/index.php?h=%27%27&host=%27%27&n=''
+
+
+				como funciona hash_mac ---> hash_hmac(algoritmo,data,key)
+
+				algoritmo	-> algoritmo para cifrar.
+				data		-> Mensaje para cifrar.
+				key 		-> Clave secreta compartida que se usará para generar el mensaje cifrado.
+
+			(3) if ---> comprueba que tanto la variable $hm(resultado de la funciona hash_mac donde utiliza domo data la variable host y como key la variable $secret resultado de la funciona hach_mac del (2) if) como la varialbe h que pasamos por la url sean iguales tanto en tipo como en valor.
+
+			Enlace de como bypasear este typo de funcion --> https://www.securify.nl/blog/spot-the-bug-challenge-2018-warm-up/
+
 
 
 
