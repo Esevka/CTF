@@ -63,6 +63,20 @@ Reporte Nmap (Obtenemos puertos abiertos servicios y versiones que estan corrien
     
 ## Analisis de puertos y servicios
 
+Empezamos fuzzeando el puerto 80
+        
+    ┌──(root㉿kali)-[/home/kali/Desktop/ctf/harder]
+    └─# gobuster dir -u http://10.10.54.78/ -w /usr/share/wordlists/dirb/common.txt -o fuzz --exclude-length 1985
+
+    /.git/HEAD            (Status: 403) [Size: 153]
+    /phpinfo.php          (Status: 200) [Size: 86507]
+    /vendor               (Status: 301) [Size: 169] [--> http://10.10.54.78:8080/vendor/]
+    
+Directorio /.git el cual podriamos hacer un dump de dicha carpeta pero no tenemos acceso al recurso --> http status 403
+
+Directorio /phpinfo.php nos muestra el tipico phpinfo donde podemos ver toda la configuracion del php.
+
+Directorio /vendor este directorio nos hace una redireccion al puerto 8080 tiene un http status 301 
 
 
 
