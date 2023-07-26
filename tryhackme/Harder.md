@@ -231,4 +231,18 @@ Anadimos dicho dominio encontrado a nuestro fichero /etc/hosts.
 	└─# cat /etc/hosts                                                  
 	10.10.29.10     pwd.harder.local shell.harder.local
 
+Accedemos a la url y nos logueamos con las credenciales que hemos encontrado.
+ 
+	http://shell.harder.local
+
+![image](https://github.com/Esevka/CTF/assets/139042999/23ce76ce-d482-4827-87aa-11632e7bbeee)
+
+Obtenemos el siguiente mensaje de la web una vez logueados.
+
+	Your IP is not allowed to use this webservice. Only 10.10.10.x is allowed
+
+Como nos dice que solo estan permitidas las ips 10.10.10.xx, vamos a hacer uso de burpsuite  para interceptar la request y modificar la cabecera de esta anadiendole el valor X-Forwarded-For con una ip valida y ver si podemos saltarnos esta prohibicion.
+
+	 La cabecera X-Forwarded-For (XFF) es un estándar para identificar el origen de la dirección IP de un cliente conectado a un servidor web a través de un proxy HTTP o un balanceador de carga.
 	
+![Uploading image.png…]()
