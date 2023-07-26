@@ -127,11 +127,18 @@ Ficheros obtenidos despues del dumpeo.
     └─# ls
     auth.php  hmac.php  index.php
 
+Despues de analizar los ficheros, vemos lo siguiente
+
+    index.php --> require (auth.php,hmac.php y credentials.php), el fichero credentials.php no lo tenemos
+
+	auth.php --> es el fichero que procesa todo. el formulario de login.
+
+	hmac.php --> este fichero es el interesante, ya que lo podemos bypasear, utiliza una funciona hash_hmac.
+
+Enlace funcion hash_mac --> https://www.php.net/manual/es/function.hash-hmac.php)
 
 
-
-
-
+## Explotando/Bypass funcion hash_mac PHP
 
 
 
