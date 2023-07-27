@@ -1,4 +1,4 @@
-## TryHackMe  <> Blueprint
+## TryHackMe  <> Harder
 
 ![image](https://github.com/Esevka/CTF/assets/139042999/3ea2cca3-c8e7-4fcf-84d8-2d880db182e5)
 
