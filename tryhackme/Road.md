@@ -48,7 +48,7 @@ Reporte Nmap (Obtenemos puertos abiertos servicios y versiones que estan corrien
     |_  Supported Methods: HEAD GET POST OPTIONS
     Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
 
-## Analisis servicios y vulnerabilidades.
+## Analisis de vulnerabilidaddes en los servicios y explotacion de vulnerabilidades.
 
 Segun el launchpad del servicio OpenSSH que esta corriento en el puerto 22 y el ttl obtenido anteriormente pordriamos decir que estamos delante de una maquina.
 
@@ -227,15 +227,19 @@ Nos ponemos en escucha en nuestra maquina y ejecutamos la url anterior.
  
 	www-data@sky:/var/www/html/v2/profileimages$ stty rows 42 columns 131
 
-## Post Explotacion Escalada de privilegios usuario www-data to webdeveloper.
+Confirmamos distribucion y serie de la maquina
 
-Primero obtenemos la flag user.txt
+	 www-data@sky:/home/webdeveloper$ lsb_release -a
+	No LSB modules are available.
+	Distributor ID: Ubuntu
+	Description:    Ubuntu 20.04.2 LTS
+	Release:        20.04
+	Codename:       focal
 
-	www-data@sky:/var/www/html/v2/profileimages$ whoami 
-	www-data
-	
-	www-data@sky:/home/webdeveloper$ ls
-	user.txt
+
+## Post Explotacion Escalada de privilegios www-data to webdeveloper.
+
+Obtenemos la flag user.txt
  
 	www-data@sky:/home/webdeveloper$ cat user.txt
 	63191e4ece3752[...]62a5e64d45
