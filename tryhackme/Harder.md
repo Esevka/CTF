@@ -63,7 +63,7 @@ Reporte Nmap (Obtenemos puertos abiertos servicios y versiones que estan corrien
     
 ## Analisis de puertos y servicios
 
-Empezamos fuzzeando el puerto 80
+Empezamos fuzzeando puerto 80
         
     ┌──(root㉿kali)-[/home/kali/Desktop/ctf/harder]
     └─# gobuster dir -u http://10.10.54.78/ -w /usr/share/wordlists/dirb/common.txt -o fuzz --exclude-length 1985
