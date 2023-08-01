@@ -409,7 +409,7 @@ Ejecutamos como sudo la precarga de nuestra libreria compartida y le pasamos el 
 
 
 ---
----> Maquina Road completa <---
+---> Maquina Road completa. <---
 ---
 ---
 	
