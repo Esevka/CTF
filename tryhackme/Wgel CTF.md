@@ -187,7 +187,7 @@ Listamos los comandos que nos estan permitidos ejecutar como root en la maquina 
             (ALL : ALL) ALL
             (root) NOPASSWD: /usr/bin/wget
 
-
+Encontramos un articulo donde podemos abusar del comando wget para escalar privilegios ---> https://exploit-notes.hdks.org/exploit/linux/privilege-escalation/sudo/sudo-wget-privilege-escalation/
 
 
 
