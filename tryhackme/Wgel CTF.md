@@ -156,10 +156,40 @@ Nos conectamos al servicio ssh y obtenemos acceso a la maquina.
     uid=1000(jessie) gid=1000(jessie) groups=1000(jessie),4(adm),24(cdrom),27(sudo),30(dip),46(plugdev),113(lpadmin),128(sambashare)
 
 
-## Post Explotacion Escalada de privilegios jessie to root.
+## Post Explotacion Obtencion de flags y Escalada de privilegios jessie to root.
+
+Ya que tenemos acceso a la maquina verificamos sistema y version y efectivamente es lo que suponiamos.
+      
+    jessie@CorpOne:~$ lsb_release -a
+    No LSB modules are available.
+    Distributor ID: Ubuntu
+    Description:    Ubuntu 16.04.6 LTS
+    Release:        16.04
+    Codename:       xenial
+
+Buscamos la flag de usuario
+
+    jessie@CorpOne:~$ find / -name '*user*flag*' 2>/dev/null
+        /home/jessie/Documents/user_flag.txt
+
+    jessie@CorpOne:~$ cat /home/jessie/Documents/user_flag.txt 
+        057c67131c3d5e4...cd3075b198ff6
+
+--Elevamos Privilegios
+
+Listamos los comandos que nos estan permitidos ejecutar como root en la maquina victima.
+    
+        jessie@CorpOne:~$ sudo -l
+        Matching Defaults entries for jessie on CorpOne:
+            env_reset, mail_badpass, secure_path=/usr/local/sbin\:/usr/local/bin\:/usr/sbin\:/usr/bin\:/sbin\:/bin\:/snap/bin
+        
+        User jessie may run the following commands on CorpOne:
+            (ALL : ALL) ALL
+            (root) NOPASSWD: /usr/bin/wget
 
 
-  
+
+
 
 
 
