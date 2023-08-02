@@ -230,7 +230,7 @@ Encontramos un articulo donde podemos abusar del comando wget para escalar privi
        [...]
 
 
-3) Creamos una nueva clave para el usuario root, mediante openssl(con esta ayuda tenemos todo lo necesario para crear la clave)
+2) Creamos una nueva clave para el usuario root, mediante openssl(con esta ayuda tenemos todo lo necesario para crear la clave)
    Segun la info obtenida del enlace anterior sobre el fichero shadow la clave esta formada de la siguiente manera( $id$salt$hashed )
 
        ┌──(root㉿kali)-[/home/kali]
@@ -271,7 +271,11 @@ Encontramos un articulo donde podemos abusar del comando wget para escalar privi
          password            Password text to digest (optional)
 
 
+   Creamos la clave
    
+       ┌──(root㉿kali)-[/home/kali]
+        └─# openssl passwd -6 -salt 1234 esevka 
+        $6$1234$g1lWhEG.uAVQXEMduV0nyGCd2D3LlPeru53Iln.V18hdvHu53MU7PbZ48pEdBQAgrms1tCN7ccWH8APR2aOvo.
        
 
    
