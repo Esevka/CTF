@@ -19,7 +19,7 @@ Lanzamos una traza ICMP(ping) para ver si la maquina esta activa, segun el ttl o
     1 packets transmitted, 1 received, 0% packet loss, time 0ms
     rtt min/avg/max/mdev = 51.629/51.629/51.629/0.000 ms
 
-Reporte Nmap (Obtenemos puertos abiertos servicios y versiones que estan corriendo.
+Reporte Nmap (Obtenemos puertos abiertos servicios y versiones que estan corriendo).
 
     ┌──(root㉿kali)-[/home/…/Desktop/ctf/Wgel_CTF/nmap]
     └─# nmap -p- --open -sS --min-rate 5000 -n -Pn -vvv 10.10.111.201 -oN open_ports
@@ -56,7 +56,7 @@ Reporte Nmap (Obtenemos puertos abiertos servicios y versiones que estan corrien
     Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
 
 
-## Analisis de vulnerabilidaddes en los servicios y explotacion de los mismos.
+## Analisis de vulnerabilidades en los servicios y explotacion de los mismos.
 
 Segun el launchpad del servicio OpenSSH 7.2p2 que esta corriento en el puerto 22 y el ttl obtenido anteriormente pordriamos decir que estamos delante de una maquina Linux.
 
@@ -118,7 +118,7 @@ Super real, un directorio /.ssh, posiblemente como en otros casos contenga una c
 ![image](https://github.com/Esevka/CTF/assets/139042999/ed1c5a82-9a9d-4862-a422-1f37b8d70f49)
 
 
-Seguramente esta clave privada sea del usuario jessie encontrado anteriormente, vamos a conectarnor con esta clave por el servicio ssh del puerto 22.
+Seguramente esta clave privada sea del usuario jessie encontrado anteriormente, vamos a conectarnos con esta clave por el servicio ssh del puerto 22.
 
 Creamos un fichero llamado id_rsa con el contenido de la llave privada encontrada y le damos permiso solo de lectura.
 
@@ -230,7 +230,7 @@ Encontramos un articulo donde podemos abusar del comando wget para escalar privi
        [...]
 
 
-2) Creamos una nueva clave para el usuario root, mediante openssl(con esta ayuda tenemos todo lo necesario para crear la clave)
+2) Creamos una nueva clave para el usuario root mediante openssl(con esta ayuda tenemos todo lo necesario para crear la clave)
    Segun la info obtenida del enlace anterior sobre el fichero shadow la clave esta formada de la siguiente manera( $id$salt$hashed )
 
        ┌──(root㉿kali)-[/home/kali]
