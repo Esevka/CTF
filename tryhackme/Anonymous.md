@@ -95,9 +95,13 @@ Enunciado Informacion : Responder a una serie de preguntas y  obtener las flags 
     
     22/tcp  open  ssh         OpenSSH 7.6p1 Ubuntu 4ubuntu0.3 (Ubuntu Linux; protocol 2.0)
 
-    139/tcp open  netbios-ssn Samba smbd 3.X - 4.X (workgroup: WORKGROUP)
-    
-    445/tcp open  netbios-ssn Samba smbd 4.7.6-Ubuntu (workgroup: WORKGROUP)
+    smb-security-mode: |   account_used: guest|   authentication_level: user
+        
+        139/tcp open  netbios-ssn Samba smbd 3.X - 4.X (workgroup: WORKGROUP)
+        
+        445/tcp open  netbios-ssn Samba smbd 4.7.6-Ubuntu (workgroup: WORKGROUP)
+
+   
 
 ## Analisis de vulnerabilidades en los servicios y explotacion de los mismos.
 
@@ -105,4 +109,52 @@ Enunciado Informacion : Responder a una serie de preguntas y  obtener las flags 
  
 ![image](https://github.com/Esevka/CTF/assets/139042999/dc0c9e09-884e-4105-b777-b9bf20932dab)
 
+-Puertos smb(139,445).
 
+INFO:
+    El puerto 139 se utiliza si SMB está configurado para ejecutarse en NetBIOS sobre TCP/IP. 
+    El puerto 445 se utiliza si SMB se ejecuta directamente en TCP/IP, sin NetBIOS. 
+
+Por lo que tenemos acceso a los mismos recursos utilizemos el puerto smb que utilizemos.
+    
+    ┌──(root㉿kali)-[/home/…/ctf/anonymous/content/smb]
+    └─# smbmap -H 10.10.40.39 -u guest               
+    [+] Guest session       IP: 10.10.40.39:445     Name: 10.10.40.39                                       
+            Disk                                                    Permissions     Comment
+            ----                                                    -----------     -------
+            print$                                                  NO ACCESS       Printer Drivers
+            pics                                                    READ ONLY       My SMB Share Directory for Pics
+            IPC$                                                    NO ACCESS       IPC Service (anonymous server (Samba, Ubuntu))
+                                                                                                                                                                                  
+    ┌──(root㉿kali)-[/home/…/ctf/anonymous/content/smb]
+    └─# smbmap -H 10.10.40.39 -u guest -P 139
+    [+] Guest session       IP: 10.10.40.39:139     Name: 10.10.40.39                                       
+            Disk                                                    Permissions     Comment
+            ----                                                    -----------     -------
+            print$                                                  NO ACCESS       Printer Drivers
+            pics                                                    READ ONLY       My SMB Share Directory for Pics
+            IPC$                                                    NO ACCESS       IPC Service (anonymous server (Samba, Ubuntu))
+
+Vemos que tenemos permisos de lectura sobre la carpeta pics, nos conectamos y descargamos su contenido para analizar.
+
+    ┌──(root㉿kali)-[/home/…/ctf/anonymous/content/smb]
+    └─# smbclient //10.10.40.39/pics -U guest        
+    Password for [WORKGROUP\guest]:
+    Try "help" to get a list of possible commands.
+    smb: \> dir
+      .                                   D        0  Sun May 17 13:11:34 2020
+      ..                                  D        0  Thu May 14 03:59:10 2020
+      corgo2.jpg                          N    42663  Tue May 12 02:43:42 2020
+      puppos.jpeg                         N   265188  Tue May 12 02:43:42 2020
+    
+    smb: \> lcd /home/kali/Desktop/ctf/anonymous/content/smb/
+    smb: \> mget *
+    Get file corgo2.jpg? y
+    getting file \corgo2.jpg of size 42663 as corgo2.jpg (92.4 KiloBytes/sec) (average 92.4 KiloBytes/sec)
+    Get file puppos.jpeg? y
+    getting file \puppos.jpeg of size 265188 as puppos.jpeg (178.6 KiloBytes/sec) (average 158.1 KiloBytes/sec)
+
+Despues de analizar las imagenes descargadas, no encontramos nada.
+
+
+-Puerto21(ftp)
