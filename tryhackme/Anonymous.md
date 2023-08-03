@@ -298,5 +298,14 @@ INFO:Explicacion para explotar env ---> https://gtfobins.github.io/gtfobins/env/
     # cat root.txt
     4d930091c31-------7ed10f27999af363
 
+-Las preguntas son faciles de respondes en el propio writeup estan todas las soluciones.
+
+
+---
+---
+---> Maquina Anonymous completa. <---
+---
+---
+
 
 
