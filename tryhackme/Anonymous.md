@@ -157,4 +157,55 @@ Vemos que tenemos permisos de lectura sobre la carpeta pics, nos conectamos y de
 Despues de analizar las imagenes descargadas, no encontramos nada.
 
 
--Puerto21(ftp)
+-Puerto 21(ftp)
+
+Nos conectamos al servicio ftp, recordamos de la fase de escaneo de puertos ---> ftp-anon: Anonymous FTP login allowed 
+
+    ┌──(root㉿kali)-[/home/…/ctf/anonymous/content/ftp]
+    └─# ftp anonymous@10.10.40.39         
+    Connected to 10.10.40.39.
+    220 NamelessOne's FTP Server!
+    331 Please specify the password.
+    Password: 
+    230 Login successful.
+    Remote system type is UNIX.
+    Using binary mode to transfer files.
+    ftp> dir
+    229 Entering Extended Passive Mode (|||38007|)
+    150 Here comes the directory listing.
+    drwxrwxrwx    2 111      113          4096 Jun 04  2020 scripts
+    226 Directory send OK.
+    ftp> cd scripts
+    250 Directory successfully changed.
+    ftp> dir
+    229 Entering Extended Passive Mode (|||51387|)
+    150 Here comes the directory listing.
+    -rwxr-xrwx    1 1000     1000          314 Jun 04  2020 clean.sh
+    -rw-rw-r--    1 1000     1000         3182 Aug 03 07:54 removed_files.log
+    -rw-r--r--    1 1000     1000           68 May 12  2020 to_do.txt
+    226 Directory send OK.
+
+Vemos que dentro de la carpeta scripts tenemos una serie de ficheros, por lo que vamos a descargarlos para analizarlos.
+
+    ftp> mget *
+    local: clean.sh remote: clean.sh
+    229 Entering Extended Passive Mode (|||60565|)
+    150 Opening BINARY mode data connection for clean.sh (314 bytes).
+    100% |*********************************************************************************************************************************|   314       58.94 KiB/s    00:00 ETA
+    226 Transfer complete.
+    314 bytes received in 00:00 (5.09 KiB/s)
+    local: removed_files.log remote: removed_files.log
+    229 Entering Extended Passive Mode (|||7906|)
+    150 Opening BINARY mode data connection for removed_files.log (3311 bytes).
+    100% |*********************************************************************************************************************************|  3311       70.16 MiB/s    00:00 ETA
+    226 Transfer complete.
+    3311 bytes received in 00:00 (56.94 KiB/s)
+    local: to_do.txt remote: to_do.txt
+    229 Entering Extended Passive Mode (|||59448|)
+    150 Opening BINARY mode data connection for to_do.txt (68 bytes).
+    100% |*********************************************************************************************************************************|    68      514.77 KiB/s    00:00 ETA
+    226 Transfer complete.
+    68 bytes received in 00:00 (1.17 KiB/s)
+
+
+    
