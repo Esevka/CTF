@@ -298,8 +298,11 @@ INFO:Explicacion para explotar env ---> https://gtfobins.github.io/gtfobins/env/
     # cat root.txt
     4d930091c31-------7ed10f27999af363
 
--Las preguntas son faciles de respondes en el propio writeup estan todas las soluciones.
+La opcion "-p" es muy importante
 
+Si el shell se inicia con la identificación de usuario (grupo) efectiva que no es igual a la identificación de usuario (grupo) real, y no se proporciona la opción -p, las funciones de shell no se heredan del entorno, SHELLOPTS , BASHOPTS, CDPATH y GLOBIGNORE, si aparecen en el entorno, se ignoran y el ID de usuario efectivo se establece en el ID de usuario real. Si se proporciona la opción -p en la invocación, el comportamiento de inicio es el mismo, pero la identificación de usuario efectiva no se restablece.
+
+El ID efectivo puede cambiar durante la ejecución de un programa, mientras que el ID real representa el usuario que inició el proceso y no cambia durante la ejecución.
 
 ---
 ---
