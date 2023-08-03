@@ -205,5 +205,31 @@ Vemos que dentro de la carpeta scripts tenemos una serie de ficheros, por lo que
     226 Transfer complete.
     68 bytes received in 00:00 (1.17 KiB/s)
 
+Analizamos los ficheros descargados.
+
+- to_do.txt ---> I really need to disable the anonymous login...it's really not safe
+
+- clean.sh ---> Script en bash que va eliminando contenido de /tmp y posteriormente le va anadiendo el nombre del fichero eliminado a removed_files.log
+  
+        #!/bin/bash
+        tmp_files=0
+        echo $tmp_files
+        if [ $tmp_files=0 ]
+        then
+                echo "Running cleanup script:  nothing to delete" >> /var/ftp/scripts/removed_files.log
+        else
+            for LINE in $tmp_files; do
+                rm -rf /tmp/$LINE && echo "$(date) | Removed file /tmp/$LINE" >> /var/ftp/scripts/removed_files.log;done
+        fi
+
+ - removed_files.log ---> Running cleanup script:  nothing to delete
+
+
+Por lo que tras ver todo esto me da que clean.sh se ejecuta a intervamos de tiempo para ir eliminando el contenido del directorio /tmp, es ejecutado por una tarea cron.
+Como tenemos permiso de escritura en la carpeta scripts vamos a subir un fichero clean.sh con una reverse shell y ver si obtenemos acceso a la maquina.
+
+## Obtenemos Reverse Shell
+
+
 
     
