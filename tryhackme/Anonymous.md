@@ -1,7 +1,7 @@
 ## TryHackMe  <> Anonymous
-![image](https://github.com/Esevka/CTF/assets/139042999/5e26ad71-c251-438b-ba43-7eed13496eaf)
+![image](https://github.com/Esevka/CTF/assets/139042999/71a70ce7-add8-4c4a-b56f-98902b1e7395)
 
-Enunciado Informacion :Responder a una serie de preguntas y  obtener las flags de usuario y root.
+Enunciado Informacion : Responder a una serie de preguntas y  obtener las flags de usuario y root.
 
 ---
 ---
@@ -88,6 +88,21 @@ Enunciado Informacion :Responder a una serie de preguntas y  obtener las flags d
     |_  start_date: N/A
     |_nbstat: NetBIOS name: ANONYMOUS, NetBIOS user: <unknown>, NetBIOS MAC: 000000000000 (Xerox)
 
-    
 
+-Recopilamos informacion de los puertos abiertos y sus versiones.
+
+    21/tcp  open  ftp         vsftpd 2.0.8 or later | ftp-anon: Anonymous FTP login allowed (FTP code 230)
+    
+    22/tcp  open  ssh         OpenSSH 7.6p1 Ubuntu 4ubuntu0.3 (Ubuntu Linux; protocol 2.0)
+
+    139/tcp open  netbios-ssn Samba smbd 3.X - 4.X (workgroup: WORKGROUP)
+    
+    445/tcp open  netbios-ssn Samba smbd 4.7.6-Ubuntu (workgroup: WORKGROUP)
+
+## Analisis de vulnerabilidades en los servicios y explotacion de los mismos.
+
+ -Segun el launchpad obtenido del servicio OpenSSH que esta corriendo en el puerto 22 podriamos decir que estamos delante de una maquina LINUX, aunque en el reporte Nmap hemos visto que el servicio samba esta corriento sobre OS: Windows 6.1'Windows 7' (Samba 4.7.6-Ubuntu).
+ 
 ![image](https://github.com/Esevka/CTF/assets/139042999/dc0c9e09-884e-4105-b777-b9bf20932dab)
+
+
