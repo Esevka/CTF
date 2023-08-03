@@ -160,6 +160,7 @@ Despues de analizar las imagenes descargadas, no encontramos nada.
 -Puerto 21(ftp)
 
 Nos conectamos al servicio ftp, recordamos de la fase de escaneo de puertos ---> ftp-anon: Anonymous FTP login allowed 
+Vemos que dentro de la carpeta scripts tenemos una serie de ficheros, por lo que vamos a descargarlos para analizarlos.
 
     ┌──(root㉿kali)-[/home/…/ctf/anonymous/content/ftp]
     └─# ftp anonymous@10.10.40.39         
@@ -184,9 +185,6 @@ Nos conectamos al servicio ftp, recordamos de la fase de escaneo de puertos --->
     -rw-rw-r--    1 1000     1000         3182 Aug 03 07:54 removed_files.log
     -rw-r--r--    1 1000     1000           68 May 12  2020 to_do.txt
     226 Directory send OK.
-
-Vemos que dentro de la carpeta scripts tenemos una serie de ficheros, por lo que vamos a descargarlos para analizarlos.
-
     ftp> mget *
     local: clean.sh remote: clean.sh
     229 Entering Extended Passive Mode (|||60565|)
