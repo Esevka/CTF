@@ -133,6 +133,7 @@ Contenido del spinner.py, el range del buble for lo aumentaremos en el caso que 
             if 'Spin the wheel and try again' in r.text:
                     print(number)
             else:
+                    print(number)
                     print(r.text)
                     exit()
                     
@@ -143,7 +144,60 @@ Contenido del spinner.py, el range del buble for lo aumentaremos en el caso que 
     if __name__=='__main__':
             main() 
 
-    
+Ejecutamos script y esperamos la gran respuesta.
 
-  
+    ┌──(root㉿kali)-[/home/…/Desktop/ctf/sustah/script]
+    └─# python3 spinner.py
+    [...]
+    10913
+    10914
+    10915
+    [...]
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Spinner</title>
+        <link rel="stylesheet" href="/static/style.css">
+    </head>
+    <body>
+      <strong>0</strong>
+        <h1>Spinner Wheel</h1>
+    [...]
+    
+        </form>
+        <h3>path: /You....P@th</h3>
+    </body>
+    <script src="/static/index.js"></script>
+    
+    </html>
+
+Acabamos de obtener el numero correcto y la respuesta que incluye un path  path: /You....P@th
+
+---
+
+Accedemos al path obtenido
+
+Dicho path solo es accesible desde el puerto 80, esta url nos da acceso a MARA CMS
+
+Navegando por lo web si entramos desde el menu Sample Pages ---> Test Page , encontramos una credenciales de acceso
+
+![image](https://github.com/Esevka/CTF/assets/139042999/f83102c7-eb69-4f82-bed4-b65da2d27c0a)
+
+Nos creamos un usuario y nos logueamos con el
+
+![image](https://github.com/Esevka/CTF/assets/139042999/9e18183c-54e2-438b-a008-2781e1138b71)\
+
+![image](https://github.com/Esevka/CTF/assets/139042999/87019269-68ed-49b7-acb4-53cbd77651a4)
+
+Desde el menu File-->new (nos da opcion a subir ficheros al sistema).
+
+
+
+
+
+
+
+
 
