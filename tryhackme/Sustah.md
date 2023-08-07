@@ -227,6 +227,8 @@ Ejecutamos nuestro rce y vemos que funciona
 
 ## Post Explotacion Escalada de privilegios www-data to kiran.
 
+
+
 -Upgradeamos la reverse shell a full tty para poder trabajar mas comodamente y no perder la conexion
 
     ┌──(root㉿kali)-[/home/…/Desktop/ctf/sustah/script]
@@ -284,7 +286,26 @@ Cambiamos de usuario y leemos la user.txt
 
 ## Post Explotacion Escalada de privilegios kiran to root.
 
+Despues de enumerar, buscar y listar encontre que la maquina tenia instalado 'doas' alternativa a 'sudo'
 
+INFO---> https://wiki.debian.org/es/Doas
+
+Segun la info obtenida anteriormente necesitamos ver que comandos podemos ejecutar como root, para ello necesitamos ver el contenido de doas.conf(que no se encuentra en la ruta por defecto).
+
+-Buscamos doas.conf, tiramos del comando 'du' ya que no tenemos permisos para ejecutar el comando 'find'
+
+    kiran@ubuntu-xenial:/$ du -a 2>/dev/null | grep doas.conf
+    8       ./usr/local/share/man/man5/doas.conf.5
+    4       ./usr/local/etc/doas.conf
+    kiran@ubuntu-xenial:/$ cat /usr/local/etc/doas.conf 
+     permit nopass kiran as root cmd rsync
+    kiran@ubuntu-xenial:/$ 
+    
+Como vemos el usuario kiran puede ejecutar rsync como root sin necesidad de clave.
+
+-Elevamos a root y obtenemos flag.
+
+    
     
     
 
