@@ -304,7 +304,7 @@ Listando las variables de entorno vemos que si que verdaderanmente kubernete est
     (local) pwncat$
     Active Session: 10.10.62.132:40359  
     
-##Explotamos Kubernete y obtenemos las flags.
+##Enumeramos Kubernete
 
 -Nos descargamos kubectl URL--> https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/
 
@@ -326,9 +326,10 @@ damos permisos de ejecucion ya que de lo contrario no podremos ejecutarlo
     
     (remote) root@php-deploy-6d998f68b9-wlslz:/tmp# chmod +x kubectl 
 
--Enumeramos Kubernete
+-Listamos permisos que tenemos sobre los nodos.
 
 Con la ayuda de kubectl hemos conseguido ver que acciones podemos realizar, los dos comandos nos indican lo mismo si no me equivoco(# Check to see if I can do everything in my current namespace)
+por lo que vemos tenemos total privilegio en nuestro Worker node.
 
     (remote) root@php-deploy-6d998f68b9-wlslz:/tmp# ./kubectl auth can-i '*' '*'
     yes
@@ -338,8 +339,51 @@ Con la ayuda de kubectl hemos conseguido ver que acciones podemos realizar, los 
     *.*         []                  []               [*]
                 [*]                 []               [*]
 
--
+
+## Elevamos privilegios en kubernetes.
+
+Buscando info encontramos el siguiente articulo bastante interesante donde nos muestra varios metodos para Escalar Privilegios desde los pods de kubernete.
+INFO: https://bishopfox.com/blog/kubernetes-pod-privilege-escalation
+    
+En nuestro caso nos guiaremos por este metodo Bad Pod #1: Everything Allowed, el cual nos pemite montar el sistema de archivos del host en un nuevo pod, pudiendo asi llevar a ver las flags.
+
+1)Listamos los pods y obtenemos su informacion en formato yaml
+
+    (remote) root@php-deploy-6d998f68b9-wlslz:/tmp# ./kubectl get pods
+    NAME                          READY   STATUS    RESTARTS       AGE
+    php-deploy-6d998f68b9-wlslz   1/1     Running   3 (162m ago)   507d
+    
+    (remote) root@php-deploy-6d998f68b9-wlslz:/tmp# ./kubectl get pods php-deploy-6d998f68b9-wlslz -o yaml
+    apiVersion: v1
+    kind: Pod
+    metadata:
+      annotations:
+        cni.projectcalico.org/podIP: 10.1.128.214/32
+        cni.projectcalico.org/podIPs: 10.1.128.214/32
+      creationTimestamp: "2022-03-21T17:26:38Z"
+      generateName: php-deploy-6d998f68b9-
+      labels:
+        app: php-deploy
+        pod-template-hash: 6d998f68b9
+      name: php-deploy-6d998f68b9-wlslz
+      namespace: frankland
+      ownerReferences:
+      - apiVersion: apps/v1
+        blockOwnerDeletion: true
+        controller: true
+        kind: ReplicaSet
+        name: php-deploy-6d998f68b9
+        uid: cac0fc0e-89b0-47cd-adb0-53852e68904e
+      resourceVersion: "121969"
+      selfLink: /api/v1/namespaces/frankland/pods/php-deploy-6d998f68b9-wlslz
+      uid: 1217f52a-fe60-4948-9788-fba1196fb35e
+    spec:
+      containers:
+      - image: vulhub/php:8.1-backdoor
+        imagePullPolicy: IfNotPresent
+        name: php-deploy
+        ports:
+        - containerPort: 80
 
     
-
 
