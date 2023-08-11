@@ -367,7 +367,7 @@ Explicacion : El proceso que haremos a continuacion sera crear un pod que montar
     NAME                          READY   STATUS    RESTARTS      AGE    IP             NODE       NOMINATED NODE   READINESS GATES
     php-deploy-6d998f68b9-wlslz   1/1     Running   3 (12m ago)   507d   10.1.128.212   microk8s   <none>           <none>
     
-2) Buscamos la info necesaria para montar nuestro Bad Pod, para ello obtenemos la info del pod que esta coriendo actualmente que es el unico que hay.
+2)Buscamos la info necesaria para montar nuestro Bad Pod, para ello obtenemos la info del pod que esta coriendo actualmente que es el unico que hay.
 
         (remote) root@php-deploy-6d998f68b9-wlslz:/tmp# ./kubectl describe pods | grep -P "Name:|Namespace:|Node:|Image:"
    
