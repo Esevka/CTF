@@ -368,13 +368,13 @@ Explicacion : El proceso que haremos a continuacion sera crear un pod que montar
     php-deploy-6d998f68b9-wlslz   1/1     Running   3 (12m ago)   507d   10.1.128.212   microk8s   <none>           <none>
     
 2)Buscamos la info necesaria para montar nuestro Bad Pod, para ello obtenemos la info del pod que esta coriendo actualmente que es el unico que hay.
+    
+    (remote) root@php-deploy-6d998f68b9-wlslz:/tmp# ./kubectl describe pods | grep -P "Name:|Namespace:|Node:|Image:"
 
-        (remote) root@php-deploy-6d998f68b9-wlslz:/tmp# ./kubectl describe pods | grep -P "Name:|Namespace:|Node:|Image:"
-   
-        Name:             php-deploy-6d998f68b9-wlslz
-        Namespace:        frankland
-        Node:             microk8s/10.10.253.69
-        Image:          vulhub/php:8.1-backdoor
+    Name:             php-deploy-6d998f68b9-wlslz
+    Namespace:        frankland
+    Node:             microk8s/10.10.253.69
+    Image:          vulhub/php:8.1-backdoor    
          
 3)Montamos nuestro Bad Pod, para ello nos basaremos en la siguiente estructura. Link --> https://github.com/BishopFox/badPods/blob/main/manifests/everything-allowed/pod/everything-allowed-exec-pod.yaml
 
@@ -421,7 +421,7 @@ Fichero de configuracion de nuestro pod, esevka.yaml
     php-deploy-6d998f68b9-wlslz   1/1     Running   3 (30m ago)   507d
     esevka                        1/1     Running   0             8s
 
-6) Ejecutamos comandos en nuestro pod para poder obtener las flags
+6)Ejecutamos comandos en nuestro pod para poder obtener las flags
 
    -Como nuestro pod acepta comandos, obtenemos una shell en el host(nodo) en el que estan nuestro pods ejecutandose.
 
