@@ -9,7 +9,7 @@ Enunciado : Obtener las flags de usuario y root.
 
 ## Escaneo de puertos
 
--Lanzamos una traza ICMP(ping) para ver si la maquina esta activa, segun el ttl obtenido, por proximidad al valor 64 podriamos decir que es una maquina Linux.
+-Lanzamos una traza ICMP(ping) para ver si la maquina esta activa, segun el ttl obtenido por proximidad al valor 64 podriamos decir que es una maquina Linux.
 
     ┌──(root㉿kali)-[/home/…/Desktop/ctf/frank-herby/nmap]
     └─# ping -c1 10.10.62.132 
