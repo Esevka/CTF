@@ -244,8 +244,8 @@ Tras analizar toda la info hemos decidido empezar por el puerto 31337/tcp open  
     /index.html           (Status: 200) [Size: 4795]
     /vendor/              (Status: 403) [Size: 153]
 
-Revisamos todos los directorios encontrados en busqueda de informacion valida, en el directorio /.git------ encontramos una credenciales interesantes.
-Para obtener las credenciales lo podemos hacer a traves del navegador tambien, nos descargamos el ficherito y listo.
+Revisamos todos los directorios encontrados en busqueda de informacion valida, en el directorio /.git------ encontramos unas credenciales interesantes.
+Para obtener las credenciales lo podemos hacer con el comando curl o con el  navegador nos descargamos el ficherito y listo.
 
 Esctructura de las credenciales encontradas--> [protocolo web][usuario]:[password(urlencondeada)]@[ip equipo conexion]
 
@@ -254,7 +254,7 @@ Esctructura de las credenciales encontradas--> [protocolo web][usuario]:[passwor
 
             frank:passwd
 
-Si recordamos en la fase de enumeracion de puertos vemos que el puerto 22 corre un servicio ssh, vamos a probar las credenciales.
+Si recordamos en la fase de enumeracion de puertos vemos que el puerto 22 corre un servicio ssh, probamos credenciales.
 
     ┌──(root㉿kali)-[/home/…/Desktop/ctf/frankherby_app/nmap]
     └─# ssh frank@10.10.209.46
@@ -264,6 +264,16 @@ Si recordamos en la fase de enumeracion de puertos vemos que el puerto 22 corre 
     
     Last login: Fri Oct 29 10:47:08 2021 from 192.168.120.38
     frank@dev-01:~$ 
+
+Por lo que ya hemos completado la fase de explotacion de la maquina hemos obtenidos unas credenciales que nos permiten conectarnos por el servicio SSH.
+
+## Enumeramos la maquina 
+
+Sabemos que la maquina esta corriendo Microk8s/Kubernetes, Info sobe que es Microk8s --> https://ciberninjas.com/microk8s-un-kubernetes-diferentes/
+
+Verificamos la presencia de Microk8s en la maquina.
+
+    
 
 
 
