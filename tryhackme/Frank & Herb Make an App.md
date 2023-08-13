@@ -228,5 +228,7 @@ Tras analizar toda la info hemos decidido empezar por el puerto 31337/tcp open  
 
 -Fuzzeamos la web en busqueda de directorios que contengan informacion util
 
+    
+
   
   
