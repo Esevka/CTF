@@ -267,13 +267,63 @@ Si recordamos en la fase de enumeracion de puertos vemos que el puerto 22 corre 
 
 Por lo que ya hemos completado la fase de explotacion de la maquina hemos obtenidos unas credenciales que nos permiten conectarnos por el servicio SSH.
 
-## Enumeramos la maquina 
+## Elevamos privilegios y obtenemos flags.
 
-Sabemos que la maquina esta corriendo Microk8s/Kubernetes, Info sobe que es Microk8s --> https://ciberninjas.com/microk8s-un-kubernetes-diferentes/
+- Obtenemos la flag de usuario
 
-Verificamos la presencia de Microk8s en la maquina.
-
+        frank@dev-01:~$ cd /home
+        frank@dev-01:/home$ ls
+        frank  herby
+        frank@dev-01:/home$ cd frank/
+        frank@dev-01:~$ ls
+        repos  snap  user.txt
+        frank@dev-01:~$ cat user.txt 
+        THM{------}
     
+- Enumeramos la maquina en busqueda de info para intentar elevar privilegios.
+
+    Sabemos que la maquina esta corriendo Microk8s/Kubernetes,aun asi vamos a verificar la presencia de Microk8s en la maquina.
+    Info sobe que es Microk8s --> https://ciberninjas.com/microk8s-un-kubernetes-diferentes/
+    
+    Listamos el fichero group y vemos que tanto el usuario frank como el usuario herby pertenecen al grupo microk8s
+    
+        frank@dev-01:/home/herby$ cat /etc/group | grep -E 'frank|herby'
+            adm:x:4:syslog,herby
+            cdrom:x:24:herby
+            sudo:x:27:herby
+            dip:x:30:herby
+            plugdev:x:46:herby
+            lxd:x:116:herby
+            herby:x:1000:
+            microk8s:x:998:herby,frank
+            frank:x:1001:
+            docker:x:117:herby
+    
+    Listamos procesos que estan corriendo
+        
+        frank@dev-01:~$ ps -ax | grep microk8s
+        
+        700 ?        Ss     0:05 /bin/bash /snap/microk8s/2546/apiservice-kicker
+        702 ?        Ss     0:00 /bin/bash /snap/microk8s/2546/run-cluster-agent-with-args
+        [...]
+    
+    Listamos conexiones entrantes y salientes de la maquina
+    
+        frank@dev-01:~$ ss -a | grep -Ei 'microk8s|kubernetes'
+        u_str             LISTEN                 0                   128                                                      @snap.microk8s.dqlite-3297041220608546238 340852                                   
+        u_str             LISTEN                 0                   4096                                      /var/snap/microk8s/2546/var/kubernetes/backend/kine.sock 342176                               
+        u_str             LISTEN                 0                   4096                             /var/snap/microk8s/common/var/lib/kubelet/pod-resources/161155252 356673  
+        [...]
+    
+    Informacion mas que suficiente para ver que esta corriendo microk8s|kubernetes en la maquina.
+   
+
+- Elevamos privilegios mediante, Microk8s Kubernetes Pod. Info: https://bishopfox.com/blog/kubernetes-pod-privilege-escalation
+
+    1) ww
+
+
+
 
 
 
