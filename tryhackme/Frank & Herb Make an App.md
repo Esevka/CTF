@@ -249,6 +249,8 @@ Para obtener las credenciales lo podemos hacer con el comando curl o con el  nav
 
 Esctructura de las credenciales encontradas--> [protocolo web][usuario]:[password(urlencondeada)]@[ip equipo conexion]
 
+Web url decode-encode --> https://www.urldecoder.org/
+
     ┌──(root㉿kali)-[/home/…/Desktop/ctf/frankherby_app/nmap]
     └─# curl http://10.10.209.46:31337/.git-------     
 
