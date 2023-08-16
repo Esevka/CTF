@@ -295,7 +295,7 @@ Linux Container Daemon (LXD), es una herramienta de gestión de los contenedores
             john@exploitable:/tmp$ lxc image import ./alpine.tar.gz --alias myimage
                 Image imported with fingerprint: 4e09783983071fe2ad1eec7150448f116ca2cecb02df307905fd5cd35ea3f6e0
 
-    - Establecemos las configuraciones necesarias basicas para poder correr nuesto contenedor
+    - Establecemos las configuraciones necesarias basicas para poder correr nuestro contenedor
  
             john@exploitable:/tmp$ lxd init
             Would you like to use LXD clustering? (yes/no) [default=no]: no
@@ -320,6 +320,24 @@ Linux Container Daemon (LXD), es una herramienta de gestión de los contenedores
         john@exploitable:/tmp$ lxc config device add mycontainer mydevice disk source=/ path=/mnt/root recursive=true
         Device mydevice added to mycontainer
 
+  -Iniciamos el contenedor
+
+          john@exploitable:/tmp$ lxc list
+        +-------------+---------+------+------+------------+-----------+
+        |    NAME     |  STATE  | IPV4 | IPV6 |    TYPE    | SNAPSHOTS |
+        +-------------+---------+------+------+------------+-----------+
+        | mycontainer | STOPPED |      |      | PERSISTENT | 0         |
+        +-------------+---------+------+------+------------+-----------+
+        john@exploitable:/tmp$ lxc start mycontainer
+        john@exploitable:/tmp$ lxc list
+        +-------------+---------+-----------------------+-----------------------------------------------+------------+-----------+
+        |    NAME     |  STATE  |         IPV4          |                     IPV6                      |    TYPE    | SNAPSHOTS |
+        +-------------+---------+-----------------------+-----------------------------------------------+------------+-----------+
+        | mycontainer | RUNNING | 10.229.116.117 (eth0) | fd42:2998:1e63:3d6f:216:3eff:fef2:c3c4 (eth0) | PERSISTENT | 0         |
+
+  -Obtener Root
+
+  
 
         
 
