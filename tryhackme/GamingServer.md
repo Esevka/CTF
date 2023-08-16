@@ -199,7 +199,31 @@ Enunciado : Obtener  flags de usuario y root.
 
 -Elevamos privilegios root.
 
+Despues de enumerar las maquina durante un buen rato, encontramos que el usuario john pertence al grupo ---> lxd
+
+- Dos maneras de ver a los grupos que pertenece dicho usuario.
+  
+        john@exploitable:~$ id
+        uid=1000(john) gid=1000(john) groups=1000(john),4(adm),24(cdrom),27(sudo),30(dip),46(plugdev),108(lxd)
     
+        john@exploitable:~$ cat /etc/group | grep john
+        adm:x:4:syslog,john
+        cdrom:x:24:john
+        sudo:x:27:john
+        dip:x:30:john
+        plugdev:x:46:john
+        lxd:x:108:john
+        john:x:1000:
+
+¿Qué es LXD en Ubuntu?
+Linux Container Daemon (LXD), es una herramienta de gestión de los contenedores del sistema operativo Linux. Permite crear contenedores de sistemas Linux ideales para su uso en la nube. Con esta herramienta tenemos la posibilidad de crear múltiples contenedores dentro del mismo.
+
+- Explotamos LXD para llegar a root
+
+    Utilizamos el metodo 2.
+    INFO: https://book.hacktricks.xyz/linux-hardening/privilege-escalation/interesting-groups-linux-pe/lxd-privilege-escalation
+
+  1)Nos
 
     
                                                                    
