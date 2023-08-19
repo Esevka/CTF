@@ -100,3 +100,34 @@ Enunciado : Obtener flag
     |     Allow: HEAD, OPTIONS, GET
     |_    Content-Length: 0
     |_http-title: Prioritise
+
+-Segun la version del servicio SSH que esta corriendo en el puerto 22, obtenemos su launchpad y podemos decir que estamos ante una maquina.
+ 
+    LINUX UBUNTU Serie Focal
+    
+ INFO: https://launchpad.net/ubuntu/+source/openssh/1:8.2p1-4
+ 
+
+## Analisis de vulnerabilidades en los servicios y explotacion de los mismos.
+
+Sabemos que la maquina tiene un fallo de seguridad que nos permite realizar un ataque mediante SQLI.
+
+-Cargamos la web que esta corriendo en el puerto 80
+
+![image](https://github.com/Esevka/CTF/assets/139042999/6a130014-212e-4dfc-b284-6ee0e53f7857)
+
+- Anadimos dos items y empezamos a buscar por donde podemos inyectar algo.
+  
+    ![image](https://github.com/Esevka/CTF/assets/139042999/2cb7ac74-ea37-4981-b0dd-9cce4bb948a3)
+
+
+- Despues de analizar el funcionanmiento de la web, vemos que a la hora de ordenar los items por 'title' o 'date' podemos injectar codigo.
+    
+    ![image](https://github.com/Esevka/CTF/assets/139042999/0ea993d6-1ac4-4738-b95e-5c9fadb0ef12)
+
+    ![image](https://github.com/Esevka/CTF/assets/139042999/1a99ee1a-1430-4fbe-abb0-edd5e10d9eb9)
+
+
+    
+
+
