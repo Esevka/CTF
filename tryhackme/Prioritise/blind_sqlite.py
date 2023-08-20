@@ -11,7 +11,7 @@ def table_name(n_table,url_web):
 
 	for x in range(length_tablas): 
 
-		with open('diccionario','r') as dic:
+		with open('diccionario.txt','r') as dic:
 
 			for caracter in dic:
 
@@ -82,7 +82,7 @@ def obtenemos_flag(url_web):
 
 def main():
 
-	url_web='http://10.10.227.33'
+	url_web='http://---IP---'
 
 	#Anteriormente hemos conseguido averiguar que hay dos tablas en la bd y que la longitud de sus nombres son de 5 y 4 caracteres.
 	for n_table in range(2):
