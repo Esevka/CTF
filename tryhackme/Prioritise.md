@@ -191,26 +191,30 @@ De igual manera utilizamos < o > para limitar rango y = para verificar tamano.
 
 	![image](https://github.com/Esevka/CTF/assets/139042999/2a0400a2-ad51-4447-800e-eaaa71ba7929)
 
+-Extraemos el nombre de las tablas de la BD.
 
+Para extraer el nombre de las tablas trabajaremos con substr(string,start,length) en la parte de la consulta y para automatizar todo este proceso realizaremos un pequeno script en python.
+
+Ejemplo de consulta de como sacaremos los caracteres que componen el nombre de la tabla.
+
+![image](https://github.com/Esevka/CTF/assets/139042999/7389aa6a-c56c-4ad4-8723-f51252ee3286)
+
+- Creamos un diccionario de caracteres para ello utilizamos
+
+		┌──(root㉿kali)-[/home/kali/Desktop/ctf/prioritise]	/ letras minusculas
+		└─# crunch 1 1  -t @ > diccionario.txt 
+	                                                                                                                                                                              
+		┌──(root㉿kali)-[/home/kali/Desktop/ctf/prioritise]	/ letras mayusculas
+		└─# crunch 1 1  -t ,>> diccionario.txt 
+		                                                                                                                                                                              
+		┌──(root㉿kali)-[/home/kali/Desktop/ctf/prioritise]	/ numeros
+		└─# crunch 1 1  -t % >> diccionario.txt
+		                                                                                                                                                                              
+		┌──(root㉿kali)-[/home/kali/Desktop/ctf/prioritise]	/simbolos
+		└─# crunch 1 1  -t ^ >> diccionario.txt
   
-
-  
-
+- Script en python(extraer nombre de las tablas) ---> blind_sqlite.py ---> utilizamos la funcion 'table_name'
 
 
-
-
-
-
-
-      
-
-      
-  
-  
-    
-
-
-    
-
-
+		                                                                                                                                                                              
+		
