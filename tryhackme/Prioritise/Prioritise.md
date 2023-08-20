@@ -245,7 +245,31 @@ Determinamos que el numero de caracteres de la columna de la tabla 'flag' es 4.
   
 -Obtenemos numero de registros de la columna flag.
 
+Determinamos que el  numero de registros que en este caso es 1
 
+Recordamos que podemos utilizar < o > para limitar rango y = para verificar tamano.
+
+![image](https://github.com/Esevka/CTF/assets/139042999/20ef2bb8-acf4-4e77-ad2b-0ce400575c0d)
+
+
+-Obtenemos el numero de caracteres del registro
+
+El tamano del registro estaria compuesto de 38 caracteres.
+
+![image](https://github.com/Esevka/CTF/assets/139042999/fce0510d-507b-49ab-837e-407f54f233e1)
+
+-Obtenemos la flag de la maquina.
+
+Para ello continuamos trabajando con nuestro script en python --->blind_sqlite.py ---> utilizamos la funcion 'obtenemos_flag'
+
+Magic, obtenemos la flag de la maquina.
+
+![image](https://github.com/Esevka/CTF/assets/139042999/cce46283-db07-4931-85a2-cb944c5bea59)
+
+
+---
+---> Maquina Prioritise completa <---
+---
 
 
 	
