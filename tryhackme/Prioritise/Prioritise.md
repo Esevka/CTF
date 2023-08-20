@@ -214,7 +214,14 @@ Ejemplo de consulta de como sacaremos los caracteres que componen el nombre de l
 		└─# crunch 1 1  -t ^ >> diccionario.txt
   
 - Script en python(extraer nombre de las tablas) ---> blind_sqlite.py ---> utilizamos la funcion 'table_name'
+  
+	Magic, obtenemos los nombres de las dos tablas.
 
+	![image](https://github.com/Esevka/CTF/assets/139042999/8c35f5dd-d491-4f3e-9fc1-ecb32dcb4020)
 
+  	Ya sabemos a que tabla le tenemos que atacar, Tabla2 ---> flag
 		                                                                                                                                                                              
-		
+-Obtenemos el numero de columnas que tiene la Tabla2 ---> flag
+
+
+	
