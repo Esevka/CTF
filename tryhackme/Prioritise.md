@@ -166,7 +166,7 @@ Nos guiamos del apartado 'Identifying Back-end' donde tras probar identificamos 
 
 INFO: https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/SQL%20Injection/SQLite%20Injection.md
 
-Explicacion de los campos de la sentencia INFO: https://www.techonthenet.com/sqlite/sys_tables/index.php
+Explicacion de los campos de la queries INFO: https://www.techonthenet.com/sqlite/sys_tables/index.php
 
 Lo podemos hacer igualando a 0,1,2,3.... hasta dar con el valido o podemos usar < o > para acotar el rango mas rapidamente y despues utilizar el = para verificarlo, en este caso determinamos que tenemos ---> 2 tablas.
 
@@ -177,7 +177,28 @@ Lo podemos hacer igualando a 0,1,2,3.... hasta dar con el valido o podemos usar 
 ![image](https://github.com/Esevka/CTF/assets/139042999/ff1c3c42-fbd8-4123-952b-10c7d3efadcd)
 
 
--Obtenemos el numero de caracteres que componen el nombre de las tablas.
+-Obtenemos el numero de caracteres que componen el nombre de cada tabla.
+
+Explicacion de limit y offset INFO: https://www.tutorialesprogramacionya.com/postgresqlya/temarios/descripcion.php?cod=200&punto=42&inicio=
+
+De igual manera utilizamos < o > para limitar rango y = para verificar tamano.
+
+- Tabla1 ---> 5 caracteres.
+
+  ![image](https://github.com/Esevka/CTF/assets/139042999/48a4e064-9e01-4187-9a97-5bb670f46c96)
+
+- Tabla2 ---> 4 caracteres.
+
+	![image](https://github.com/Esevka/CTF/assets/139042999/2a0400a2-ad51-4447-800e-eaaa71ba7929)
+
+
+  
+
+  
+
+
+
+
 
 
 
