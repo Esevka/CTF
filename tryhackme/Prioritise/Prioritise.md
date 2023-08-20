@@ -3,10 +3,7 @@
 ![image](https://github.com/Esevka/CTF/assets/139042999/42583888-171e-4764-80e4-69e79bcb3c38)
 
 Enlace Maquina: https://tryhackme.com/room/prioritise
-
 Enunciado : Obtener flag
----
----
 
 ## Escaneo de puertos
 
