@@ -154,7 +154,7 @@ Sabemos que la maquina tiene un fallo de seguridad que nos permite realizar un a
 
     Recordamos si ordena por 'title' VERDADERO, si ordena por 'date' FALSO.
 
--Obtenemos Motor Base de Datos para saber como tenemos que proceder con las queries.
+### Obtenemos Motor Base de Datos para saber como tenemos que proceder con las queries.
     
 INFO: https://book.hacktricks.xyz/pentesting-web/sql-injection
     
@@ -162,7 +162,7 @@ Nos guiamos del apartado 'Identifying Back-end' donde tras probar identificamos 
 
 ![image](https://github.com/Esevka/CTF/assets/139042999/33cdc8e5-c423-46b5-a3d4-3e7b7aadc544)
 
--Obtenemos el numero de tablas que tienes la bd
+### Obtenemos el numero de tablas que tienes la bd
 
 INFO: https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/SQL%20Injection/SQLite%20Injection.md
 
@@ -177,7 +177,7 @@ Lo podemos hacer igualando a 0,1,2,3.... hasta dar con el valido o podemos usar 
 ![image](https://github.com/Esevka/CTF/assets/139042999/ff1c3c42-fbd8-4123-952b-10c7d3efadcd)
 
 
--Obtenemos el numero de caracteres que componen el nombre de cada tabla.
+### Obtenemos el numero de caracteres que componen el nombre de cada tabla.
 
 Explicacion de limit y offset INFO: https://www.tutorialesprogramacionya.com/postgresqlya/temarios/descripcion.php?cod=200&punto=42&inicio=
 
@@ -191,7 +191,7 @@ De igual manera utilizamos < o > para limitar rango y = para verificar tamano.
 
 	![image](https://github.com/Esevka/CTF/assets/139042999/2a0400a2-ad51-4447-800e-eaaa71ba7929)
 
--Extraemos el nombre de las tablas de la BD.
+### Extraemos el nombre de las tablas de la BD.
 
 Para extraer el nombre de las tablas trabajaremos con substr(string,start,length) en la parte de la consulta y para automatizar todo este proceso realizaremos un pequeno script en python.
 
@@ -221,13 +221,13 @@ Ejemplo de consulta de como sacaremos los caracteres que componen el nombre de l
 
   	Ya sabemos a que tabla le tenemos que atacar, Tabla2 ---> flag
 		                                                                                                                                                                              
--Obtenemos el numero de columnas que tiene la Tabla2 ---> flag
+### Obtenemos el numero de columnas que tiene la Tabla2 ---> flag
 
 Determinamos que tiene solo 1 columna
 
 ![image](https://github.com/Esevka/CTF/assets/139042999/64b56778-897b-412c-88a6-cd179bf30c3f)
 
--Obtenemos el numero de caracteres que componen la columna de la Tabla2 ---> flag.
+### Obtenemos el numero de caracteres que componen la columna de la Tabla2 ---> flag.
 
 Info que es pragma_table_info ---> https://renenyffenegger.ch/notes/development/databases/SQLite/sql/pragma/table_info
 
@@ -243,7 +243,7 @@ Determinamos que el numero de caracteres de la columna de la tabla 'flag' es 4.
 
   		Ya tenemos Tabla-->flag , Columna ---> flag
   
--Obtenemos numero de registros de la columna flag.
+### Obtenemos numero de registros de la columna flag.
 
 Determinamos que el  numero de registros que en este caso es 1
 
@@ -252,13 +252,13 @@ Recordamos que podemos utilizar < o > para limitar rango y = para verificar tama
 ![image](https://github.com/Esevka/CTF/assets/139042999/20ef2bb8-acf4-4e77-ad2b-0ce400575c0d)
 
 
--Obtenemos el numero de caracteres del registro
+### Obtenemos el numero de caracteres del registro
 
 El tamano del registro estaria compuesto de 38 caracteres.
 
 ![image](https://github.com/Esevka/CTF/assets/139042999/fce0510d-507b-49ab-837e-407f54f233e1)
 
--Obtenemos la flag de la maquina.
+### Obtenemos la flag de la maquina.
 
 Para ello continuamos trabajando con nuestro script en python --->blind_sqlite.py ---> utilizamos la funcion 'obtenemos_flag'
 
