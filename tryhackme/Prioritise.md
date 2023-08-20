@@ -125,7 +125,24 @@ Sabemos que la maquina tiene un fallo de seguridad que nos permite realizar un a
     
     ![image](https://github.com/Esevka/CTF/assets/139042999/0ea993d6-1ac4-4738-b95e-5c9fadb0ef12)
 
+    Aqui podemos ver que nos lo orderna por title de mayor a menor inyectandole nosotros desc
     ![image](https://github.com/Esevka/CTF/assets/139042999/1a99ee1a-1430-4fbe-abb0-edd5e10d9eb9)
+
+    Aqui podemos ver el otro ejemplo donde hacemos lo mismo pero ordenado por fecha de manera descendiente.
+    ![image](https://github.com/Esevka/CTF/assets/139042999/e9657b47-e3aa-45b5-8f67-b9baaebd3ba0)
+
+
+- Buscamos la manera de poder inyectar codigo en la clausula order by, encontramos esta documentacion que nos ayudo mucho a entender el funcionamiento
+  INFO: https://portswigger.net/web-security/sql-injection/blind
+
+      'Blind SQL injection by triggering conditional errors'
+
+  Creamos el primer exploit
+
+      
+  
+  
+    
 
 
     
