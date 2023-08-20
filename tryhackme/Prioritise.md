@@ -137,7 +137,52 @@ Sabemos que la maquina tiene un fallo de seguridad que nos permite realizar un a
 
       'Blind SQL injection by triggering conditional errors'
 
-  Creamos el primer exploit
+
+- Crearemos nuestra primera SQLI, a partir de este punto todo lo realizaremos con Burpsuite por comodidad.
+
+    El Metodo que vamos a utilizar se basa en si la condicion que podemos se cumple o no, en base a si se cumple la condicion iremos obteniendo datos de la base de datos(locura total).
+
+    La condicion 1=1 se cumple por lo que ordena por title.
+  
+    ![image](https://github.com/Esevka/CTF/assets/139042999/be125d64-2e32-4c68-b7a7-b292aab027a6)
+
+    La condicion 1=1 no se cumple por lo que ordena por date.
+
+    ![image](https://github.com/Esevka/CTF/assets/139042999/a3891239-d9ac-4e1a-a41d-71708f2db59e)
+
+## Atacamos la BD
+
+    Recordamos si ordena por 'title' VERDADERO, si ordena por 'date' FALSO.
+
+-Obtenemos Motor Base de Datos para saber como tenemos que proceder con las queries.
+    
+INFO: https://book.hacktricks.xyz/pentesting-web/sql-injection
+    
+Nos guiamos del apartado 'Identifying Back-end' donde tras probar identificamos que estamos delante de ---> SQLITE.
+
+![image](https://github.com/Esevka/CTF/assets/139042999/33cdc8e5-c423-46b5-a3d4-3e7b7aadc544)
+
+-Obtenemos el numero de tablas que tienes la bd
+
+INFO: https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/SQL%20Injection/SQLite%20Injection.md
+
+Explicacion de los campos de la sentencia INFO: https://www.techonthenet.com/sqlite/sys_tables/index.php
+
+Lo podemos hacer igualando a 0,1,2,3.... hasta dar con el valido o podemos usar < o > para acotar el rango mas rapidamente y despues utilizar el = para verificarlo, en este caso determinamos que tenemos ---> 2 tablas.
+
+    GET /?order=Case+When+(select+count(tbl_name)+from+sqlite_master+where+type='table')>3+THEN+title+ELSE+date+END --->order by date
+    
+	GET /?order=Case+When+(select+count(tbl_name)+from+sqlite_master+where+type='table')<2+THEN+title+ELSE+date+END --->order by title
+
+![image](https://github.com/Esevka/CTF/assets/139042999/ff1c3c42-fbd8-4123-952b-10c7d3efadcd)
+
+
+-Obtenemos el numero de caracteres que componen el nombre de las tablas.
+
+
+
+
+      
 
       
   
