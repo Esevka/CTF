@@ -217,11 +217,35 @@ Ejemplo de consulta de como sacaremos los caracteres que componen el nombre de l
   
 	Magic, obtenemos los nombres de las dos tablas.
 
-	![image](https://github.com/Esevka/CTF/assets/139042999/8c35f5dd-d491-4f3e-9fc1-ecb32dcb4020)
+	![image](https://github.com/Esevka/CTF/assets/139042999/8c35f5dd-d491-4f3e-9fc1-ecb32dcb4020)o
 
   	Ya sabemos a que tabla le tenemos que atacar, Tabla2 ---> flag
 		                                                                                                                                                                              
 -Obtenemos el numero de columnas que tiene la Tabla2 ---> flag
+
+Determinamos que tiene solo 1 columna
+
+![image](https://github.com/Esevka/CTF/assets/139042999/64b56778-897b-412c-88a6-cd179bf30c3f)
+
+-Obtenemos el numero de caracteres que componen la columna de la Tabla2 ---> flag.
+
+Info que es pragma_table_info ---> https://renenyffenegger.ch/notes/development/databases/SQLite/sql/pragma/table_info
+
+Determinamos que el numero de caracteres de la columna de la tabla 'flag' es 4.
+
+![image](https://github.com/Esevka/CTF/assets/139042999/a6476519-b4f7-4411-9348-2091e2543c44)
+
+- Continuamos trabajando con nuestro script en python --->blind_sqlite.py ---> utilizamos la funcion 'column_name'
+
+	Magic, obtenemos el nombre de la columna.
+
+ 	![image](https://github.com/Esevka/CTF/assets/139042999/e65a62a1-49cf-4200-a774-b17e713ac173)
+
+  		Ya tenemos Tabla-->flag , Columna ---> flag
+  
+-Obtenemos numero de registros de la columna flag.
+
+
 
 
 	
