@@ -84,13 +84,13 @@ Enunciado :
         2023/08/24 15:55:34 Finished
         ===============================================================
 
-    Despues de analizar todo vemos que lo interesante esta en:
+    Interesante:
     
-        --> index.php (fichero con una funcion php que podemos explotar para conseguir un RCE)
+        --> index.php
     
-        --> http://10.10.5.207/backup/index.php.bak (fichero copia de index.php, a traves de este fichero hemos estudiado el codigo de index.php)
+        --> http://10.10.5.207/backup/index.php.bak
 
-    Fichero index.php, contiene un formulario con un boton submit que es el encargado de ejecutar el codigo php vulnerable de la pagina.
+    Fichero index.php, contiene un formulario con un boton submit que es el encargado de ejecutar el codigo php
     
       ![image](https://github.com/Esevka/CTF/assets/139042999/160fec18-0919-48b4-b03a-74db2218c860)
       ![image](https://github.com/Esevka/CTF/assets/139042999/936e8029-4dee-4392-b4a0-38bfa9727e00)- 
@@ -123,7 +123,7 @@ Enunciado :
 
         public $form_file = 'message.txt';
         public $message = '';             ---> Se establecen las variables que seran utilizadas
-                                              en la funcion SaveMessage() y __destruct(Esto es un magic method de php)
+                                              en la funcion SaveMessage() y __destruct
 
         public function SaveMessage(){...} ---> Se encarga de recoger las variables del formulario mediante el metodo GET,
                                                 para formar un string que sera almacenado en la variable $message.
@@ -154,16 +154,20 @@ Enunciado :
 
       - EXPLICACION,espero que se entienda--
 
-            Funcion unserialize(), le debemos pasar un string(serializado) que contenga una clase llamada 'FormSubmit' con las variables
-            $form_file y $message con unos valores especificos.
+            Funcion unserialize(), le debemos pasar un string(serializado) que contenga una clase llamada 'FormSubmit'
+            con las variables $form_file y $message con unos valores especificos.
     
-            Lo que intentamos es crear mediante la funcion unserialize() otra instancia en memoria de la clase 'FormSubmit', por lo que tendriamos la instancia creada con unserialize() y la
-            creada de manera regular en el codigo.
+            Lo que intentamos es crear mediante la funcion unserialize() otra instancia en memoria de la clase
+            'FormSubmit', por lo que tendriamos la instancia creada con unserialize() y la creada de manera regular
+            en el codigo.
         
-            Php las tratara como dos instancias independiente de una misma clase con propiedades(valores de variables) diferentes, al ser la misma clase el metodo __destruct (es el mismo)
-             por lo que se ejecutara dos veces uno con los valores de las variables del formulario y otra con los valores de las variables que pasamos mediante la funcion unserialize()
+            Php las tratara como dos instancias independiente de una misma clase con propiedades(valores de variables)
+            diferentes, al ser la misma clase el metodo __destruct (es el mismo) por lo que se ejecutara dos veces uno
+            con los valores de las variables del formulario y otra con los valores de las variables que pasamos mediante
+            la funcion unserialize()
      
-            De este modo podemos suplantar el valor de las variables en el metodo __destruct consiguiendo crear nuestro fichero.
+            De este modo podemos suplantar el valor de las variables en el metodo __destruct consiguiendo crear
+            nuestro fichero.
 
     
 
