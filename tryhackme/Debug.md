@@ -205,7 +205,12 @@ Enunciado :
 
     ![image](https://github.com/Esevka/CTF/assets/139042999/0a4277a6-2237-4489-9f35-ad553ce24bb1)
 
-  
+  - Upgrademos nuestra reverse shell para trabajar comodamente.
+
+    ![image](https://github.com/Esevka/CTF/assets/139042999/4d4727c4-aa89-4ac0-bb3e-f29de5c06685)
+
+## Postexplot
+
   
 
         
