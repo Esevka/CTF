@@ -1,5 +1,3 @@
-![image](https://github.com/Esevka/CTF/assets/139042999/1b6dac48-d25b-40cb-9e01-a8541e425b16)
-
 ## TryHackMe  <> Debug
 
 ![image](https://github.com/Esevka/CTF/assets/139042999/0e76fc7e-29b5-4463-91c8-9e8f6285f71e)
@@ -92,6 +90,11 @@ Enunciado :
     
         --> http://10.10.5.207/backup/index.php.bak (fichero copia de index.php, a traves de este fichero hemos estudiado el codigo de index.php)
 
+    Fichero index.php, contiene un formulario con un boton submit que es el encargado de ejecutar el codigo php vulnerable de la pagina.
+    
+      ![image](https://github.com/Esevka/CTF/assets/139042999/160fec18-0919-48b4-b03a-74db2218c860)
+      ![image](https://github.com/Esevka/CTF/assets/139042999/936e8029-4dee-4392-b4a0-38bfa9727e00)- 
+
     Nos descargamos el fichero index.php.bak
 
         ┌──(root㉿kali)-[/home/…/Desktop/ctf/debug/content]
@@ -100,9 +103,84 @@ Enunciado :
                                          Dload  Upload   Total   Spent    Left  Speed
         100  6399  100  6399    0     0  36317      0 --:--:-- --:--:-- --:--:-- 36357
 
+
   - Analizamos el codigo php y lo explotamos
 
+     Codigo php que se ejecuta cada vez que pulsamos el boton submit del fomulario que mostramos anteriormente.
+
+      ![image](https://github.com/Esevka/CTF/assets/139042999/fc1c4fbb-cb19-4191-a451-7ea0e2b48f70)
+
+      ---Explicacion del codigo:
+
+      1)Pulsamos el boton Submit
+
+        $application = new FormSubmit;  ---> Se crea un objeto de la Class FormSubmit para ser
+                                                instanciado en memoria y ejecutado.
     
+        $application -> SaveMessage();  --> llamamos a la funcion SaveMessage().
+
+      2)Ejecucion del proceso
+
+        public $form_file = 'message.txt';
+        public $message = '';             ---> Se establecen las variables que seran utilizadas
+                                              en la funcion SaveMessage() y __destruct(Esto es un magic method de php)
+
+        public function SaveMessage(){...} ---> Se encarga de recoger las variables del formulario mediante el metodo GET,
+                                                para formar un string que sera almacenado en la variable $message.
+    
+        public function __destruct()  ---> Crea en el directorio raiz de la web un fichero con el nombre de la variable
+                                      $form_file en el caso de que no exista con el contenido de la variable $message,
+                                     en el caso de que el fichero exista le anade el contenido de la variable $message.  
+
+      3)Sorpresa
+
+        // Leaving this for now... only for debug purposes... do not touch!
+        $debug = $_GET['debug'] ?? '';
+        $messageDebug = unserialize($debug); ---> Vemos que comprueba si la variable debug existe en la url cuando hacemos
+                                              el submit, en el caso de que exista utiliza la funcion unserialize(), sobre
+                                             la data que le hemos pasado en dicha variable.
+        
+      ---Explotacion del codigo:
+    
+      - Serialización de objetos            --> https://www.php.net/manual/es/language.oop5.serialization.php
+        
+      - Deserialización de objetos          --> https://www.php.net/manual/es/function.unserialize.php
+        
+      - Magic Method __destruct() en php       --> https://www.w3schools.com/php/php_oop_destructor.asp
+  
+          ![image](https://github.com/Esevka/CTF/assets/139042999/ff8dfb2d-e516-4eb9-8fcd-1899fbd6dfda)
+
+      - Unserialize to RCE ---> https://notsosecure.com/remote-code-execution-php-unserialize
+
+      - EXPLICACION,espero que se entienda--
+
+            Funcion unserialize(), le debemos pasar un string(serializado) que contenga una clase llamada 'FormSubmit' con las variables
+            $form_file y $message con unos valores especificos.
+    
+            Lo que intentamos es crear mediante la funcion unserialize() otra instancia en memoria de la clase 'FormSubmit', por lo que tendriamos la instancia creada con unserialize() y la
+            creada de manera regular en el codigo.
+        
+            Php las tratara como dos instancias independiente de una misma clase con propiedades(valores de variables) diferentes, al ser la misma clase el metodo __destruct (es el mismo)
+             por lo que se ejecutara dos veces uno con los valores de las variables del formulario y otra con los valores de las variables que pasamos mediante la funcion unserialize()
+     
+            De este modo podemos suplantar el valor de las variables en el metodo __destruct consiguiendo crear nuestro fichero.
+
+    
+
+
+
+
+
+      
+
+      
+
+    
+        
+
+
+
+        
 
 
     
