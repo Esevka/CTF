@@ -197,6 +197,14 @@ Enunciado :
 
 ## Explotacion, obtenemos reverse shell en la maquina victima.
 
+  - Nos ponemos en escucha esperando nuestra conexion.
+    
+    ![image](https://github.com/Esevka/CTF/assets/139042999/0ba00db0-8d68-4efd-8ad7-80453cbf72f9)
+
+  - Ejecutamos la reverse shell a traves de nuestro RCE.
+
+    ![image](https://github.com/Esevka/CTF/assets/139042999/0a4277a6-2237-4489-9f35-ad553ce24bb1)
+
   
   
 
