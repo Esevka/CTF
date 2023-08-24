@@ -104,7 +104,7 @@ Enunciado :
         100  6399  100  6399    0     0  36317      0 --:--:-- --:--:-- --:--:-- 36357
 
 
-  - Analizamos el codigo php y lo explotamos
+  - Analizamos el codigo php
 
      Codigo php que se ejecuta cada vez que pulsamos el boton submit del fomulario que mostramos anteriormente.
 
@@ -140,7 +140,7 @@ Enunciado :
                                               el submit, en el caso de que exista utiliza la funcion unserialize(), sobre
                                              la data que le hemos pasado en dicha variable.
         
-      ---Explotacion del codigo:
+      ---Informacion necesaria para entender el proceso de explotacion.
     
       - Serialización de objetos            --> https://www.php.net/manual/es/language.oop5.serialization.php
         
@@ -152,7 +152,7 @@ Enunciado :
 
       - Unserialize to RCE ---> https://notsosecure.com/remote-code-execution-php-unserialize
 
-      - EXPLICACION,espero que se entienda--
+      - EXPLICACION,espero que se entienda
 
             Funcion unserialize(), le debemos pasar un string(serializado) que contenga una clase llamada 'FormSubmit'
             con las variables $form_file y $message con unos valores especificos.
@@ -169,9 +169,38 @@ Enunciado :
             De este modo podemos suplantar el valor de las variables en el metodo __destruct consiguiendo crear
             nuestro fichero.
 
+      ---Explotacion del codigo
+
+      1)Creamos nuestro objeto de la clase FormSubmit serializado donde le pasamos nombre del fichero '.php' para poder ejecutar codigo y como  message una ejecucion de codigo mediante la variable cmd.
+
+      El resultado lo mostramos en formato serializado y formato urlencodeado que es el que necesitaremos.
+
+      ![image](https://github.com/Esevka/CTF/assets/139042999/c4038187-4cd4-41d7-90b7-ccffbe9b4965)
+ 
+
+
+      2)Ejecutamos nuestro payload, para ello utilizaremos burpsuite.
+
+      Como vemos nos da un status 200 por lo que la solicitud ha sido exitosa.
+
+      ![image](https://github.com/Esevka/CTF/assets/139042999/7ee2af68-9fe5-4741-972d-73b02024bea0)
+
+
+      Si recordamos el script php en la raiz del sitio web debe  haber un fichero message.txt con mensajes, estos mensajes estan compuesto por los datos enviamos a traves del formulario.
     
+      ![image](https://github.com/Esevka/CTF/assets/139042999/80eee2d8-e231-4964-bd06-5c1a5c670b65)
+
+      Ahora vamos a ver si nos ha creado nuestro fichero esevka.php en la raiz del sitio web y podemos ejecutar comandos.
+
+      ![image](https://github.com/Esevka/CTF/assets/139042999/b91c8b86-de59-4acf-be67-19bf5d9f2380)
 
 
+## Explotacion, obtenemos reverse shell en la maquina victima.
+
+  
+  
+
+        
 
 
 
