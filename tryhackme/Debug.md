@@ -209,11 +209,40 @@ Enunciado :
 
     ![image](https://github.com/Esevka/CTF/assets/139042999/4d4727c4-aa89-4ac0-bb3e-f29de5c06685)
 
-## Postexplot
+## Postexplottacion y obtencion de flags
 
-  
+- Verificamos sistema 
 
-        
+      www-data@osboxes:/var/www/html$ lsb_release -a
+      No LSB modules are available.
+      Distributor ID: Ubuntu
+      Description:    Ubuntu 16.04.6 LTS
+      Release:        16.04
+      Codename:       xenial
+
+- En el directorio /html, que es el directorio en el que obtenemos la reverse shell vemos un fichero .htpasswd (fichero que almacena credenciales de usuarios para una autenticación de acceso básica en un servidor HTTP Apache.)
+
+  El fichero contiene una credencial para el usuario james.
+
+      www-data@osboxes:/var/www/html$ cat .htpasswd 
+      james:$apr1$zPZMix2A$d8fBXH0em33bfI9UTt9Nq1
+
+- Vamos a ver los posibles usuarios del sistema, como podemos ver james es un usuario del sistema.
+
+      www-data@osboxes:/var/www/html$ cat /etc/passwd | grep /bin/bash
+      root:x:0:0:root:/root:/bin/bash
+      james:x:1001:1001::/home/james:/bin/bash
+
+-Identificamos el tipo de hash que htpasswd utiliza para la clave.
+
+  ![image](https://github.com/Esevka/CTF/assets/139042999/4cd2489c-1a4a-4d29-b9b9-65c0b4f442be)
+
+  Intentamos crakear la clave.
+
+  ![image](https://github.com/Esevka/CTF/assets/139042999/d61410a7-ea7f-43b4-9195-975cb4521c97)
+  ![image](https://github.com/Esevka/CTF/assets/139042999/0e35d1d0-843c-4b5c-8796-e4d6b5fff286)
+
+    Credenciales ---> james:jamaica
 
 
 
