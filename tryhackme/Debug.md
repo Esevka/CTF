@@ -289,7 +289,7 @@ Enunciado :
 
     ![image](https://github.com/Esevka/CTF/assets/139042999/5166e170-325b-43ea-b1ae-1051728fed98)
 
-    Para finalizar ejecutamos la bash con la flag -p ()
+    Para finalizar ejecutamos la bash realizando una escalada del usuario james to root, leemos la root flag
 
         james@osboxes:~$ /tmp/esevka -p
     
@@ -304,7 +304,24 @@ Enunciado :
         esevka-4.3# cat root.txt 
         3c8c3d0fe$$$$$$$$$$$8e32f68fabf4b
 
+    INFO: por que se utiliza la opcion -p al ejecutar la bash y nos convertimos en root.
 
+        En sistemas Unix y Linux, cuando un archivo ejecutable tiene el bit SUID activo y es un script de shell
+        (como un script de Bash), la opción -p a menudo se utiliza para indicar que el intérprete de comandos
+        debe preservar los UID efectivos y reales al ejecutar el script, en lugar de ajustarlos al UID del usuario
+        que lo está ejecutando. Esto es especialmente relevante en el contexto de scripts con bit SUID activo
+        porque se desea mantener el nivel de acceso elevado.
+
+        UID Real (Real UID): Es el UID del usuario que está ejecutando el proceso en ese momento. Representa la
+        identidad real del usuario.
+
+        UID Efectivo (Effective UID): Es el UID utilizado para determinar los permisos del usuario al acceder a
+        recursos o realizar acciones. Puede ser diferente del UID real en ciertos casos, cuando se utilizan
+        mecanismos de cambio de identidad, como el bit SUID (SetUID) en archivos ejecutables.
+
+
+---> Maquina  Debug completa <---
+---
 
         
 
