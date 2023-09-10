@@ -60,5 +60,99 @@ Enunciado :
 
     - Utilizamos Gobuster para fuzzear la web por fuerza bruta en busca de directorios ocultos, como vemos hemos encontrado varios directorios interesantes.
  
+          ┌──(root㉿kali)-[/home/…/ctf/try_ctf/biteme/nmap]
+          └─# gobuster dir -u http://10.10.81.190 -w /usr/share/wordlists/dirb/common.txt -o ../fuzz
+          ===============================================================
+          Gobuster v3.6
+          by OJ Reeves (@TheColonial) & Christian Mehlmauer (@firefart)
+          ===============================================================
+          /.hta                 (Status: 403) [Size: 277]
+          /.htpasswd            (Status: 403) [Size: 277]
+          /.htaccess            (Status: 403) [Size: 277]
+          /console              (Status: 301) [Size: 314] [--> http://10.10.81.190/console/]
+          /index.html           (Status: 200) [Size: 10918]
+          /server-status        (Status: 403) [Size: 277]
+          Progress: 4614 / 4615 (99.98%)
+          ===============================================================
+
+    - Cargamos el directorio  ---- /console ---- y encontramos un panel de login.
+
+      ![image](https://github.com/Esevka/CTF/assets/139042999/b2a3edcd-2583-4934-beee-17fa842287cd)
+
+
+    - Revisamos el codigo del panel y encontramos un javascript interesante, el cual utiliza una funcion un poco rara --> eval(function(p,a,c,k,e,r),
+      segun esta info de chatgpt el codigo se encuentra ofuscado
       
+      ![image](https://github.com/Esevka/CTF/assets/139042999/d38a3128-0b18-4e52-9b27-e4b5fbad5dbb)
+      
+      
+      ![image](https://github.com/Esevka/CTF/assets/139042999/9d77b141-4e16-43d8-9579-1a2ceec29500)
+
+      Encontramos esta web que nos hace la funcion legible -- https://matthewfl.com/unPacker.html -- aunque no es necesario ya que el mensaje de la funcion se entiende que es lo mas importante.
+
+          document|getElementById|clicked|value|yes|console|log|fred|I|turned|on|php|file|syntax|highlighting|for|you|to|review|jason
+
+      Segun el mensaje cada vez que pulsemos el boton para loguearnos mostrara por la consola el siguiente mensaje
+      
+      ![image](https://github.com/Esevka/CTF/assets/139042999/a6df0ffd-aee5-4d8b-b5d4-6530a4fc7655)
+
+    - Que es eso de -- php file syntax highlighting -- INFO: https://www.php.net/manual/en/function.highlight-file.php
+      
+      Por lo que segun esta info es posible que este servidor este configurado para remarcar automaticamente ficheros php  los cuales le establezcamos nosotros la extension.phps
+
+          Imprime o devuelve una versión con la sintaxis remarcada del código contenido en el fichero dado por filename usando los colores
+          definidos en el remarcador de sintaxis interno de PHP.
+
+          Muchos servidores están configurados para remaracar automáticamente ficheros con la extensión phps. Por ejemplo, cuando se visione
+          example.phps mostrará la fuente con la sintaxis remarcada del fichero.
+
+
+    - Url que carga el panel de login
+
+      ![image](https://github.com/Esevka/CTF/assets/139042999/b6882936-a9b3-47a8-9a8c-13b38d67d35a)
+
+      Editamos la extension desde la url y bingo consegimos ver el codigo del panel de login.
+      Como vemos el codigo php es muy simple comprueba que el usuario y la pass sean correctas(mediante las funciones is_valid_user,is_valid_pwd) en el caso de que se cumpla crea una cookie utilizando el         usuario y la pass y seguidamente nos redirecciona a mfa.php
+
+      ![image](https://github.com/Esevka/CTF/assets/139042999/b70e79a7-f74c-445b-8f48-248ad6e1e83c)
+
+      
+      Vemos que el codigo php hace un include de -- functions.php -- por lo que vamos a intentar visualizar el codigo de la misma manera, utilizando la extension.phps
+
+      ![image](https://github.com/Esevka/CTF/assets/139042999/f1bd9d06-f45d-4ac1-987b-928d2d6f581d)
+
+        - function is_valid_user
+     
+              function is_valid_user($user){ --> Se le pasa como parametro el usuario introducido
+      
+              $user = bin2hex($user); --> Mediante la funcion bin2hex(Devuelve la representación hexadecimal de la cadena dada)
+  
+              return $user === LOGIN_USER;} --> Compara la variable $user(string hexadecimal) tanto en valor como tipo con la variable LOGIN_USER
+                                                  Por lo que necesitamos saber el valor de LOGIN_USER.
+
+            - functions.php continue un include --> include('config.php'), por lo que del mismo modo vamos a ver su contenido si es posible.
+           
+                  define('LOGIN_USER', '6a61736f6e5f746573745f6163636f756e74'); --> valor de LOGIN_USER pasado por bin2hex, por lo que si conseguimos hacer
+                                                                                    el proceso inverso tendremos usuario valido para el login.
+              Proceso inverso para conseguir el nombre de usuario
+              
+                  ┌──(root㉿kali)-[/home/…/ctf/try_ctf/biteme/nmap]
+                  └─# php -a
+                  Interactive shell
+                  
+                  php > echo(hex2bin('6a61736f6e5f746573745f6163636f756e74'));
+                  jason_test_account
+
+      
+
+
+
+      
+ 
+      
+
+
+
+
+
 
