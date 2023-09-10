@@ -143,7 +143,57 @@ Enunciado :
                   php > echo(hex2bin('6a61736f6e5f746573745f6163636f756e74'));
                   jason_test_account
 
-      
+        - function is_valid_pwd
+
+              function is_valid_pwd($pwd){ --> Se le pasa como parametro la pass introducida
+          
+              $hash = md5($pwd); --> Calcula el hash md5 de la pass
+
+              return substr($hash, -3) === '001';} --> Obtiene los tres ultimos digitos del hash md5 y los comparata tanto en valor como tipo con el string '001'
+                                                        
+          Por lo que necesitamos una pass que al calcularle su hash md5 los 3 ultimos digitos sea un string con el valor '001', para automatizar el proceso vamos a realizar un script en python y utilizar             como diccionario de claves rockyou.txt
+
+          ![image](https://github.com/Esevka/CTF/assets/139042999/f72bfe58-cd29-4d27-83ee-7b9f32813107)
+     
+          Obtenemos pass valida para el login
+          
+              ┌──(root㉿kali)-[/home/…/ctf/try_ctf/biteme/script]
+              └─# python3 md5.py      
+              violet:d1d813a48d99f0e102f7d0a1b9068001
+
+  Por lo que llegados a este punto tendremos unas credenciales validas para el login
+  
+      jason_test_account:violet
+
+  - Nos logueamos y nos redirige a mfa.php
+ 
+    ![image](https://github.com/Esevka/CTF/assets/139042999/10990ac8-b789-4acd-9fe3-e2ba0cf48191)
+
+    Supuestamente un codigo de 4 digitos ha sido enviado a un dispositivo el cual necesitamos para completar el login de dicho usuario.
+    Analizamos el codigo de este form y volvemos a encontrar una funcion javascript ofuscada.
+
+    ![image](https://github.com/Esevka/CTF/assets/139042999/5a3411f1-9079-491e-8329-aaf8812d2bba)
+
+    El mensaje que entrega en la consola del navegador cada vez enviamos un pin es bastante claro, podriamos intentar algo de fuerza bruta.
+    
+    ![image](https://github.com/Esevka/CTF/assets/139042999/29a195df-25ec-4903-9084-29b52f883328)
+
+        NOTA: mfa.php no lo podemos visualizar cambiando a la extension.phps
+
+      - Ataque de fuerza bruta contra mfa.php
+
+        1)Necesitamos un diccionario con todas las convinaciones posibles con 4 digitos.
+
+               ┌──(root㉿kali)-[/home/…/ctf/try_ctf/biteme/script]
+               └─# crunch 4 4 -t %%%% > pint.txt
+                Crunch will now generate the following number of lines: 10000
+
+
+  
+    
+
+          
+                  
 
 
 
