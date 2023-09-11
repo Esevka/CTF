@@ -202,6 +202,15 @@ Enunciado :
             └─# python3 mfa_brute.py
             [+]Pin valido ----> 1414
 
+        4)Una vez introducimos el pin valido, obtenemos acceso al panel, el cual nos permite listar directorios y leer contenido de ficheros.
+
+
+## Obtenemos acceso a la maquina.
+
+
+
+
+        
 
 
 
