@@ -182,11 +182,28 @@ Enunciado :
 
       - Ataque de fuerza bruta contra mfa.php
 
-        1)Necesitamos un diccionario con todas las convinaciones posibles con 4 digitos.
+        1)Necesitamos un diccionario con todas las conbinaciones posibles con 4 digitos.
 
                ┌──(root㉿kali)-[/home/…/ctf/try_ctf/biteme/script]
-               └─# crunch 4 4 -t %%%% > pint.txt
+               └─# crunch 4 4 -t %%%% > pin.txt
                 Crunch will now generate the following number of lines: 10000
+
+        2)Interceptamos la conexion para ver como envia los datos y obtener la cookie de la solicitud, vemos que si el pin no es correcto el servidor nos lo hace saber.
+
+        ![image](https://github.com/Esevka/CTF/assets/139042999/f38a3adc-8165-440f-a353-05a510f23fb7)
+        
+        ![image](https://github.com/Esevka/CTF/assets/139042999/088809af-350b-4ad5-99a6-2d9e39478c92)
+
+        3)Tenemos todo lo necesario para realizar nuestro script en python para automatizar el ataque y conseguir un pin valido.
+        
+        ![image](https://github.com/Esevka/CTF/assets/139042999/10d1e91a-11f6-4402-b16b-3e654fe5d5d7)
+
+            ┌──(root㉿kali)-[/home/…/ctf/try_ctf/biteme/script]
+            └─# python3 mfa_brute.py
+            [+]Pin valido ----> 1414
+
+
+
 
 
   
