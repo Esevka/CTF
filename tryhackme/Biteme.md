@@ -98,7 +98,7 @@ Enunciado :
 
     - Que es eso de -- php file syntax highlighting -- INFO: https://www.php.net/manual/en/function.highlight-file.php
       
-      Es posible que este servidor este configurado para remarcar automaticamente ficheros php  los cuales le establezcamos nosotros la extension.phps
+      Es posible que este servidor este configurado para remarcar automaticamente ficheros php, para ello utilizamos la extension .phps
 
           Imprime o devuelve una versión con la sintaxis remarcada del código contenido en el fichero dado por filename usando los colores
           definidos en el remarcador de sintaxis interno de PHP.
@@ -111,13 +111,13 @@ Enunciado :
 
       ![image](https://github.com/Esevka/CTF/assets/139042999/b6882936-a9b3-47a8-9a8c-13b38d67d35a)
 
-      Editamos la extension desde la url y bingo consegimos ver el codigo del panel de login.
-      Como vemos el codigo php es muy simple comprueba que el usuario y la pass sean correctas(mediante las funciones is_valid_user,is_valid_pwd) en el caso de que se cumpla crea una cookie utilizando el         usuario y la pass y seguidamente nos redirecciona a mfa.php
+      Editamos la extension desde la url y bingo conseguimos ver el codigo del panel de login.
+      Como vemos el codigo php es muy simple comprueba que el usuario y la pass sean correctos(mediante las funciones is_valid_user,is_valid_pwd) en el caso de que se cumpla crea una cookie utilizando el         usuario y la pass y seguidamente nos redirecciona a mfa.php
 
       ![image](https://github.com/Esevka/CTF/assets/139042999/b70e79a7-f74c-445b-8f48-248ad6e1e83c)
 
       
-      Vemos que el codigo php hace un include de -- functions.php -- por lo que vamos a intentar visualizar el codigo de la misma manera, utilizando la extension.phps
+      Vemos que el codigo php hace un include de -- functions.php -- por lo que vamos a intentar visualizar el codigo de la misma manera, utilizando la extension .phps
 
       ![image](https://github.com/Esevka/CTF/assets/139042999/f1bd9d06-f45d-4ac1-987b-928d2d6f581d)
 
@@ -130,7 +130,7 @@ Enunciado :
               return $user === LOGIN_USER;} --> Compara la variable $user(string hexadecimal) tanto en valor como tipo con la variable LOGIN_USER
                                                   Por lo que necesitamos saber el valor de LOGIN_USER.
 
-            - functions.php continue un include --> include('config.php'), por lo que del mismo modo vamos a ver su contenido si es posible.
+            - functions.php contiene un include --> include('config.php'), por lo que del mismo modo vamos a ver su contenido si es posible.
            
                   define('LOGIN_USER', '6a61736f6e5f746573745f6163636f756e74'); --> valor de LOGIN_USER pasado por bin2hex, por lo que si conseguimos hacer
                                                                                     el proceso inverso tendremos usuario valido para el login.
@@ -151,7 +151,7 @@ Enunciado :
 
               return substr($hash, -3) === '001';} --> Obtiene los tres ultimos digitos del hash md5 y los comparata tanto en valor como tipo con el string '001'
                                                         
-          Por lo que necesitamos una pass que al calcularle su hash md5 los 3 ultimos digitos sea un string con el valor '001', para automatizar el proceso vamos a realizar un script en python y utilizar como diccionario de claves rockyou.txt
+          Por lo que necesitamos una pass que al calcularle su hash md5 los 3 ultimos digitos sea un string con el valor '001', para automatizar el proceso vamos a realizar un script en python y utilizar como diccionario rockyou.txt
 
           ![image](https://github.com/Esevka/CTF/assets/139042999/f72bfe58-cd29-4d27-83ee-7b9f32813107)
      
@@ -161,7 +161,7 @@ Enunciado :
               └─# python3 md5.py      
               violet:d1d813a48d99f0e102f7d0a1b9068001
 
-  Por lo que llegados a este punto tendremos unas credenciales validas para el login
+  Por lo que llegados a este punto tendremos unas credenciales validas.
   
       jason_test_account:violet
 
