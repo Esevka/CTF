@@ -47,7 +47,7 @@ Enunciado :
       |_http-server-header: Apache/2.4.29 (Ubuntu)
       Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
 
-- Segun la version del servicio SSH que esta corriendo en el puerto 22, obtenemos su launchpad y podemos decir que estamos ante una maquina.
+- Segun la version del servicio SSH que esta corriendo en el puerto 22.
 
   ![image](https://github.com/Esevka/CTF/assets/139042999/1029ca00-f307-487b-a84a-67da00f632f2)
 
@@ -80,7 +80,7 @@ Enunciado :
       ![image](https://github.com/Esevka/CTF/assets/139042999/b2a3edcd-2583-4934-beee-17fa842287cd)
 
 
-    - Revisamos el codigo del panel y encontramos un javascript interesante, el cual utiliza una funcion un poco rara --> eval(function(p,a,c,k,e,r),
+    - Revisamos el codigo del panel y encontramos un javascript interesante, el cual utiliza una funcion un poco rara, eval(function(p,a,c,k,e,r) ,
       segun esta info de chatgpt el codigo se encuentra ofuscado
       
       ![image](https://github.com/Esevka/CTF/assets/139042999/d38a3128-0b18-4e52-9b27-e4b5fbad5dbb)
