@@ -202,10 +202,25 @@ Enunciado :
             └─# python3 mfa_brute.py
             [+]Pin valido ----> 1414
 
-        4)Una vez introducimos el pin valido, obtenemos acceso al panel, el cual nos permite listar directorios y leer contenido de ficheros.
+        4)Una vez introducimos el pin valido(el pin es aleatorio va cambiando), obtenemos acceso al panel de usuario.
 
 
 ## Obtenemos acceso a la maquina.
+
+-El panel de usuario nos muestra dos form.
+
+  - File browser (utiliza la funcion scandir() de php para mostrarnos el contenido del directorio que le indiquemos)
+
+  ![image](https://github.com/Esevka/CTF/assets/139042999/bf3baef3-9636-4d21-8c7c-f034db0c3dd5)
+
+  - File viewer (utiliza la funcion file_get_contents() de php para mostrarnos el contenido del fichero que le indiquemos)
+
+  ![image](https://github.com/Esevka/CTF/assets/139042999/c8548731-b40a-43e3-a370-facd0b2be54c)
+
+
+
+
+
 
 
 
