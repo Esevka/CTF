@@ -211,11 +211,13 @@ Enunciado :
 
   - File browser (utiliza la funcion scandir() de php para mostrarnos el contenido del directorio que le indiquemos)
 
-  ![image](https://github.com/Esevka/CTF/assets/139042999/bf3baef3-9636-4d21-8c7c-f034db0c3dd5)
+    ![image](https://github.com/Esevka/CTF/assets/139042999/bf3baef3-9636-4d21-8c7c-f034db0c3dd5)
 
   - File viewer (utiliza la funcion file_get_contents() de php para mostrarnos el contenido del fichero que le indiquemos)
 
-  ![image](https://github.com/Esevka/CTF/assets/139042999/c8548731-b40a-43e3-a370-facd0b2be54c)
+    ![image](https://github.com/Esevka/CTF/assets/139042999/c8548731-b40a-43e3-a370-facd0b2be54c)
+
+-
 
 
 
