@@ -217,7 +217,42 @@ Enunciado :
 
     ![image](https://github.com/Esevka/CTF/assets/139042999/c8548731-b40a-43e3-a370-facd0b2be54c)
 
--
+
+-Analizando directorios, encontramos una id_rsa del usuario jason
+
+![image](https://github.com/Esevka/CTF/assets/139042999/f350acf2-6b69-4262-950d-e337dc9d01eb)
+
+  - Mostramos la id_rsa y nos la copiamos a nuestro equipo para intentar conectarnos por ssh como usuario jason
+
+    ![image](https://github.com/Esevka/CTF/assets/139042999/94b5f2ce-34af-4f40-aa0b-23e5b53550b7)
+
+        ┌──(root㉿kali)-[/home/…/ctf/try_ctf/biteme/content]
+        └─# echo '-----BEGIN RSA PRIVATE KEY-----
+        Proc-Type: 4,ENCRYPTED
+        DEK-Info: AES-128-CBC,983BDF3BE962B7E88A5193CD1551E9B9
+        
+        nspZgFs2AHTCqQUdGbA0reuNel2jMB/3yaTZvAnqYt82m6Kb2ViAqlFtrvxJUTkx
+        [...]
+        xibeJfxvGyw0mp2eGebQDM5XiLhB0jI4wtVlvkUpd+smws03mbmYfT4ghwCyM1ru
+        VpKcbfvlpUuMb4AH1KN0ifFJ0q3Te560LYc7QC44Y1g41ZmHigU7YOsweBieWkY2
+        -----END RSA PRIVATE KEY-----' > id_rsa 
+                                                                                                                                                            
+        ┌──(root㉿kali)-[/home/…/ctf/try_ctf/biteme/content]
+        └─# chmod 400 id_rsa 
+
+      Nos intentamos conectar con la id_rsa pero nos pide la clave de esta
+
+        ┌──(root㉿kali)-[/home/…/ctf/try_ctf/biteme/content]
+        └─# ssh jason@10.10.191.13 -i id_rsa
+        The authenticity of host '10.10.191.13 (10.10.191.13)' can't be established.
+        ED25519 key fingerprint is SHA256:3NvL4FLmtivo46j76+yqa43LcYEB79JAUuXUAYQe/zI.
+        Enter passphrase for key 'id_rsa':
+
+      Vamos a intentar crakear la id_rsa para conseguir la clave
+
+
+  
+
 
 
 
