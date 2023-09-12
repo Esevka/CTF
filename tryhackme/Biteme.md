@@ -98,7 +98,7 @@ Enunciado :
 
     - Que es eso de -- php file syntax highlighting -- INFO: https://www.php.net/manual/en/function.highlight-file.php
       
-      Por lo que segun esta info es posible que este servidor este configurado para remarcar automaticamente ficheros php  los cuales le establezcamos nosotros la extension.phps
+      Es posible que este servidor este configurado para remarcar automaticamente ficheros php  los cuales le establezcamos nosotros la extension.phps
 
           Imprime o devuelve una versión con la sintaxis remarcada del código contenido en el fichero dado por filename usando los colores
           definidos en el remarcador de sintaxis interno de PHP.
