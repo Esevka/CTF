@@ -169,7 +169,7 @@ Enunciado :
  
     ![image](https://github.com/Esevka/CTF/assets/139042999/10990ac8-b789-4acd-9fe3-e2ba0cf48191)
 
-    Supuestamente un codigo de 4 digitos ha sido enviado a un dispositivo el cual necesitamos para completar el login de dicho usuario.
+    Supuestamente un codigo de 4 digitos ha sido enviado a un dispositivo, dicho codigo lo necesitamos para completar el login.
     Analizamos el codigo de este form y volvemos a encontrar una funcion javascript ofuscada.
 
     ![image](https://github.com/Esevka/CTF/assets/139042999/5a3411f1-9079-491e-8329-aaf8812d2bba)
@@ -218,7 +218,7 @@ Enunciado :
     ![image](https://github.com/Esevka/CTF/assets/139042999/c8548731-b40a-43e3-a370-facd0b2be54c)
 
 
--Analizando directorios, encontramos una id_rsa del usuario jason
+-Analizando los directorios, encontramos una id_rsa del usuario jason
 
 ![image](https://github.com/Esevka/CTF/assets/139042999/f350acf2-6b69-4262-950d-e337dc9d01eb)
 
