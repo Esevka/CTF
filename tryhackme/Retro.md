@@ -151,7 +151,9 @@ Enunciado :
         Por ejemplo, supongamos que quisieras publicar en tu sitio desde tu dispositivo móvil ya que tu computadora
         no está cerca. Podrías usar la función de acceso remoto habilitada por xmlrpc.php para hacerlo.
    
-2) 
+2) Script que nos automatiza el ataque de Brute Force contra WP.
+
+   
 
        
 
