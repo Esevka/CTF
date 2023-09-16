@@ -73,7 +73,7 @@ Enunciado :
       |_-----END CERTIFICATE-----
       Service Info: OS: Windows; CPE: cpe:/o:microsoft:windows
 
-  - Esto son los dos puertos disponibles que tenemos para comprometer la maquina(Windows) un servicio http y un terminal server.
+  - Puertos disponibles que tenemos para comprometer la maquina(Windows).
     
       -80/tcp   open  http          syn-ack ttl 127 Microsoft IIS httpd 10.0
     
@@ -82,6 +82,79 @@ Enunciado :
 
 ## Analisis de vulnerabilidades en los servicios y explotacion de los mismos.
 
--Puerto 80,
+#### Puerto 80
+
+-Cargamos la web y nos muestra muestra la tipica pantalla de Internet Information Service (IIS) la cual no tiene nada interesante.
+
+![image](https://github.com/Esevka/CTF/assets/139042999/d8dd6ddb-29b5-4603-be06-ed259eebdb0d)
+
+-Una de las preguntas de la maquina es --> What is the hidden directory which the website lives on?, por lo que vamos a fuzzear la web en busca de directorios.
+
+    ┌──(root㉿kali)-[/home/…/ctf/try_ctf/retro/nmap]
+    └─# gobuster dir -u http://10.10.173.211/ -w /usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt -o ../fuzz
+    ===============================================================
+    Gobuster v3.6
+    by OJ Reeves (@TheColonial) & Christian Mehlmauer (@firefart)
+    ===============================================================
+    
+    /retro                (Status: 301) [Size: 150] [--> http://10.10.173.211/retro/] ------->
+    /Retro                (Status: 301) [Size: 150] [--> http://10.10.173.211/Retro/] -------> ambas URL muestran lo mismo.
+
+- Cargamos la url y efectivamente hay se encuentra la web oculta
+
+   ![image](https://github.com/Esevka/CTF/assets/139042999/2e6e797e-19a4-4b85-85e8-49a3bfd804bb)
+
+ - Analizamos la web en busca de informacion y encontramos lo siguiente.
+
+   1) Revisando el codigo de la web
+
+      - WordPress
+      - Tema ---> /retro/wp-content/themes/90s-retro/
+
+   2) Revisando la web
+
+      - Usuario que postea ---> wade
+        
+        Comprobamos si es un usuario valido de WP
+     
+        ![image](https://github.com/Esevka/CTF/assets/139042999/43c12fba-25fa-4677-bc9c-2ed7ba9e5b95)
+
+      - Comentario sospechoso, Probamos como passwd ----> parzival
+
+        ![image](https://github.com/Esevka/CTF/assets/139042999/a31cf8cd-097e-4dc6-a9da-b748c88c2421)
+        ![image](https://github.com/Esevka/CTF/assets/139042999/cc5312e5-28ae-4eb8-a078-8b3c6a6ffb6b)
+
+
+      - Utilizando las credenciales wade:parzival
+
+        Nos podriamos conectar a la maquina para realizar su explotacion y postexplotacion, las credenciales son validas tanto para Wordpress como para conectaros por Terminal Server.
+        
+---
+#### !Segun nos indica en el enunciado hay dos metodos para realizar esta maquina por lo que vamos a ver cuales son!
+---
+
+## Metodo1 - Wordpress.
+
+-Si no econtramos la passwd del comentario del usuario wade, podemos realizar Brute Force contra el login de WP.
+
+1) Comprobamos que WP tenga xmlrpc.php activo.
+
+    ![image](https://github.com/Esevka/CTF/assets/139042999/d0860a63-1515-49a9-88af-e092e3bec1f1)
+
+    INFO: https://www.hostinger.es/tutoriales/que-es-xmlrpc-php-wordpress-por-que-desactivarlo/#%C2%BFQue_es_Xmlrpcphp
+    
+        XML-RPC es una característica de WordPress que permite que los datos se transmitan, con HTTP actuando
+        como el mecanismo de transporte y XML como el mecanismo de codificación. Dado que WordPress no es un
+        sistema encerrado en sí mismo y ocasionalmente necesita comunicarse con otros sistemas, la intención era
+        realizar ese trabajo.
+    
+        Por ejemplo, supongamos que quisieras publicar en tu sitio desde tu dispositivo móvil ya que tu computadora
+        no está cerca. Podrías usar la función de acceso remoto habilitada por xmlrpc.php para hacerlo.
+   
+2) 
+
+       
+
+
   
     
