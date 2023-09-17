@@ -125,9 +125,9 @@ Enunciado :
         ![image](https://github.com/Esevka/CTF/assets/139042999/cc5312e5-28ae-4eb8-a078-8b3c6a6ffb6b)
 
 
-      - Utilizando las credenciales wade:parzival
+      - Credenciales validas wade:parzival
 
-        Nos podriamos conectar a la maquina para realizar su explotacion y postexplotacion, las credenciales son validas tanto para Wordpress como para conectaros por Terminal Server.
+        Nos podriamos conectar a la maquina para realizar su explotacion y postexplotacion con las credenciales obtenidas, son validas tanto para Wordpress como para conectaros porel servicio Terminal Server.
         
 ---
 #### !Segun nos indica en el enunciado hay dos metodos para realizar esta maquina por lo que vamos a ver cuales son!
