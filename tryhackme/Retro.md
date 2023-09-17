@@ -127,7 +127,7 @@ Enunciado :
 
       - Credenciales validas wade:parzival
 
-        Nos podriamos conectar a la maquina para realizar su explotacion y postexplotacion con las credenciales obtenidas, son validas tanto para Wordpress como para conectaros porel servicio Terminal Server.
+        Nos podriamos conectar a la maquina para realizar su explotacion y postexplotacion con las credenciales obtenidas, son validas tanto para Wordpress como para conectaros por el servicio Terminal Server.
         
 ---
 #### !Segun nos indica en el enunciado hay dos metodos para realizar esta maquina por lo que vamos a ver cuales son!
@@ -135,7 +135,7 @@ Enunciado :
 
 ## Metodo1 - Wordpress.
 
--Si no econtramos la passwd del comentario del usuario wade, podemos realizar Brute Force contra el login de WP.
+-Si no econtramos la passwd revisando el contenido de la web, podemos realizar Brute Force contra el login de WP.
 
 1) Comprobamos que WP tenga xmlrpc.php activo.
 
@@ -151,7 +151,16 @@ Enunciado :
         Por ejemplo, supongamos que quisieras publicar en tu sitio desde tu dispositivo móvil ya que tu computadora
         no está cerca. Podrías usar la función de acceso remoto habilitada por xmlrpc.php para hacerlo.
    
-2) Script que nos automatiza el ataque de Brute Force contra WP.
+2) Creamos un diccionario de claves basado en las palabras de la web, en el caso de que no funciones podriamos probar con rockyout.
+
+        ┌──(root㉿kali)-[/home/…/ctf/try_ctf/retro/script]
+        └─# cewl http://10.10.188.22/retro -d 2 -w dic_baseweb.txt 
+        CeWL 6.1 (Max Length) Robin Wood (robin@digi.ninja) (https://digi.ninja/)
+
+3) Creamos un script en python que nos automatize el ataque de Brute Froce contra el login de WP
+
+   
+
 
    
 
