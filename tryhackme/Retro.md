@@ -312,7 +312,7 @@ Enunciado :
 
 -Obtenemos flag y elevamos privilegios.  
 
-- En estos momentos tenemos acceso a la maquina como y no tenemos permisos par obtener ninguna flag.
+- En estos momentos tenemos acceso a la maquina como usuario iis apppool\retro, no tenemos permisos para obtener ninguna flag.
 
       C:\Users>whoami
       whoami
@@ -322,7 +322,7 @@ Enunciado :
       en sistemas Windows para ejecutar aplicaciones web dentro de un "pool" de aplicaciones específico. 
       Los permisos de esta cuenta dependen de cómo esté configurada la seguridad en su servidor web y en su aplicación web.
 
-- Verificamos los privilegios que tenemos como dicho usuario y vemos la informacion del sistema.
+- Verificamos los privilegios que tenemos como dicho usuario y mostramos la info del sistema.
 
       C:\Users>whoami /priv
       whoami /priv
@@ -354,7 +354,7 @@ Enunciado :
       en sistemas Windows que permite a un proceso ejecutarse en el contexto de seguridad de un usuario o cliente después de autenticarse.
       En otras palabras, un proceso con este privilegio puede asumir la identidad de un usuario autenticado y realizar acciones en su nombre.
 
-  1) Nos descargamos Juicypotato en nuestra maquina y montamos un servcio para compartilo com hemos hecho anteriormente.
+  1) Nos descargamos Juicypotato en nuestra maquina y montamos un servicio http para compartilo como hemos hecho anteriormente.
  
      Descargar --> https://github.com/ohpe/juicy-potato/releases/tag/v0.1
 
@@ -421,9 +421,12 @@ Enunciado :
           C:\Users\Administrator\Desktop>type root.txt.txt
           type root.txt.txt
           7958b56956--------f22d1c4063
+---
+#### Finalizamos el Metodo 1 Comprometiendo la maquina por completo
+---
 
        
-
+## Metodo2 - Microsoft Terminal Services.
      
 
        
