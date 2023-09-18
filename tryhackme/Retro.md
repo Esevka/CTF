@@ -309,7 +309,38 @@ Enunciado :
                 (c) 2016 Microsoft Corporation. All rights reserved.
                 
                 C:\inetpub\wwwroot\retro\wp-content\themes\90s-retro>
-           
+
+-Obtenemos flag y elevamos privilegios.  
+
+- En estos momentos tenemos acceso a la maquina como y no tenemos permisos par obtener ninguna flag.
+
+      C:\Users>whoami
+      whoami
+      iis apppool\retro
+
+  INFO: El IIS AppPool\ es una cuenta especial utilizada por el servicio de IIS (Internet Information Services) 
+  en sistemas Windows para ejecutar aplicaciones web dentro de un "pool" de aplicaciones específico. 
+  Los permisos de esta cuenta dependen de cómo esté configurada la seguridad en su servidor web y en su aplicación web.
+
+- Verificamos los privilegios que tenemos como dicho usuario
+
+      C:\Users>whoami /priv
+      whoami /priv
+      
+      PRIVILEGES INFORMATION
+      ----------------------
+      
+      Privilege Name                Description                               State   
+      ============================= ========================================= ========
+      SeAssignPrimaryTokenPrivilege Replace a process level token             Disabled
+      SeIncreaseQuotaPrivilege      Adjust memory quotas for a process        Disabled
+      SeAuditPrivilege              Generate security audits                  Disabled
+      SeChangeNotifyPrivilege       Bypass traverse checking                  Enabled 
+      SeImpersonatePrivilege        Impersonate a client after authentication Enabled ------> Bingo podemos explotar esta vuln
+      SeCreateGlobalPrivilege       Create global objects                     Enabled 
+      SeIncreaseWorkingSetPrivilege Increase a process working set            Disabled
+
+
      
      
      
