@@ -427,6 +427,41 @@ Enunciado :
 
        
 ## Metodo2 - Microsoft Terminal Services.
+
+-La maquina esta corriendo un servicio Microsoft Terminal Services en el puerto 3389.
+
+-Reutilizamos las credenciales obtenidas tras el analisis de la web o mediante el Metodo1, para intentar conectarnos al servicio RDP y como podemos ver son validas.
+
+![image](https://github.com/Esevka/CTF/assets/139042999/f2ffe853-3724-4ccd-b21c-68b092d229b8)
+
+-Obtenemos la flag de usuario que se encuentra en el escritorio.
+
+![image](https://github.com/Esevka/CTF/assets/139042999/899546d0-d3b1-495e-8458-ce25cb6c39d5)
+
+-Elevamos priviligios --> NT AUTHORITY\SYSTEM.(Admin del SO)
+
+  - Encontramos en la papelera de reciclaje un archivo executable llamado ---> hhupd.exe
+
+        hhupd.exe is known as HTML Help 1.32 Update and it is developed by Microsoft Corporation
+
+    Buscando info sobre el ejecutable y encotramos el siguiente articulo donde vemos que existe una vulnerabilidad en Windows Certificate Dialog que nos permite elevar privilegios.
+
+      CVE-2019–1388: Windows Privilege Escalation Through UAC
+      https://sotharo-meas.medium.com/cve-2019-1388-windows-privilege-escalation-through-uac-22693fa23f5f
+
+    Nuestro sistema es vulnerable
+    
+    ![image](https://github.com/Esevka/CTF/assets/139042999/a2483775-151d-4cf9-b2eb-4bb20cb78ff8)
+
+    pero no funciona el proceso ya que nos salta la siguiente ventana y no conseguimos abrir la url en el navegador para acontinuar el proceso.
+
+    ![image](https://github.com/Esevka/CTF/assets/139042999/1fef46ce-bc4a-46ac-90c2-e728fa589940)
+
+    
+
+
+
+  
      
 
        
