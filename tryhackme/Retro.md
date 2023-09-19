@@ -457,7 +457,7 @@ Enunciado :
 
     ![image](https://github.com/Esevka/CTF/assets/139042999/1fef46ce-bc4a-46ac-90c2-e728fa589940)
 
-    
+  - Tras buscar un buen rato por internet maneras de elevar privilegios en esta version de windows server  
 
 
 
