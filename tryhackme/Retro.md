@@ -438,7 +438,7 @@ Enunciado :
 
 ![image](https://github.com/Esevka/CTF/assets/139042999/899546d0-d3b1-495e-8458-ce25cb6c39d5)
 
--Elevamos priviligios --> NT AUTHORITY\SYSTEM.(Admin del SO)
+-Elevamos priviligios
 
   - Encontramos en la papelera de reciclaje un archivo executable llamado ---> hhupd.exe
 
@@ -457,7 +457,67 @@ Enunciado :
 
     ![image](https://github.com/Esevka/CTF/assets/139042999/1fef46ce-bc4a-46ac-90c2-e728fa589940)
 
-  - Tras buscar un buen rato por internet maneras de elevar privilegios en esta version de windows server  
+
+  - Buscando otro metodo para poder elevar privilegios.
+
+      - Sabemos que estamos delante de:
+
+            OS Name: Microsoft Windows Server 2016 Standard
+            OS Version: 10.0.14393 N/A Build 14393
+
+        ![image](https://github.com/Esevka/CTF/assets/139042999/12f101fb-9289-4341-8fe1-4123aecb6ec7)
+
+        Como vemos es una version de finales del 2016, por lo que vamos a buscar exploit por esa fecha que nos permitan la elevacion de privilegios.
+
+      - Buscamos en --> https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/Methodology%20and%20Resources/Windows%20-%20Privilege%20Escalation.md
+   
+        Tras buscar y probar un buen rato encontramos el siguiente exploit que nos permite elevar privilegios, 
+
+        ![image](https://github.com/Esevka/CTF/assets/139042999/b13d04b8-8597-45f2-ad76-9fe327a96e83)
+
+            INFO:
+            Windows COM Marshaler en el sistema operativo Windows.
+        
+            COM (Component Object Model): COM es una tecnología de Microsoft que permite la comunicación
+            entre objetos de software en un sistema Windows. Los objetos COM pueden ser escritos en diferentes lenguajes de
+            programación y pueden ser utilizados por aplicaciones en diferentes lenguajes.
+    
+            Marshaler en COM: En COM, el término "marshaler" se utiliza para describir los mecanismos internos que permiten
+            la comunicación entre objetos COM en diferentes procesos o dominios de proceso. Los marshalers son responsables
+            de la serialización y deserialización de datos y objetos para que puedan ser utilizados a través de las fronteras de proceso.
+
+        Por lo que para elevar privilegios nos descargamos el exploit x64, lo subimos a la maquina victima y lo ejecutamos.
+
+          1) Montamos un servidor hhtp para compartir el fichero
+
+                  ┌──(root㉿kali)-[/home/…/ctf/try_ctf/retro/content]
+                  └─# python3 -m http.server 80
+                  Serving HTTP on 0.0.0.0 port 80 (http://0.0.0.0:80/) ...
+             
+          3) Desde la maquina victima nos lo descargamos
+
+             ![image](https://github.com/Esevka/CTF/assets/139042999/918377fd-9db2-4364-84ff-0902707b9024)
+
+          4) Ejecutamos el exploit y conseguimos ser NT AUTHORITY\SYSTEM.(Admin del SO)
+       
+             ![image](https://github.com/Esevka/CTF/assets/139042999/ccb38aa4-fc2c-4fd5-92c3-fb33d3f8dcba)
+
+             Leemos Flag del root que se encuentra en el \Administrator\Desktop.
+             
+---
+#### Finalizamos el Metodo 2 Comprometiendo la maquina por completo
+---
+       
+             
+
+               
+
+
+        
+
+
+          
+
 
 
 
