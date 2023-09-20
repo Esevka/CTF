@@ -507,6 +507,12 @@ Enunciado :
 ---
 #### Finalizamos el Metodo 2 Comprometiendo la maquina por completo
 ---
+
+
+---
+---> Maquina Retro completa. <---
+---
+---
        
              
 
