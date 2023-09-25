@@ -91,7 +91,30 @@ Enunciado :
     |_clock-skew: mean: -1s, deviation: 0s, median: -1s
     
 
+-Despues de unas cuantas horas buscando por los servicios activos de la maquina no encontramos ningun punto de entrada.
+
+    RECOPILACION:   
+        WEB
+        80,443 ----> No encontramos nada de valor 
+        
+        SMB
+        139,445 ---> No tenemos credenciales 
+        
+        MySQL
+        3306 ----> No tenemos credenciales (is not allowed to connect to this MariaDB server)
+        
+        TerminalService
+        3389 ----->No tenemos credenciales  
+        
+        WinRM
+        5985,47001 --->No tenemos credenciales  
+        
+  
+    
+
 ## Analisis de vulnerabilidades en los servicios y explotacion de los mismos.
+
+  
 
 
 
