@@ -108,6 +108,10 @@ Enunciado :
         
         WinRM
         5985,47001 --->No tenemos credenciales  
+
+-El tip que da el enunciado, me hizo recordar que por defecto siempre escanemos los puertos en TCP(EL protocolo TCP no es el unico), por lo que me dio por mirar en UDP.
+
+  
         
   
     
