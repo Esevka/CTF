@@ -109,14 +109,34 @@ Enunciado :
         WinRM
         5985,47001 --->No tenemos credenciales  
 
--El tip que da el enunciado, me hizo recordar que por defecto siempre escanemos los puertos en TCP(EL protocolo TCP no es el unico), por lo que me dio por mirar en UDP.
+-El tip del enunciado, me hizo recordar que por defecto siempre escanemos los puertos en TCP(EL protocolo TCP no es el unico), por lo que me dio por mirar en UDP.
 
-  
-        
-  
+    ┌──(root㉿kali)-[/home/…/ctf/try_ctf/year_ofthe_owl/nmap]
+    └─# nmap --top-ports 10 --open --min-rate 4000 -sU -vvv 10.10.121.136 -oN info_ports_UDP 
+    Starting Nmap 7.94 ( https://nmap.org ) at 2023-09-26 07:00 CEST
     
+    PORT     STATE         SERVICE      REASON
+    53/udp   open|filtered domain       no-response
+    67/udp   open|filtered dhcps        no-response
+    123/udp  open|filtered ntp          no-response
+    135/udp  open|filtered msrpc        no-response
+    137/udp  open|filtered netbios-ns   no-response
+    138/udp  open|filtered netbios-dgm  no-response
+    161/udp  open|filtered snmp         no-response
+    445/udp  open|filtered microsoft-ds no-response
+    631/udp  open|filtered ipp          no-response
+    1434/udp open|filtered ms-sql-m     no-response
 
-## Analisis de vulnerabilidades en los servicios y explotacion de los mismos.
+  Tras buscar y hacer varios tipos de escaneos, encontramos un puerto en UDP que pareceia interesante.
+
+      161/udp  open|filtered snmp         no-response
+   
+
+## Analisis y explotacion del servicio SNMP del Puerto 161 UDP.
+
+  Primero necesitamos saber que es y como funciona SNMP para poder entender bien el proceso.
+
+    
 
   
 
