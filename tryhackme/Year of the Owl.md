@@ -6,8 +6,8 @@ Enlace Maquina: https://tryhackme.com/room/yearoftheowl
 
 Enunciado : 
 
-  - Consejo: When the labyrinth is before you and you lose your way, sometimes thinking outside the walls is the way forward.
-  - Conseguir Flags.
+  - Consejo: When the labyrinth is before you and you lose your way, sometimes thinking outside the walls is the way forward
+  - Conseguir Flags
 
 ## Escaneo de puertos
 
