@@ -127,7 +127,7 @@ Enunciado :
     631/udp  open|filtered ipp          no-response
     1434/udp open|filtered ms-sql-m     no-response
 
-  Tras buscar y hacer varios tipos de escaneos, encontramos un puerto en UDP que pareceia interesante.
+  Tras buscar y hacer varios tipos de escaneos, encontramos un puerto en UDP que parecia interesante.
 
       161/udp  open|filtered snmp         no-response
    
@@ -356,6 +356,13 @@ Enunciado :
 
        *Evil-WinRM* PS C:\Users\Administrator\desktop> type admin.txt
         THM{YWFjZTM1MjFiZmRiODgyY2UwYzZlZWM2}
+
+
+
+---
+---> Maquina Year of the Owl completa. <---
+---
+---
 
 
      
