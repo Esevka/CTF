@@ -591,15 +591,99 @@ Enunciado :
 
 - Puerto 80
 
-  El puerto 80 nos muestra una web la cual contiene un boton con el titulo mas llamativo del mundo 'Reset password', este nos intenta redirecionar a un subdominio.
+  -Nos muestra una web la cual contiene un boton con el titulo mas llamativo del mundo 'Reset password', este nos intenta redirecionar a un subdominio.
 
   ![image](https://github.com/Esevka/CTF/assets/139042999/af496387-6903-4c28-af37-400d21bf2e11)
 
-  Editamos  fichero hosts, anadidmos el subdominio y el dominio.
+  Editamos fichero hosts, anadimos el subdominio y dominio.
 
       ┌──(root㉿kali)-[/home/…/Desktop/ctf/try_ctf/ra1.1]
       └─# cat /etc/hosts
       10.10.36.177    windcorp.thm fire.windcorp.thm
+
+  Entramos de nuevo en la web y como vemos ya nos redirecciona correctamente.
+
+  ![image](https://github.com/Esevka/CTF/assets/139042999/5a3b57e4-2260-4fea-9b43-11417640b75a)
+
+
+  -Segun esto si tenemos un usuario y la respuesta a una de las preguntas podemos hacer un reset de la pass del usuario
+
+  Con un simple vistazo en la web encontramos muchos posibles nombres de usuarios.
+
+  ![image](https://github.com/Esevka/CTF/assets/139042999/54da1e33-0d49-4ea9-b794-7650f2fc59f9)
+  ![image](https://github.com/Esevka/CTF/assets/139042999/75375432-26ff-4be8-b201-28093f8fb86d)
+
+  -Tras analizar el codigo de la web y buscar y buscar vemos lo siguiente.
+
+    ![image](https://github.com/Esevka/CTF/assets/139042999/dd84811b-4c7e-49e8-a9c2-08ff20ba5843)
+
+      <img class="img-fluid rounded-circle mb-3" src="img/lilyleAndSparky.jpg" alt="">
+
+    Una de las preguntas para hacer el reset de la pass es algo como ---> Como se llama tu mascota preferia?
+
+    ![image](https://github.com/Esevka/CTF/assets/139042999/290ce1af-b2c7-4ade-afca-bfa351f97f11)
+
+    Acabamos de conseguir hacer un reset de la pass del usuario lilyle y obtener unas credenciales.
+
+    ![image](https://github.com/Esevka/CTF/assets/139042999/573ebce3-715f-4baf-b036-a2856814589b)
+
+
+- Puerto 445 SMB
+
+  -Como vemos tenemos credenciales validads y tenemos acceso a varias carpetas del sistema.
+
+      ┌──(root㉿kali)-[/home/…/Desktop/ctf/try_ctf/ra1.1]
+      └─# crackmapexec smb  windcorp.thm -u lilyle -p ---pass-- --shares                    
+      SMB         windcorp.thm    445    FIRE             [*] Windows 10.0 Build 17763 x64 (name:FIRE) (domain:windcorp.thm) (signing:True) (SMBv1:False)
+      SMB         windcorp.thm    445    FIRE             [+] windcorp.thm\lilyle:---pass---
+      SMB         windcorp.thm    445    FIRE             [+] Enumerated shares
+      SMB         windcorp.thm    445    FIRE             Share           Permissions     Remark
+      SMB         windcorp.thm    445    FIRE             -----           -----------     ------
+      SMB         windcorp.thm    445    FIRE             ADMIN$                          Remote Admin
+      SMB         windcorp.thm    445    FIRE             C$                              Default share
+      SMB         windcorp.thm    445    FIRE             IPC$            READ            Remote IPC
+      SMB         windcorp.thm    445    FIRE             NETLOGON        READ            Logon server share 
+      SMB         windcorp.thm    445    FIRE             Shared          READ            
+      SMB         windcorp.thm    445    FIRE             SYSVOL          READ            Logon server share 
+      SMB         windcorp.thm    445    FIRE             Users           READ
+
+  -Listamos la carpeta Shared
+
+      ┌──(root㉿kali)-[/home/…/Desktop/ctf/try_ctf/ra1.1]
+      └─# smbclient //windcorp.thm/Shared -U lilyle   
+      Password for [WORKGROUP\lilyle]:
+      Try "help" to get a list of possible commands.
+      smb: \> dir
+        .                                   D        0  Sat May 30 02:45:42 2020
+        ..                                  D        0  Sat May 30 02:45:42 2020
+        Flag 1.txt                          A       45  Fri May  1 17:32:36 2020
+        spark_2_8_3.deb                     A 29526628  Sat May 30 02:45:01 2020
+        spark_2_8_3.dmg                     A 99555201  Sun May  3 13:06:58 2020
+        spark_2_8_3.exe                     A 78765568  Sun May  3 13:05:56 2020
+        spark_2_8_3.tar.gz                  A 123216290  Sun May  3 13:07:24 2020
+
+        15587583 blocks of size 4096. 10914152 blocks available
+
+  -Ya tendriamos la Flag1
+
+      smb: \> get "Flag 1.txt"
+      getting file \Flag 1.txt of size 45 as Flag 1.txt (0.2 KiloBytes/sec) (average 0.2 KiloBytes/sec)
+
+  -
+
+
+
+    
+
+    
+
+    
+
+    
+
+  
+  
+
 
 
   
