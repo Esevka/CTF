@@ -669,13 +669,30 @@ Enunciado :
       smb: \> get "Flag 1.txt"
       getting file \Flag 1.txt of size 45 as Flag 1.txt (0.2 KiloBytes/sec) (average 0.2 KiloBytes/sec)
 
-  -
+
+## Explotacion del sistema mediante el cliente Spark
+
+-Como vemos en la carpeta Shared encontramos tambien varios instaladores de Spark 2.8.3, ni idea que es Spark, por el momento.
+
+INFO:
+  
+    Spark es un cliente Jabber/XMPP escrito en Java de Código abierto. 
+    Spark es un cliente para Mensajería Instantánea, multiplataforma optimizado para empresas y organizaciones. 
+
+    Extensible Messaging and Presence Protocol, más conocido como XMPP (Protocolo extensible de mensajería y comunicación de presencia),
+    anteriormente llamado Jabber,1​ es un protocolo abierto y extensible basado en XML, originalmente ideado para mensajería instantánea. 
 
 
+-Si no recuerdo mal en el log de NMAP vi algo sobre Jabber/XMPP.
+  
+    5263/tcp  open  ssl/jabber          syn-ack ttl 127 Ignite Realtime Openfire Jabber server 3.10.0 or later
 
-    
+Intente explotar esta vulnerabilidad pero no tube exito, eso si aprendi bastante es lo importante.
 
-    
+Path traversal to RCE — Openfire — CVE-2023–32315 --> https://learningsomecti.medium.com/path-traversal-to-rce-openfire-cve-2023-32315-6a8bf0285fcc
+
+
+-Continue buscando y buscando informacion, en este caso sobre el cliente spark 2.8.3 y encontre 
 
     
 
