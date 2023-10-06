@@ -694,7 +694,7 @@ Path traversal to RCE — Openfire — CVE-2023–32315 --> https://learningsome
 
 -Continue buscando y buscando informacion, en este caso sobre el cliente spark 2.8.3
 
-  - Encontre un exploit que nos permite obtener el hash NTLM del usuario con el que mantenemos el chat, pudiendo ganar acceso a la cuenta del usuario.
+  - Encontre un exploit que nos permite obtener el hash NTLM del usuario con el que mantenemos el chat, pudiendo ganar acceso a la cuenta de este.
     Exploit ---> https://github.com/theart42/cves/blob/master/cve-2020-12772/CVE-2020-12772.md
     
 
