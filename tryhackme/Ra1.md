@@ -687,13 +687,15 @@ INFO:
   
     5263/tcp  open  ssl/jabber          syn-ack ttl 127 Ignite Realtime Openfire Jabber server 3.10.0 or later
 
-Intente explotar esta vulnerabilidad pero no tube exito, eso si aprendi bastante es lo importante.
+Intente explotar esta vulnerabilidad pero no tuve exito, eso si aprendi bastante es lo importante.
 
 Path traversal to RCE — Openfire — CVE-2023–32315 --> https://learningsomecti.medium.com/path-traversal-to-rce-openfire-cve-2023-32315-6a8bf0285fcc
 
 
--Continue buscando y buscando informacion, en este caso sobre el cliente spark 2.8.3 y encontre 
+-Continue buscando y buscando informacion, en este caso sobre el cliente spark 2.8.3
 
+  - Encontre un exploit que nos permite obtener el hash NTLM del usuario con el que mantenemos el chat, pudiendo ganar acceso a la cuenta del usuario.
+    Exploit ---> https://github.com/theart42/cves/blob/master/cve-2020-12772/CVE-2020-12772.md
     
 
     
