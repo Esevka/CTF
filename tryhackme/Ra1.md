@@ -880,8 +880,19 @@ Explicacion del exploit ---> https://github.com/theart42/cves/blob/master/cve-20
         SMB         windcorp.thm    445    FIRE             SYSVOL          READ            Logon server share 
         SMB         windcorp.thm    445    FIRE             Users           READ     
 
-      
+    Nos conectamos a la raiz del usuario brittanycr y hay tenemos nuestro deseado fichero.
+    
+        ┌──(root㉿kali)-[/home/…/Desktop/ctf/try_ctf/ra1.1]
+        └─# smbclient //windcorp.thm/Users -U brittanycr
+        Password for [WORKGROUP\brittanycr]:
+        Try "help" to get a list of possible commands.
+        smb: \> cd brittanycr
+        smb: \brittanycr\> dir
+          .                                   D        0  Sun May  3 01:36:46 2020
+          ..                                  D        0  Sun May  3 01:36:46 2020
+          hosts.txt                           A       22  Sun May  3 15:44:57 2020
 
+    Lo descargamos y preparamos para que cuando se ejecute mediante el script checkservers.ps1 consigamos elevar privileos.
 
 
 
