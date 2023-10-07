@@ -738,24 +738,7 @@ Explicacion del exploit ---> https://github.com/theart42/cves/blob/master/cve-20
     ![image](https://github.com/Esevka/CTF/assets/139042999/4e8b95a5-6e85-4646-a978-1f4f927a2f32)
 
    -Copiamos el codigo web con los correos en un fichero y otenemos todas las direcciones
-
-        ┌──(root㉿kali)-[/home/…/Desktop/ctf/try_ctf/ra1.1]
-        └─# cat it_correos                                                   
-        <li><img src="http://fire.windcorp.thm:9090/plugins/presence/status?jid=organicfish718@fire.windcorp.thm"> <a href="xmpp:organicfish718@fire.windcorp.thm">Antonietta Vidal</a></li>
-        <li><img src="http://fire.windcorp.thm:9090/plugins/presence/status?jid=organicwolf509@fire.windcorp.thm"> <a href="xmpp:organicwolf509@fire.windcorp.thm">Britney Palmer</a></li>
-        <li><img src="http://fire.windcorp.thm:9090/plugins/presence/status?jid=tinywolf424@fire.windcorp.thm"> <a href="xmpp:tinywolf424@fire.windcorp.thm">Brittany Cruz</a></li>
-        <li><img src="http://fire.windcorp.thm:9090/plugins/presence/status?jid=angrybird253@fire.windcorp.thm"> <a href="xmpp:angrybird253@fire.windcorp.thm">Carla Meyer</a></li>
-        <li><img src="http://fire.windcorp.thm:9090/plugins/presence/status?jid=buse@fire.windcorp.thm"> <a href="xmpp:buse@fire.windcorp.thm">Buse Candan</a></li>
-        <li><img src="http://fire.windcorp.thm:9090/plugins/presence/status?jid=Edeltraut@fire.windcorp.thm"><a href="xmpp:Edeltraut@fire.windcorp.thm"> Edeltraut Daub</a></li>
-        <li><img src="http://fire.windcorp.thm:9090/plugins/presence/status?jid=Edward@fire.windcorp.thm"><a href="xmpp:Edward@fire.windcorp.thm"> Edward Lewis</a></li>
-        <li><img src="http://fire.windcorp.thm:9090/plugins/presence/status?jid=Emile@fire.windcorp.thm"><a href="xmpp:Emile@fire.windcorp.thm"> Emile Lavoie</a></li>
-        <li><img src="http://fire.windcorp.thm:9090/plugins/presence/status?jid=tinygoose102@fire.windcorp.thm"><a href="xmpp:tinygoose102@fire.windcorp.thm"> Emile Henry</a></li>
-        <li><img src="http://fire.windcorp.thm:9090/plugins/presence/status?jid=brownostrich284@fire.windcorp.thm"><a href="xmpp:brownostrich284@fire.windcorp.thm"> Emily Anderson</a></li>
-        <li><img src="http://fire.windcorp.thm:9090/plugins/presence/status?jid=sadswan869@fire.windcorp.thm"><a href="xmpp:sadswan869@fire.windcorp.thm"> Hemmo Boschma</a></li>
-        <li><img src="http://fire.windcorp.thm:9090/plugins/presence/status?jid=goldencat416@fire.windcorp.thm"><a href="xmpp:sadswan869@fire.windcorp.thm"> Isabella Hughes</a></li>
-        <li><img src="http://fire.windcorp.thm:9090/plugins/presence/status?jid=whiteleopard529@fire.windcorp.thm"><a href="xmpp:whiteleopard529@fire.windcorp.thm"> Isra Saur</a></li>
-        <li><img src="http://fire.windcorp.thm:9090/plugins/presence/status?jid=happymeercat399@fire.windcorp.thm"><a href="xmpp:happymeercat399@fire.windcorp.thm"> Jackson Vasquez</a></li>
-        <li><img src="http://fire.windcorp.thm:9090/plugins/presence/status?jid=orangegorilla428@fire.windcorp.thm"><a href="xmpp:orangegorilla428@fire.windcorp.thm"> Jaqueline Dittmer</a></li>                                                                                                                                                                                                  
+                                                                                                                                                                                                
         ┌──(root㉿kali)-[/home/…/Desktop/ctf/try_ctf/ra1.1]
         └─# grep -oP 'xmpp:(\w+\W)+' it_correos | sed 's/xmpp://g' | sed 's/"//g'
         organicfish718@fire.windcorp.thm
@@ -775,6 +758,13 @@ Explicacion del exploit ---> https://github.com/theart42/cves/blob/master/cve-20
         orangegorilla428@fire.windcorp.thm
 
 4) Obtenemos el Hash NTLM de algun usuario de la lista.
+
+   -Creamos un grupo 
+   ![image](https://github.com/Esevka/CTF/assets/139042999/8d1e063e-3faf-47ba-a0de-91265f544eeb)
+
+   ![image](https://github.com/Esevka/CTF/assets/139042999/bfc54ac6-26d8-41ec-9651-42bbc5cd8fbe)
+
+
   
 
 
