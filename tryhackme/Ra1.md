@@ -759,8 +759,11 @@ Explicacion del exploit ---> https://github.com/theart42/cves/blob/master/cve-20
 
 4) Obtenemos el Hash NTLM de algun usuario de la lista.
 
-   -Creamos un grupo 
+   -Creamos un grupo donde anadiremos todos las cuentas de openfire de los usuarios
+   
    ![image](https://github.com/Esevka/CTF/assets/139042999/8d1e063e-3faf-47ba-a0de-91265f544eeb)
+
+   -
 
    ![image](https://github.com/Esevka/CTF/assets/139042999/bfc54ac6-26d8-41ec-9651-42bbc5cd8fbe)
 
