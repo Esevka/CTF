@@ -814,8 +814,41 @@ Explicacion del exploit ---> https://github.com/theart42/cves/blob/master/cve-20
     *Evil-WinRM* PS C:\Users\buse\Desktop> type 'Flag 2.txt'
     THM{6f6---------------104ed804ad06c7c9b1}
 
-  -
+## Elevacion de privilegios(Postexplotacion del Sistema)
 
+  -Tras listar un rato directorios y buscar informacion encontramos C:\scripts
+
+    *Evil-WinRM* PS C:\scripts> dir
+
+    Directory: C:\scripts
+
+    Mode                LastWriteTime         Length Name
+    ----                -------------         ------ ----
+    -a----         5/3/2020   5:53 AM           4119 checkservers.ps1
+    -a----        10/6/2023  11:26 PM             31 log.txt
+
+   Segun log.txt suponemos que el script checkservers.ps1 se ejecuta a intervalos de tiempo
+   
+   Analizamos checkservers.ps1 y obtenemos datos importantes.
+    
+  - Este codigo lee el contenido del fichero hosts.txt que se encuentra en el raiz del usuario brittanycr(el cual no tenemos permisos para poder leer o editar) ejecuta  un cmdlet de PowerShell utilizado para realizar una prueba de ping a un equipo remoto(Test-Connection) pasandole como variable el contenido del fichero hosts.txt a traves del parametro (-ComputerName $_) para especificar el nombre o la dirección IP del equipo.
+  
+          get-content C:\Users\brittanycr\hosts.txt | Where-Object {!($_ -match "#")} |
+          ForEach-Object {
+              $p = "Test-Connection -ComputerName $_ -Count 1 -ea silentlycontinue"
+              Invoke-Expression $p
+    
+    Otra linea importante es esta, segun la info obtenida en internet
+  
+          Send-MailMessage -Body "$body" -to $notificationto -from $notificationfrom `
+          
+    INFO: Para enviar correos electrónicos desde PowerShell, es recomendable ejecutar PowerShell con derechos de administrador para asegurarte de tener los permisos necesarios.
+
+
+  -Necesitamos tener acceso al fichero ---> C:\Users\brittanycr\hosts.txt
+
+  
+     
     
 
 
