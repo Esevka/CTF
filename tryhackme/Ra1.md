@@ -670,7 +670,7 @@ Enunciado :
       getting file \Flag 1.txt of size 45 as Flag 1.txt (0.2 KiloBytes/sec) (average 0.2 KiloBytes/sec)
 
 
-## Explotacion del sistema mediante el cliente Spark
+## Explotacion del sistema mediante cliente Spark 2.8.3
 
 -Como vemos en la carpeta Shared encontramos tambien varios instaladores de Spark 2.8.3, ni idea que es Spark, por el momento.
 
@@ -692,15 +692,89 @@ Intente explotar esta vulnerabilidad pero no tuve exito, eso si aprendi bastante
 Path traversal to RCE — Openfire — CVE-2023–32315 --> https://learningsomecti.medium.com/path-traversal-to-rce-openfire-cve-2023-32315-6a8bf0285fcc
 
 
--Continue buscando y buscando informacion, en este caso sobre el cliente spark 2.8.3
+-Continue buscando informacion sobre el cliente Spark 2.8.3
 
-  - Encontre un exploit que nos permite obtener el hash NTLM del usuario con el que mantenemos el chat, pudiendo ganar acceso a la cuenta de este.
-    Exploit ---> https://github.com/theart42/cves/blob/master/cve-2020-12772/CVE-2020-12772.md
-    
+Encontre un exploit que nos permite obtener el hash NTLM del usuario con el que mantenemos el chat, pudiendo ganar acceso a la cuenta de este.
+Explicacion del exploit ---> https://github.com/theart42/cves/blob/master/cve-2020-12772/CVE-2020-12772.md
 
-    
+1) Nos descargamos el cliente Spark del recurso compartido
 
-  
+        ┌──(root㉿kali)-[/home/…/Desktop/ctf/try_ctf/ra1.1]
+        └─# smbclient //windcorp.thm/Shared -U lilyle 
+        Password for [WORKGROUP\lilyle]:
+        Try "help" to get a list of possible commands.
+        smb: \> dir
+          .                                   D        0  Sat May 30 02:45:42 2020
+          ..                                  D        0  Sat May 30 02:45:42 2020
+          Flag 1.txt                          A       45  Fri May  1 17:32:36 2020
+          spark_2_8_3.deb                     A 29526628  Sat May 30 02:45:01 2020
+          spark_2_8_3.dmg                     A 99555201  Sun May  3 13:06:58 2020
+          spark_2_8_3.exe                     A 78765568  Sun May  3 13:05:56 2020
+          spark_2_8_3.tar.gz                  A 123216290  Sun May  3 13:07:24 2020
+        
+                        15587583 blocks of size 4096. 10891127 blocks available
+        smb: \> get spark_2_8_3.deb 
+        getting file \spark_2_8_3.deb of size 29526628 as spark_2_8_3.deb (1791.2 KiloBytes/sec) (average 1791.2 KiloBytes/sec)
+   
+2) Instalamos el cliente Spark en nuestra maquina y hacemos login.
+
+        ┌──(root㉿kali)-[/home/…/Desktop/ctf/try_ctf/ra1.1]
+        └─# dpkg --force-all -i spark_2_8_3.deb
+   
+    -Iniciamos el cliente Spark
+
+    ![image](https://github.com/Esevka/CTF/assets/139042999/cf8aa688-d587-435c-98d4-7211d76737cc)
+
+    -En la configuracion del cliente Spark debemos marcar estas dos opciones, de lo contrario nos dara error y no podremos iniciar sesion.
+
+    ![image](https://github.com/Esevka/CTF/assets/139042999/cf27b429-150c-4679-8701-3d99fdefabfc)
+
+    ![image](https://github.com/Esevka/CTF/assets/139042999/efc56c8e-6280-4f08-8464-ba54425a46a0)
+
+3) Obtenemos direcciones a las que poder enviar el exploit
+
+   -Si recordamos en la web hay una lista direcciones del equipo tecnico
+   
+    ![image](https://github.com/Esevka/CTF/assets/139042999/4e8b95a5-6e85-4646-a978-1f4f927a2f32)
+
+   -Copiamos el codigo web con los correos en un fichero y otenemos todas las direcciones
+
+        ┌──(root㉿kali)-[/home/…/Desktop/ctf/try_ctf/ra1.1]
+        └─# cat it_correos                                                   
+        <li><img src="http://fire.windcorp.thm:9090/plugins/presence/status?jid=organicfish718@fire.windcorp.thm"> <a href="xmpp:organicfish718@fire.windcorp.thm">Antonietta Vidal</a></li>
+        <li><img src="http://fire.windcorp.thm:9090/plugins/presence/status?jid=organicwolf509@fire.windcorp.thm"> <a href="xmpp:organicwolf509@fire.windcorp.thm">Britney Palmer</a></li>
+        <li><img src="http://fire.windcorp.thm:9090/plugins/presence/status?jid=tinywolf424@fire.windcorp.thm"> <a href="xmpp:tinywolf424@fire.windcorp.thm">Brittany Cruz</a></li>
+        <li><img src="http://fire.windcorp.thm:9090/plugins/presence/status?jid=angrybird253@fire.windcorp.thm"> <a href="xmpp:angrybird253@fire.windcorp.thm">Carla Meyer</a></li>
+        <li><img src="http://fire.windcorp.thm:9090/plugins/presence/status?jid=buse@fire.windcorp.thm"> <a href="xmpp:buse@fire.windcorp.thm">Buse Candan</a></li>
+        <li><img src="http://fire.windcorp.thm:9090/plugins/presence/status?jid=Edeltraut@fire.windcorp.thm"><a href="xmpp:Edeltraut@fire.windcorp.thm"> Edeltraut Daub</a></li>
+        <li><img src="http://fire.windcorp.thm:9090/plugins/presence/status?jid=Edward@fire.windcorp.thm"><a href="xmpp:Edward@fire.windcorp.thm"> Edward Lewis</a></li>
+        <li><img src="http://fire.windcorp.thm:9090/plugins/presence/status?jid=Emile@fire.windcorp.thm"><a href="xmpp:Emile@fire.windcorp.thm"> Emile Lavoie</a></li>
+        <li><img src="http://fire.windcorp.thm:9090/plugins/presence/status?jid=tinygoose102@fire.windcorp.thm"><a href="xmpp:tinygoose102@fire.windcorp.thm"> Emile Henry</a></li>
+        <li><img src="http://fire.windcorp.thm:9090/plugins/presence/status?jid=brownostrich284@fire.windcorp.thm"><a href="xmpp:brownostrich284@fire.windcorp.thm"> Emily Anderson</a></li>
+        <li><img src="http://fire.windcorp.thm:9090/plugins/presence/status?jid=sadswan869@fire.windcorp.thm"><a href="xmpp:sadswan869@fire.windcorp.thm"> Hemmo Boschma</a></li>
+        <li><img src="http://fire.windcorp.thm:9090/plugins/presence/status?jid=goldencat416@fire.windcorp.thm"><a href="xmpp:sadswan869@fire.windcorp.thm"> Isabella Hughes</a></li>
+        <li><img src="http://fire.windcorp.thm:9090/plugins/presence/status?jid=whiteleopard529@fire.windcorp.thm"><a href="xmpp:whiteleopard529@fire.windcorp.thm"> Isra Saur</a></li>
+        <li><img src="http://fire.windcorp.thm:9090/plugins/presence/status?jid=happymeercat399@fire.windcorp.thm"><a href="xmpp:happymeercat399@fire.windcorp.thm"> Jackson Vasquez</a></li>
+        <li><img src="http://fire.windcorp.thm:9090/plugins/presence/status?jid=orangegorilla428@fire.windcorp.thm"><a href="xmpp:orangegorilla428@fire.windcorp.thm"> Jaqueline Dittmer</a></li>                                                                                                                                                                                                  
+        ┌──(root㉿kali)-[/home/…/Desktop/ctf/try_ctf/ra1.1]
+        └─# grep -oP 'xmpp:(\w+\W)+' it_correos | sed 's/xmpp://g' | sed 's/"//g'
+        organicfish718@fire.windcorp.thm
+        organicwolf509@fire.windcorp.thm
+        tinywolf424@fire.windcorp.thm
+        angrybird253@fire.windcorp.thm
+        buse@fire.windcorp.thm
+        Edeltraut@fire.windcorp.thm
+        Edward@fire.windcorp.thm
+        Emile@fire.windcorp.thm
+        tinygoose102@fire.windcorp.thm
+        brownostrich284@fire.windcorp.thm
+        sadswan869@fire.windcorp.thm
+        sadswan869@fire.windcorp.thm
+        whiteleopard529@fire.windcorp.thm
+        happymeercat399@fire.windcorp.thm
+        orangegorilla428@fire.windcorp.thm
+
+4) Obtenemos el Hash NTLM de algun usuario de la lista.
   
 
 
