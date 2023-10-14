@@ -159,11 +159,11 @@ Ya tenemos los puertos copiado en el Clipboard, un script simple pero de gran ay
         10.10.122.116   fusion.corp
         [IP Maquina]    [Dominio resolver]
     
-    3)Montamos el comando y obtenemos hash del usuario lparker
+    3)Montamos el comando y obtenemos Kerberos HASH (RC4) del usuario lparker.
 
       ![image](https://github.com/Esevka/CTF/assets/139042999/858ac63d-ad88-45ca-97ba-8c5c99ba2813)
 
-    4)Intentamos crakear el hash del usuario lparker con john
+    4)Intentamos crakear el hash del usuario lparker con john y asi obtener unas credenciales validad para intenter conectarnos por los demas servicios expuestos.
 
         ┌──(root㉿kali)-[/home/…/ctf/try_ctf/FusionCorp/content]
         └─# john hashuser_NP --wordlist=/usr/share/wordlists/rockyou.txt 
