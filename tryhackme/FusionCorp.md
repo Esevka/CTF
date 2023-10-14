@@ -106,7 +106,68 @@ Ya tenemos los puertos copiado en el Clipboard, un script simple pero de gran ay
     49700/tcp open  msrpc         Microsoft Windows RPC
     Service Info: Host: FUSION-DC; OS: Windows; CPE: cpe:/o:microsoft:windows
 
+## Analizamos la informacion obtenida sobre los puertos
 
+--Puerto 80 (HTTP)
 
+  - Despues de analizar la web y ver su codigo no encontramos nada, vamos a ver si encontramos directorios con gobuster.
+  
+        ┌──(root㉿kali)-[/home/…/Desktop/ctf/try_ctf/FusionCorp]
+        └─# gobuster dir -u http://10.10.183.217 -w /usr/share/wordlists/dirb/common.txt 
+        ===============================================================
+        Gobuster v3.6
+        by OJ Reeves (@TheColonial) & Christian Mehlmauer (@firefart)
+        ===============================================================
+        
+        /backup               (Status: 301) [Size: 151] [--> http://10.10.183.217/backup/]
+        /css                  (Status: 301) [Size: 148] [--> http://10.10.183.217/css/]
+        /img                  (Status: 301) [Size: 148] [--> http://10.10.183.217/img/]
+        /index.html           (Status: 200) [Size: 53888]
+        /js                   (Status: 301) [Size: 147] [--> http://10.10.183.217/js/]
+        /lib                  (Status: 301) [Size: 148] [--> http://10.10.183.217/lib/]
+  
+    - El directorio backup salta a la vista que es el primero en revisar, nos descargamos employees.ods a nuestra maquina.
+      
+      ![image](https://github.com/Esevka/CTF/assets/139042999/adc5b939-c80a-4023-8c73-df142db019db)
+
+      ![image](https://github.com/Esevka/CTF/assets/139042999/51ba66dd-6231-4d32-9faa-e87e0e851bc0)
+
+    - Si volvemos atras en la web encontramos una serie de personajes los cuales aparecen en la lista, por lo que parece ser que tenemos nombres de usuarios de empleados de la empresa incluso sabemos el  cargo que ejercen dentro de ella.
+
+      ![image](https://github.com/Esevka/CTF/assets/139042999/bcc7641c-5073-498d-a392-8416c5d5a5a2)
+
+--Puerto 88 (KERBEROS)
+
+  Info de gran ayuda: [+]https://www.tarlogic.com/es/blog/como-funciona-kerberos/ [+]https://www.tarlogic.com/es/blog/como-atacar-kerberos/
+
+  - Tenemos un listado de usuarios,por lo que vamos a probar con un ataque a kerberos llamado ASREPRoast(se basa en encontrar usuarios que no requieren pre-autenticación de Kerberos)
+  
+    ![image](https://github.com/Esevka/CTF/assets/139042999/97787c44-b781-42b3-a475-78993c8bd668)
+
+        Como Funciona la Preautenticacion
+        La preautenticación demuestra que el usuario conoce su contraseña antes de recibir el ticket de autenticación.
+        Timestamp en el ticket garantiza que el ticket sea válido solo durante un período de tiempo limitado y protege contra ataques de repetición. 
+    
+    Montamos todo:
+    
+    1)Creamos una lista con los usuarios que hemos encontrado.
+    
+    2)Editamos nuestro fichero /etc/hosts
+
+        ┌──(root㉿kali)-[/home/…/ctf/try_ctf/FusionCorp/content]
+        └─# cat /etc/hosts
+        10.10.122.116   fusion.corp
+        [IP Maquina]    [Dominio resolver]
+    
+    3)Montamos el comando y obtenemos hash del usuario lparker
+
+      ![image](https://github.com/Esevka/CTF/assets/139042999/858ac63d-ad88-45ca-97ba-8c5c99ba2813)
+
+  
+        
+        
+              
+    
+    
 
 
