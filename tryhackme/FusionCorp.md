@@ -176,7 +176,7 @@ Ya tenemos los puertos copiado en el Clipboard, un script simple pero de gran ay
         Use the "--show" option to display all of the cracked passwords reliably
         Session completed.
 
-      Conseguimos credenciales lparker:!!abbylvzsvs2k6!
+      Conseguimos credenciales     lparker:!!abbylvzsvs2k6!
 
     
 
