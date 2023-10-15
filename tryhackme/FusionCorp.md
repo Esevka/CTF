@@ -402,6 +402,12 @@ Ya tenemos los puertos copiado en el Clipboard, un script simple pero de gran ay
            información sobre objetos en una red, como cuentas de usuario, cuentas de computadoras y pertenencias a grupos.
     
     -Abusando de la base de datos de Active Directory NTDS.dit
+
+      Informacion:
+      [+]https://book.hacktricks.xyz/v/es/windows-hardening/active-directory-methodology/privileged-groups-and-token-privileges#ataque-a-d
+    
+      [+]https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/diskshadow
+      
      
 
 
