@@ -240,7 +240,9 @@ Ya tenemos los puertos copiado en el Clipboard, un script simple pero de gran ay
 
   
 
-## Escalada de privilegios lparker --> jmurphy
+## Escalada de privilegios 
+
+#### Usuario lparker --> jmurphy
 
 -Este proceso de obtencion de credenciales para el usuario jmurphy se puede hacer mediante el servicio 389(ldap) o  135(msrpc) 
 
@@ -287,7 +289,39 @@ Ya tenemos los puertos copiado en el Clipboard, un script simple pero de gran ay
          impresoras, servidores y otros objetos de red en una organización. LDAP se utiliza comúnmente para buscar, recuperar,
          modificar y autenticar información en un directorio.
          LDAP se utiliza en una amplia variedad de aplicaciones y servicios, como servidores de directorio Microsoft Active Directory.
-    
+   
+   INFO: [+] https://book.hacktricks.xyz/v/es/network-services-pentesting/pentesting-ldap
+   
+   -Obtenemos toda la informacion sobre el administrador de dominio
+
+        ┌──(root㉿kali)-[/home/…/Desktop/ctf/try_ctf/FusionCorp]
+        └─# ldapdomaindump fusion.corp -u 'fusion.corp\lparker' -p '!!abbylvzsvs2k6!' --no-json --no-grep -o ldap/
+        [*] Connecting to host...
+        [*] Binding to host
+        [+] Bind OK
+        [*] Starting domain dump
+        [+] Domain dump finished
+
+     ![image](https://github.com/Esevka/CTF/assets/139042999/276e0f32-9a08-4f06-a27f-0fb60852a9f7)
+
+     Obtenemos informacion muy importante del sistema.
+
+     ![image](https://github.com/Esevka/CTF/assets/139042999/58e292b7-100c-4988-aeba-cd458fedd304)
+
+     ![image](https://github.com/Esevka/CTF/assets/139042999/31c0481e-5743-4387-8ab1-70ba5712ac12)
+
+     ![image](https://github.com/Esevka/CTF/assets/139042999/70999a07-c012-4308-9bcd-d3f3805325f1)
+
+
+     - Encontamos credenciales del usuario jmurphy:u8WC3!kLsgw=#bRY
+     - Vemos que tanto el usuario lparker como jmurphy pertenecen al grupo --> Remote Management Users
+     - Vemos que el usuario jmurphy pertenece al grupo --> Backup Operators (importante este detalle)
+
+
+#### Usuario jmurphy --> Administrator
+     
+
+
 
   
         
