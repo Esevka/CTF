@@ -278,8 +278,16 @@ Ya tenemos los puertos copiado en el Clipboard, un script simple pero de gran ay
 
     Encontamos credenciales del usuario jmurphy:u8WC3!kLsgw=#bRY
 
-
-  
+2) LDAP
+   
+       INFO:
+         LDAP (Protocolo Ligero de Acceso a Directorios, por sus siglas en inglés) es un protocolo estándar de acceso
+         y mantenimiento de servicios de directorio. Un servicio de directorio es una base de datos que almacena información
+         de manera jerárquica y se utiliza para gestionar información de recursos compartidos, como usuarios, grupos,
+         impresoras, servidores y otros objetos de red en una organización. LDAP se utiliza comúnmente para buscar, recuperar,
+         modificar y autenticar información en un directorio.
+         LDAP se utiliza en una amplia variedad de aplicaciones y servicios, como servidores de directorio Microsoft Active Directory.
+    
 
   
         
