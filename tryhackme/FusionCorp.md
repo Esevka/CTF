@@ -603,6 +603,10 @@ Ya tenemos los puertos copiado en el Clipboard, un script simple pero de gran ay
             THM{f72988e57bfc1de----------0464d15}
 
 
+---
+---> Maquina Fusion Corp completa. <---
+---
+---
         
 
 
