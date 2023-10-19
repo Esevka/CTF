@@ -6,11 +6,11 @@ Enlace Maquina: https://tryhackme.com/room/vulnnetactive
 
 Enunciado : 
 
-  - Obtener acceso completo al sistema y comprometer el cominio.
+  - Obtener acceso completo al sistema y comprometer dominio.
   - Conseguir Flags
 ---
 ---
 
-## Escaneo de puertos NMAP
+## Escaneo de puertos (NMAP)
 
 -Buscamos puertos abiertos en en la maquina victima.
