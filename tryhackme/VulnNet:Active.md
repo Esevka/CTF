@@ -114,7 +114,7 @@ La informacion obtenida sobre los puertos es un poco escueta, pero aun asi hay u
     (error) ERR Error running script (call to f_ce5d85ea1418770097e56c1b605053114cc3ff2e): @user_script:1: C:\Users\enterprise-security\Desktop\user.txt:1: malformed number near 
     '3eb176aee96---------0bc93580b291e'
 
-  5)Capturamos el Hash NTLM del usuario
+  5)Capturamos el Hash NTLM del usuario.
     
   
 
