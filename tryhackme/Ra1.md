@@ -1,4 +1,4 @@
-## TryHackMe  <> RA1.1
+## TryHackMe  <> Ra1.1
 
 ![image](https://github.com/Esevka/CTF/assets/139042999/ca6e2244-bb5a-4fb4-ad4a-c543249c58a3)
 
