@@ -259,12 +259,39 @@ La informacion obtenida sobre los puertos es un poco escueta, pero aun asi hay u
 
 ## Escala de Privilegios.
 
-Podemos obtener la flag de user.txt desde la consola.
+-Podemos obtener la flag de user.txt desde la consola.
 
     PS C:\Users\enterprise-security\Desktop> type user.txt
     THM{3eb176aee964-----------00bc93580b291e}
 
+-Obtenemos informacion del usuario y sistema para ir viendo como podemos elevar privilegios en la maquina.
 
+  - Sobre que sistema estamos trabajando
+
+        PS C:\Users\enterprise-security\Desktop> systeminfo
+        Host Name:                 VULNNET-BC3TCK1
+        OS Name:                   Microsoft Windows Server 2019 Datacenter Evaluation
+        OS Version:                10.0.17763 N/A Build 17763
+        [...]
+
+ - Que privilegios como usuario enterprise-security tenemos en el sistema.
+
+        PS C:\Users\enterprise-security\Desktop> whoami /priv                                             
+    
+        PRIVILEGES INFORMATION
+        ----------------------
+        
+        Privilege Name                Description                               State   
+        ============================= ========================================= ========
+        SeMachineAccountPrivilege     Add workstations to domain                Disabled
+        SeChangeNotifyPrivilege       Bypass traverse checking                  Enabled 
+        SeImpersonatePrivilege        Impersonate a client after authentication Enabled   ---> importante
+        SeCreateGlobalPrivilege       Create global objects                     Enabled 
+        SeIncreaseWorkingSetPrivilege Increase a process working set            Disabled
+
+      ![image](https://github.com/Esevka/CTF/assets/139042999/449dc8b5-bef5-42bd-9ec1-f82fdee17b7a)
+
+   Con la informacion obtenida encontramos que la maquina es vulnerable a un 
   
 
     
