@@ -12,7 +12,7 @@ Enunciado :
 
 ## Escaneo de puertos NMAP
 
--Buscamos puertos abiertos en en la maquina victima.
+-Buscamos puertos abiertos en en la maquina victima
 
     ┌──(root㉿kali)-[/home/…/ctf/try_ctf/ra1.1/nmap]
     └─# nmap -p- --open -sS --min-rate 5000 -n -Pn 10.10.36.177 -vvv -oG open_ports
