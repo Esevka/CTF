@@ -78,5 +78,110 @@ Enunciado :
   ---
 ## Analizamos la informacion obtenida.
 
+-Anadimos ironcorp.me a nuestro fichero /etc/hosts como nos dice el enunciado.
+
+    ┌──(root㉿kali)-[/home/…/ctf/try_ctf/iron_corp/nmap]
+    └─# cat /etc/hosts                                                   
+    127.0.0.1       localhost
+    127.0.1.1       kali
+    10.10.27.190    ironcorp.me
+
+--Tenemos dos puertos en los que estan corriendo servicios http (8080,11025)
+
+  - Puerto (8080)
+    
+    Encontramos que tenemos corriendo -> Dashtreme Admin
+    Tras analizar la web, realizar fuzzing con gobuster y buscar la existencia de algun exploit no encontramos nada interesante.
+
+    ![image](https://github.com/Esevka/CTF/assets/139042999/4bf944e5-caa8-41fa-8366-3f837007bf64)
+
+  - Puerto (11025)
+
+    Encontramos una web en construccion, indica que proximamente estara disponible poco mas.
+    Tras analizar la web, realizar fuzzing con gobuster y buscar algo que nos pueda ayudar no encontramos nada.
+
+    ![image](https://github.com/Esevka/CTF/assets/139042999/2e1c09c9-6b98-4db8-a81b-47698bb6ec8b)
+
+
+--LLegados a este punto podriamos mirar la existencia de subdominios, el enuncionado hace incapie en que nuestro /etc/hosts contenga la resolucion al nombre de host -> ironcorp.me
+
+  - Obtencion de subdominios mediante fuerza bruta con wfuzz.
+
+    - Lanzamos el comando al puerto 8080, no tenemos resultados.
+    
+    - Sin embargo lanzamos el mismo comando al puerto 11025 y obtenemos dos posibles subdominios.
+
+          ┌──(root㉿kali)-[/home/…/Desktop/ctf/try_ctf/iron_corp]
+          └─# wfuzz -u http://ironcorp.me:11025 -w /usr/share/seclists/Discovery/DNS/subdomains-top1million-5000.txt -H "HOST: FUZZ.ironcorp.me" --hw 199 
+          
+          ********************************************************
+          * Wfuzz 3.1.0 - The Web Fuzzer                         *
+          ********************************************************
+          
+          Target: http://ironcorp.me:11025/
+          Total requests: 4989
+          =====================================================================
+          ID           Response   Lines    Word       Chars       Payload                                                                     
+          =====================================================================
+          000000024:   401        47 L     132 W      1305 Ch     "admin - admin"                                                             
+          000000387:   403        42 L     98 W       1086 Ch     "internal - internal"                                                       
+
+  - Obtencion de subdominios mediante transferencia de zona DNS.
+
+    Puerto 53(open) domain Simple DNS Plus (La maquina tiene un servidor DNS Corriendo)
+
+        QUE ES AXFR?
+    
+        El comando "dig axfr" se utiliza para realizar una transferencia de zona (Zone Transfer) desde un servidor DNS.
+        La transferencia de zona es un proceso mediante el cual un servidor DNS obtiene una copia completa de la base de datos de zona de otro servidor DNS.
+        Esto puede ser útil para mantener copias de seguridad de la configuración de zona de un dominio o para replicar la información de zona entre servidores DNS autorizados.
+    
+        En resumen, el comando "dig axfr @<DNS_IP> <DOMAIN>" se utiliza para solicitar una transferencia de zona completa desde un servidor DNS específico para un dominio dado.
+        Es importante tener en cuenta que no todos los servidores DNS permiten transferencias de zona a cualquier persona;
+        generalmente, solo los servidores autorizados para el dominio en cuestión permitirán esta operación por razones de seguridad.
+
+    Probamos a realizar una transferencia de zona y obtenemos los dos mismos subdominios que mediante fuerza bruta, estos apuntan al localhost de la maquina victima. 
+
+        ┌──(root㉿kali)-[/home/…/Desktop/ctf/try_ctf/iron_corp]
+        └─# dig axfr @10.10.125.93 ironcorp.me
+        
+        ; <<>> DiG 9.18.16-1-Debian <<>> axfr @10.10.125.93 ironcorp.me
+        ; (1 server found)
+        ;; global options: +cmd
+        ironcorp.me.            3600    IN      SOA     win-8vmbkf3g815. hostmaster. 3 900 600 86400 3600
+        ironcorp.me.            3600    IN      NS      win-8vmbkf3g815.
+        admin.ironcorp.me.      3600    IN      A       127.0.0.1
+        internal.ironcorp.me.   3600    IN      A       127.0.0.1
+        ironcorp.me.            3600    IN      SOA     win-8vmbkf3g815. hostmaster. 3 900 600 86400 3600
+        ;; Query time: 67 msec
+        ;; SERVER: 10.10.125.93#53(10.10.125.93) (TCP)
+        ;; WHEN: Sat Nov 04 07:47:36 CET 2023
+        ;; XFR size: 5 records (messages 1, bytes 238)
+
+
+## Analizamos los subdominios encontrados.
+
+--Por el momento tenemos:
+
+    Dominio ------> ironcorp.me 
+    Subdominios --> admin.ironcorp.me -- internal.ironcorp.me
+
+  Anadirmos los dos subdominios a nuestro fichero /etc/hosts
+
+    ┌──(root㉿kali)-[/home/…/Desktop/ctf/try_ctf/iron_corp]
+    └─# cat /etc/hosts
+    10.10.125.93    ironcorp.me admin.ironcorp.me internal.ironcorp.me
+
+
+--
+
+
+
+    
+
+
+
+
+
 
 
