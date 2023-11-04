@@ -249,13 +249,22 @@ Nos logueamos con las credenciales validas y obtenemos acceso a una web que nos 
 
 - Le pasamos como parametro 'r' la nueva url encontrada.
 
-  Nos muestra como mensaje el nombre Equinox, que tras probar a pasarle al parametro 'name' algo vemos que lo concatena al nombre quedando 'Equinoxesevka'.
+  Nos muestra como mensaje el nombre Equinox, que tras probar a pasarle al parametro 'name' un string vemos que lo concatena al nombre quedando 'Equinoxesevka'
 
   ![image](https://github.com/Esevka/CTF/assets/139042999/0e4b34d1-21ec-451b-8d56-9bffbb597db6)
   ![image](https://github.com/Esevka/CTF/assets/139042999/76e8cf96-41a2-44cb-a817-857b8314ccc4)
 
-  Teniendo en cuenta esto, podriamos decir que lo que hace es un 'echo', probamos maneras de romperlo para intentar injectar codigo.
-  Tras varias pruebas 
+  Teniendo en cuenta esto, posible codigo.
+  
+		<?php
+		echo ('Equinox'.$_GET["nombre"]);
+		?>
+
+
+  	- Intentamos romperlo comentando codigo php, utilizamos // , /* --> no funciono
+  	  
+			http://admin.ironcorp.me:11025/?r=http://internal.ironcorp.me:11025/name.php?name=//
+     			http://admin.ironcorp.me:11025/?r=http://internal.ironcorp.me:11025/name.php?name=/*
 
   
       
