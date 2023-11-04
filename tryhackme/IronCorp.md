@@ -239,7 +239,32 @@ Nos logueamos con las credenciales validas y obtenemos acceso a una web que nos 
 
   Por lo que esto nos da a entender, que podriamos intentar cargar una url en la query y ver si nos muestra su contenido.
 
-- Cargamos url 
+- Vamos a pasarle como parametro 'r' -->  internal.ironcorp.me:11025  que nos mostraba un  Access forbidden! Error 403, BINGO!
+
+  ![image](https://github.com/Esevka/CTF/assets/139042999/65a220b1-3cbb-41ce-ba08-d27c92495f43)
+
+  ![image](https://github.com/Esevka/CTF/assets/139042999/daab1b80-b557-43a7-b23c-94650e61704b)
+
+	Cargamos la url encontrada, nuevamente obtenemos un ---> Access forbidden! Error 403.
+
+- Le pasamos como parametro 'r' la nueva url encontrada.
+
+  Nos muestra como mensaje el nombre Equinox, que tras probar a pasarle al parametro 'name' algo vemos que lo concatena al nombre quedando 'Equinoxesevka'.
+
+  ![image](https://github.com/Esevka/CTF/assets/139042999/0e4b34d1-21ec-451b-8d56-9bffbb597db6)
+  ![image](https://github.com/Esevka/CTF/assets/139042999/76e8cf96-41a2-44cb-a817-857b8314ccc4)
+
+  Teniendo en cuenta esto, podriamos decir que lo que hace es un 'echo', probamos maneras de romperlo para intentar injectar codigo.
+  Tras varias pruebas 
+
+  
+      
+  
+
+
+
+  
+
   
 
     
