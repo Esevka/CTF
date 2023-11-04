@@ -166,14 +166,35 @@ Enunciado :
     Dominio ------> ironcorp.me 
     Subdominios --> admin.ironcorp.me -- internal.ironcorp.me
 
-  Anadirmos los dos subdominios a nuestro fichero /etc/hosts
+  Anadimos los subdominios encontrados a nuestro fichero /etc/hosts
 
     ┌──(root㉿kali)-[/home/…/Desktop/ctf/try_ctf/iron_corp]
     └─# cat /etc/hosts
     10.10.125.93    ironcorp.me admin.ironcorp.me internal.ironcorp.me
 
 
---
+--Vamos a ver que continen estos subdominios.
+
+  - Cargamos los subdominios en el puerto 80, no conseguimos nada.
+
+  - Cargamos el subdominio internal.ironcorp.me
+    
+      - Puerto 8080 ---> Muestra el panel Dashtreme Admin , nada interesante lo mismo.
+        
+      - Puerto 11025 --> Muestra un  Access forbidden! Error 403
+    
+  - Cargamos el subdominio admin.ironcorp.me
+    
+      - Puerto 8080 ---> Muestra el panel Dashtreme Admin , nada interesante lo mismo.
+        
+      - Puerto 11025 --> Muestra un panel de autenticacion basica
+        
+        ![image](https://github.com/Esevka/CTF/assets/139042999/22d2d26b-7248-446d-b002-ca1071e8786d)
+
+        Info: Como Funciona la autenticacion Basica en Apache.
+
+        https://www.zeppelinux.es/autenticacion-basic-en-apache/#google_vignette
+
 
 
 
