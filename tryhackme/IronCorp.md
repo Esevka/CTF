@@ -213,7 +213,7 @@ Enunciado :
         
         Despues de un minuto obtenemos credenciales validas para nuestro panel ---> admin:password123
 
-## Obtenemos session en la maquina victima mediante SSRF
+## Obtenemos acceso al panel del subdominio admin.
 
 Nos logueamos con las credenciales validas y obtenemos acceso a una web que nos permite realizar consultas(no sabemos de que tipo)
 
@@ -254,19 +254,54 @@ Nos logueamos con las credenciales validas y obtenemos acceso a una web que nos 
   ![image](https://github.com/Esevka/CTF/assets/139042999/0e4b34d1-21ec-451b-8d56-9bffbb597db6)
   ![image](https://github.com/Esevka/CTF/assets/139042999/76e8cf96-41a2-44cb-a817-857b8314ccc4)
 
-  Teniendo en cuenta esto, posible codigo.
-  
-		<?php
-		echo ('Equinox'.$_GET["nombre"]);
-		?>
 
+## Ejecutamos codigo en la maquina victima.
 
-  	- Intentamos romperlo comentando codigo php, utilizamos // , /* --> no funciono
-  	  
-			http://admin.ironcorp.me:11025/?r=http://internal.ironcorp.me:11025/name.php?name=//
-     			http://admin.ironcorp.me:11025/?r=http://internal.ironcorp.me:11025/name.php?name=/*
+  - Probamos con PHP Wrappers para ver si podiamos ver el contenido de name.php ---> sin exito.
 
-  
+  	Lo unico que conseguimos:
+
+		 Notice:  Undefined index: name in E:\xampp\htdocs\internal\name.php on line 8
+
+  - Despues de mucho probar y fallar y volver a fallar nos paramos a pensar un poco:
+
+	- Mediante un subdominio llamado 'admin' estamos haciendo consultas a otro subdominio 'internal', vulnerabilidad  ---> SSRF.
+ 	- Este subdominio 'internal' sabemos que tiene un fichero name.php el cual acepta valores a traves de  una variable 'name'
+  	- Si ejecutamos la url sin pasar nada a la variable 'name', esta nos muestra el nombre de 'Equinox' (Posible usuario)
+  	- Si ejecutamos la url pasandole algun valor a la variable 'name', esta nos muestra el nombre de 'Equinox' concatenando el valor, EJ: EquinoxEsevka
+
+  	-Pensamos 
+  	  		<?php
+				$cmd = "echo Equinox"."ls";
+				system($cmd);
+			?> 
+ 
+  	 - Podriamos intentar romperlo mediante la ejecucion de comandos windows, utilizando la concatenacion o redireccion de comandos.
+
+  		Notas:
+
+		    &: Se utiliza para concatenar múltiples comandos en una sola línea.
+
+		    >: Redirecciona la salida estándar de un comando a un archivo y sobrescribe el archivo existente.
+		
+		    >>: Redirecciona la salida estándar de un comando a un archivo y agrega el contenido al final del archivo existente sin sobrescribirlo.
+		
+		    <: Redirecciona la entrada de un comando desde un archivo en lugar de la entrada estándar.
+		
+		    |: Conocido como "pipe", conecta la salida de un comando a la entrada de otro.
+		
+		    &&: Ejecuta el segundo comando solo si el primero se ejecuta exitosamente (sin errores).
+		
+		    ||: Ejecuta el segundo comando solo si el primero no se ejecuta exitosamente (con errores).
+		
+		    &>: Redirecciona tanto la salida estándar como la salida de error a un archivo.
+		
+		    2>: Redirecciona la salida de error estándar a un archivo.
+		
+		    2>>: Redirecciona la salida de error estándar a un archivo y agrega el contenido al final del archivo existente sin sobrescribirlo.
+			
+
+    
       
   
 
