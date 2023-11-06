@@ -270,15 +270,15 @@ Nos logueamos con las credenciales validas y obtenemos acceso a una web que nos 
   	- Si ejecutamos la url sin pasar nada a la variable 'name', esta nos muestra el nombre de 'Equinox' (Posible usuario)
   	- Si ejecutamos la url pasandole algun valor a la variable 'name', esta nos muestra el nombre de 'Equinox' concatenando el valor, EJ: EquinoxEsevka
 
-  	-Pensamos 
-  	  		<?php
-				$cmd = "echo Equinox"."ls";
-				system($cmd);
-			?> 
+  - Por intentar algo diferente pensamos que el codigo de name.php podria ser algo parecido a esto, despues de tantas pruebas y fallos.
+    
+  	 	<?php
+    		$name = "echo Equinox"."ls";
+		system($name);
+		?> 
  
   	 - Podriamos intentar romperlo mediante la ejecucion de comandos windows, utilizando la concatenacion o redireccion de comandos.
 
-  		Notas:
 
 		    &: Se utiliza para concatenar múltiples comandos en una sola línea.
 
@@ -299,7 +299,31 @@ Nos logueamos con las credenciales validas y obtenemos acceso a una web que nos 
 		    2>: Redirecciona la salida de error estándar a un archivo.
 		
 		    2>>: Redirecciona la salida de error estándar a un archivo y agrega el contenido al final del archivo existente sin sobrescribirlo.
-			
+      
+  - Conseguimos ejecutar codigo en la maquina.
+
+    ![image](https://github.com/Esevka/CTF/assets/139042999/0003eff4-e693-4d3b-bd0d-f8d21db4d8f8)
+
+  - Lo primero vamos a visualizar el contenido de name.php para ver su codigo.
+
+    - Primer problema, cuando mandamos por ejemplo esto , nos devuelve un response indicando ---> Bad request!
+
+		![image](https://github.com/Esevka/CTF/assets/139042999/b70df2c7-e004-40ca-baf5-7f557c69f642)
+
+    	Creo que es por temas de los espacios entre comandos aun estando url encode con el simbolo + o el con %20 da el mismo error, ya que si ejecutamos por ejemplo el comando dir funciona.
+    
+    - Sabemos que se puede hacer url encode multiples veces, por lo que vamos a volver a url encodear el simbolo + y probamos.
+   
+      ![image](https://github.com/Esevka/CTF/assets/139042999/6755c76a-3363-48ae-b811-0a72b34cf1c3)
+
+      Funciono, y el codigo php es similar al que pensamos que podria tener.
+
+
+## Obtenemos Consola en la maquina victima
+
+
+
+    	
 
     
       
