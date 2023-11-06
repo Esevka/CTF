@@ -273,7 +273,7 @@ Nos logueamos con las credenciales validas y obtenemos acceso a una web que nos 
   - Por intentar algo diferente pensamos que el codigo de name.php podria ser algo parecido a esto, despues de tantas pruebas y fallos.
     
   	 	<?php
-    		$name = "echo Equinox"."ls";
+    		$name = "echo Equinox".$_GET['name'];
 		system($name);
 		?> 
  
@@ -316,7 +316,7 @@ Nos logueamos con las credenciales validas y obtenemos acceso a una web que nos 
    
       ![image](https://github.com/Esevka/CTF/assets/139042999/6755c76a-3363-48ae-b811-0a72b34cf1c3)
 
-      Funciono, y el codigo php es similar al que pensamos que podria tener.
+      Funciona y el codigo php es similar al que pensamos que podria ser.
 
 
 ## Obtenemos Consola en la maquina victima
