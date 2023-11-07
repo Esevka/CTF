@@ -388,6 +388,36 @@ Cuando obtenemos consola en la maquina si nos fijamos la unidad es la E:\ , que 
 
 - Leemos flag root.txt
 
+  A la hora de buscar root.txt, encontramos con que no podemos acceder por temas de permisos a las carpetas de dos de los usuarios del sistema(Admin y SuperAdmin).
+
+  1)Usuario SuperAdmin
+
+		PS C:\users\SuperAdmin> Get-acl |Format-list
+		Get-acl |Format-list
+		
+		Path   : Microsoft.PowerShell.Core\FileSystem::C:\users\SuperAdmin
+		Owner  : NT AUTHORITY\SYSTEM
+		Group  : NT AUTHORITY\SYSTEM
+		Access : BUILTIN\Administrators Deny  FullControl
+		         S-1-5-21-297466380-2647629429-287235700-1000 Allow  FullControl
+		Audit  : 
+		Sddl   : O:SYG:SYD:PAI(D;OICI;FA;;;BA)(A;OICI;FA;;;S-1-5-21-297466380-264762942
+		         9-287235700-1000)
+		
+	Como vemos no tenemos acceso al directorio ya que pertenecemos al grupo el cual le deniega el acceso.
+ 	Solo tiene acceso total el usuario con el SID que se muestra, listamos los SID de usuarios para ver si podemos hacer algo.
+	Nada creo que dicho usuario no existe  ya que no coincide con ningun SID
+
+		PS C:\users\SuperAdmin> wmic useraccount get name,sid
+		wmic useraccount get name,sid
+		Name            SID                                           
+		Admin           S-1-5-21-297466380-2647629429-287235700-1003  
+		Administrator   S-1-5-21-297466380-2647629429-287235700-500   
+		DefaultAccount  S-1-5-21-297466380-2647629429-287235700-503   
+		Equinox         S-1-5-21-297466380-2647629429-287235700-1001  
+		Guest           S-1-5-21-297466380-2647629429-287235700-501   
+		Sunlight        S-1-5-21-297466380-2647629429-287235700-1002 
+	
   
 
 
