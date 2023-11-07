@@ -421,6 +421,19 @@ Cuando obtenemos consola en la maquina si nos fijamos la unidad es la E:\ , que 
 	
   2)Usuario Admin
 
+		PS C:\users\Admin> Get-Acl | Format-list
+		Get-Acl | Format-list
+		
+		Path   : Microsoft.PowerShell.Core\FileSystem::C:\users\Admin
+		Owner  : NT AUTHORITY\SYSTEM
+		Group  : NT AUTHORITY\SYSTEM
+		Access : WIN-8VMBKF3G815\Admin Allow  FullControl
+		Audit  : 
+		Sddl   : O:SYG:SYD:PAI(A;OICI;FA;;;S-1-5-21-297466380-2647629429-287235700-1003)
+
+  	
+
+
 
 
 
