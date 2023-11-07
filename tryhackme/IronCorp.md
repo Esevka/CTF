@@ -379,7 +379,15 @@ Cuando obtenemos consola en la maquina si nos fijamos la unidad es la E:\ , que 
 		PS E:\xampp\htdocs\internal>cd c:\
 		cd c:\
 		PS C:\>
-  - Leemos flag user.txt
+  
+- Leemos flag user.txt
+
+		PS C:\users\Administrator\Desktop> type user.txt
+		type user.txt
+		thm{09b408056a1----------33e6e4cf599f8c}
+
+- Leemos flag root.txt
+
   
 
 
