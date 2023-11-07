@@ -417,8 +417,9 @@ Cuando obtenemos consola en la maquina si nos fijamos la unidad es la E:\ , que 
 		Equinox         S-1-5-21-297466380-2647629429-287235700-1001  
 		Guest           S-1-5-21-297466380-2647629429-287235700-501   
 		Sunlight        S-1-5-21-297466380-2647629429-287235700-1002 
+
 	
-  
+  2)Usuario Admin
 
 
 
