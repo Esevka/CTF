@@ -510,7 +510,10 @@ Cuando obtenemos consola en la maquina si nos fijamos la unidad es la E:\ , que 
 		thm{a1f936a086b----------7dd6cd2e2bd}
 
 
-
+---
+---> Maquina Iron Corp completa. <---
+---
+---
       		
 
 
