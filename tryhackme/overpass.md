@@ -62,7 +62,7 @@ Enunciado :
   - Maquina Linux (Ubuntu Bionic 18.04)
   - Puertos 80(Http) y 22 (SSH)
 
--Puerto 80.
+-Puerto 80(http).
 
   - Web titulada Overpass
   
@@ -103,10 +103,48 @@ Enunciado :
    
       ![image](https://github.com/Esevka/CTF/assets/139042999/3c07e9ad-3796-46e9-99a3-d1dc1b07ee93)
 
+-Puerto 22(SSH)
 
+-Copiamos la clave a un fichero en nuestra maquina y le damos permiso solo de lectura para nuestro usuario.
 
-      
+    ┌──(root㉿kali)-[/home/…/ctf/try_ctf/overpass/files]
+    └─# echo '-----BEGIN RSA PRIVATE KEY-----
+    Proc-Type: 4,ENCRYPTED
+    DEK-Info: AES-128-CBC,9F85D92F34F42626F13A7493AB48F337
+    
+    LNu5wQBBz7pKZ3cc4TWlxIUuD/opJi1DVpPa06pwiHHhe8Zjw3/v+xnmtS3O+qiN
+    JHnLS8oUVR6Smosw4pqLGcP3AwKvrzDWtw2ycO7mNdNszwLp3uto7ENdTIbzvJal
+    [...]
+    2cWk/Mln7+OhAApAvDBKVM7/LGR9/sVPceEos6HTfBXbmsiV+eoFzUtujtymv8U7
+    -----END RSA PRIVATE KEY-----'> id_rsa 
 
+    
+    ┌──(root㉿kali)-[/home/…/ctf/try_ctf/overpass/files]
+    └─# chmod 400 id_rsa                                                                                                                                                    
+                                                                                                                                                              
+    ┌──(root㉿kali)-[/home/…/ctf/try_ctf/overpass/files]
+    └─# ls -la
+    -r-------- 1 root root 1766 Nov 12 12:42 id_rsa
+
+-Conectamos por ssh utilizando la id_rsa del usuario ---> James
+   
+    ┌──(root㉿kali)-[/home/…/ctf/try_ctf/overpass/files]
+    └─# ssh -i id_rsa james@10.10.181.35
+    The authenticity of host '10.10.181.35 (10.10.181.35)' can't be established.
+    ED25519 key fingerprint is SHA256:FhrAF0Rj+EFV1XGZSYeJWf5nYG0wSWkkEGSO5b+oSHk.
+    This host key is known by the following other names/addresses:
+        ~/.ssh/known_hosts:11: [hashed name]
+    Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
+    Warning: Permanently added '10.10.181.35' (ED25519) to the list of known hosts.
+    Enter passphrase for key 'id_rsa': 
+
+Nos pide passphrase para la id_rsa, cosa que no tenemos.
+
+    La "passphrase" (frase de contraseña) para una clave SSH (Secure Shell) es una capa adicional de seguridad que se puede agregar a la clave privada.
+
+-Intentamos Crakear la pass de is_rsa.
+
+  1)
 
 
 
