@@ -62,7 +62,43 @@ Enunciado :
   - Maquina Linux (Ubuntu Bionic 18.04)
   - Puertos 80(Http) y 22 (SSH)
 
--Puerto 80
+-Puerto 80.
+
+  - Web titulada Overpass
+  
+    ![image](https://github.com/Esevka/CTF/assets/139042999/5a258f78-d81a-4cac-959e-930ed30e9ece)
+
+  - En el apartado --> About Us, encontramos posibles usuarios.
+
+    ![image](https://github.com/Esevka/CTF/assets/139042999/2e11e1f2-9212-4358-98cf-3ca15bfc95fa)
+
+  - En el apartado --> Downloads, encontramos la app para diferentes sistemas y el codigo original de la app.
+
+    ![image](https://github.com/Esevka/CTF/assets/139042999/88593c8d-3509-4b30-9414-4a2921f7afc8)
+
+  - Fuzzeamos la web en busqueda de directorios con la ayuda de --> Gobuster.
+
+        ┌──(root㉿kali)-[/home/…/ctf/try_ctf/overpass/files]
+        └─# gobuster dir -u http://10.10.181.35/ -w /usr/share/wordlists/dirb/common.txt -o fuzz
+        ===============================================================
+        Gobuster v3.6
+        by OJ Reeves (@TheColonial) & Christian Mehlmauer (@firefart)
+        ===============================================================
+        /aboutus              (Status: 301) [Size: 0] [--> aboutus/]
+        /admin                (Status: 301) [Size: 42] [--> /admin/]  ---> directorio que nos interesa.
+        /css                  (Status: 301) [Size: 0] [--> css/]
+        /downloads            (Status: 301) [Size: 0] [--> downloads/]
+        /img                  (Status: 301) [Size: 0] [--> img/]
+        /index.html           (Status: 301) [Size: 0] [--> ./]
+
+  - Cargamos el directorio y encontramos un panel de login.
+
+    ![image](https://github.com/Esevka/CTF/assets/139042999/28d69fc5-7f5a-42e1-a34a-82551fd94329)
+
+    - Vamos a analizar el codigo del panel de login, en busca de algun fallo.
+
+
+    
 
   
 
