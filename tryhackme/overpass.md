@@ -95,7 +95,16 @@ Enunciado :
 
     ![image](https://github.com/Esevka/CTF/assets/139042999/28d69fc5-7f5a-42e1-a34a-82551fd94329)
 
-    - Vamos a analizar el codigo del panel de login, en busca de algun fallo.
+    - Vamos a analizar el codigo web del panel de login, en busca de algun fallo.
+   
+      ![image](https://github.com/Esevka/CTF/assets/139042999/fd4e81fe-14c3-4ce3-8665-adb8fd007602)
+
+    - Creamos una cookie para ver si podemos saltarnos el panel de login.
+
+      
+
+
+
 
 
     
