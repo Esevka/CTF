@@ -99,7 +99,11 @@ Enunciado :
    
       ![image](https://github.com/Esevka/CTF/assets/139042999/fd4e81fe-14c3-4ce3-8665-adb8fd007602)
 
-    - Creamos una cookie para ver si podemos saltarnos el panel de login.
+    - Creamos una cookie para ver si podemos saltarnos el panel de login y recargamos la web. Bingo obtenemos una private key.
+   
+      ![image](https://github.com/Esevka/CTF/assets/139042999/3c07e9ad-3796-46e9-99a3-d1dc1b07ee93)
+
+
 
       
 
