@@ -12,6 +12,17 @@ Enunciado :
 
 ## Escaneo de puertos (NMAP).
 
+-Segun el ttl obtenito a la hora de lanzar un ping a la maquina victima podriamos decir que es una maquina ---> Linux.
+
+    ┌──(root㉿kali)-[/home/…/ctf/try_ctf/overpass/nmap]
+    └─# ping 10.10.181.35 -c1
+    PING 10.10.181.35 (10.10.181.35) 56(84) bytes of data.
+    64 bytes from 10.10.181.35: icmp_seq=1 ttl=63 time=582 ms
+    
+    --- 10.10.181.35 ping statistics ---
+    1 packets transmitted, 1 received, 0% packet loss, time 0ms
+    rtt min/avg/max/mdev = 581.984/581.984/581.984/0.000 ms
+
 -Buscamos puertos abiertos en en la maquina victima.
 
     ┌──(root㉿kali)-[/home/…/ctf/try_ctf/overpass/nmap]
@@ -39,7 +50,19 @@ Enunciado :
     |_http-title: Overpass
     Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
 
+-Segun el lauchpad del servicio OpenSSH que tenemos corriendo en el puerto 22.
+
+  ![image](https://github.com/Esevka/CTF/assets/139042999/1bf3f6e8-0dbc-4f89-a3e3-d9f95bca992b)
+
+
 ## Analizamos la informacion obtenida.
 
--
+-Por el momento tenemos:
+
+  - Maquina Linux (Ubuntu Bionic 18.04)
+  - Puertos 80(Http) y 22 (SSH)
+
+-Puerto 80
+
+  
 
