@@ -151,7 +151,7 @@ Nos pide passphrase para la id_rsa, cosa que no tenemos.
 
   2)Crakeamos john_id_rsa
 
-    ┌──(root㉿kali)-[~kali/…/ctf/try_ctf/overpass/contend]
+    		┌──(root㉿kali)-[~kali/…/ctf/try_ctf/overpass/contend]
 		└─# john john_idrsa --wordlist=/usr/share/wordlists/rockyou.txt 
 		Using default input encoding: UTF-8
 		Loaded 1 password hash (SSH, SSH private key [RSA/DSA/EC/OPENSSH 32/64])
@@ -159,7 +159,7 @@ Nos pide passphrase para la id_rsa, cosa que no tenemos.
 		Cost 2 (iteration count) is 1 for all loaded hashes
 		Will run 3 OpenMP threads
 		Press 'q' or Ctrl-C to abort, almost any other key for status
-		james----13          (id_rsa)  
+		ja-----13          (id_rsa)  
 
   3)Obtenemos session en la maquina victima mediante SSH.
 
@@ -195,6 +195,26 @@ Nos pide passphrase para la id_rsa, cosa que no tenemos.
     james@overpass-prod:~$ cat user.txt 
     thm{65c1aaf000506e56-------1e6bf7}
 
+-Encontramos junto a la flag de usuario un fichero interesante.
+
+	james@overpass-prod:~$ cat todo.txt 
+	To Do:
+	> Update Overpass' Encryption, Muirland has been complaining that it's not strong enough
+	> Write down my password somewhere on a sticky note so that I don't forget it.
+	  Wait, we make a password manager. Why don't I just use that?
+	> Test Overpass for macOS, it builds fine but I'm not sure it actually works
+	> Ask Paradox how he got the automated build script working and where the builds go.
+	  They're not updating on the website
+
+- Encontramos interesante los dos ultimos comentarios.
+
+	1)El binario para macOS se crea bien pero no esta seguro de si funciona, podriamos ver el codigo fuente que lo tenemos disponible en la web.
+  
+	2)Pregunta al usuario Paradox donde estan los scripts automaticos de actualizacion web, podrian tener una tarea programada corriendo.
+
+  
+
+  
 
 
 
