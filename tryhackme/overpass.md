@@ -320,6 +320,10 @@ Nos pide passphrase para la id_rsa, cosa que no tenemos.
 				cat root.txt
 				thm{7f336f8c359d-------d54fdd64ea753bb}
 
+
+
+---> Maquina Overpass completa. <---
+---
     
 
     	
