@@ -114,6 +114,23 @@ Enunciado :
 
        ![image](https://github.com/Esevka/CTF/assets/139042999/4a5c3621-426d-46aa-85cb-de13c8945697)
 
+       Info para entender todo el proceso:
+       
+       [+]https://portswigger.net/web-security/sql-injection/union-attacks
+       
+       [+]https://dev.mysql.com/doc/refman/8.0/en/information-schema-general-table-reference.html
+
+       - Obtenemos el nombre de las bases de datos disponibles, vamos a intentar sacar los usuario de la BD --> wordpress.
+      
+         ![image](https://github.com/Esevka/CTF/assets/139042999/fda789a6-03c8-4450-a595-c4693afb8093)
+
+       - Obtenemos el nombre de las tablas de la BD -->Wordpress
+
+
+         
+      
+         
+
        
 
 
