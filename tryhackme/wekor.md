@@ -70,26 +70,61 @@ Enunciado :
   - Maquina Linux Ubuntu XENIAL(16.04)
   - Puertos 80(Http) y 22 (SSH)
 
--Puerto 80(HTTP)
+--Puerto 80(HTTP)
 
-  -Incluimos el dominio 'wekor.thm' en nuestro fichero hosts.
+  1) Incluimos el dominio 'wekor.thm' en nuestro fichero hosts.
 
-    ┌──(root㉿kali)-[/home/…/ctf/try_ctf/wekor/nmap]
-    └─# cat /etc/hosts                              
-    127.0.0.1       localhost
-    10.10.120.22    wekor.thm
+          ┌──(root㉿kali)-[/home/…/ctf/try_ctf/wekor/nmap]
+          └─# cat /etc/hosts                              
+          127.0.0.1       localhost
+          10.10.120.22    wekor.thm
 
-  -Visualizamos la web en busqueda de informacion y encontramos esto.
+  2) Visualizamos la web en busqueda de informacion y encontramos esto.
 
-  ![image](https://github.com/Esevka/CTF/assets/139042999/ed54338e-091f-4234-a47e-b3a363163874)
+      ![image](https://github.com/Esevka/CTF/assets/139042999/ed54338e-091f-4234-a47e-b3a363163874)
 
-  -Segun la info obtenida con nmap tenemos disponible el fichero robots.txt con una serie de directorios.
+  3) Segun la info obtenida con nmap tenemos disponible el fichero robots.txt con una serie de directorios.
 
-    | http-robots.txt: 9 disallowed entries 
-    | /workshop/ /root/ /lol/ /agent/ /feed /crawler /boot 
-    |_/comingreallysoon /interesting
+          | http-robots.txt: 9 disallowed entries 
+          | /workshop/ /root/ /lol/ /agent/ /feed /crawler /boot 
+          |_/comingreallysoon /interesting
 
-    NOTA: 
+      - Visualizamos robots.txt
+
+        ![image](https://github.com/Esevka/CTF/assets/139042999/e3e63b16-364f-42f5-a713-b8f2d89f8051)
+    
+        NOTA: Esto se utiliza generalmente para evitar que ciertas partes del sitio web sean indexadas por los motores de búsqueda.
+        Por otro lado esta configuración no impide que las personas accedan directamente a esas URL si conocen la estructura del sitio. La principal función es guiar a los motores de búsqueda.
+
+      - Intentamos acceder a los directorios del fichero robots.txt, Bingo tenemos un directorio valido.
+        
+        ![image](https://github.com/Esevka/CTF/assets/139042999/8a6d6d33-e36b-4bf3-91b6-689f2fa386fe)
+
+  4) Accedemos al nuevo directorio encontrado --> /it-next
+
+       Segun el enunciado la web es vulnerable a Sqli por lo que vamos al lio, despues de un rato encontramos el campo vulnerable, se encuentra en el carrito de la compra.
+
+       ![image](https://github.com/Esevka/CTF/assets/139042999/bcc5f2fb-0c9a-4c9d-a306-f0996b2c3e9c)
+
+     - Obtencion de datos mediante SQLI.
+
+       Necesitamos interceptar la conexion con burpsuite para poder crear de una manera mas comoda las sentencias sql.
+
+       Las sentencias sql pueden ir urlencode o no funciona de ambas maneras, hacemos una comprobacion y obtenemos datos.
+
+       ![image](https://github.com/Esevka/CTF/assets/139042999/4a5c3621-426d-46aa-85cb-de13c8945697)
+
+       
+
+
+
+       
+
+     
+
+
+
+
 
 
     
