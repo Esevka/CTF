@@ -72,6 +72,29 @@ Enunciado :
 
 -Puerto 80(HTTP)
 
-  -
+  -Incluimos el dominio 'wekor.thm' en nuestro fichero hosts.
+
+    ┌──(root㉿kali)-[/home/…/ctf/try_ctf/wekor/nmap]
+    └─# cat /etc/hosts                              
+    127.0.0.1       localhost
+    10.10.120.22    wekor.thm
+
+  -Visualizamos la web en busqueda de informacion y encontramos esto.
+
+  ![image](https://github.com/Esevka/CTF/assets/139042999/ed54338e-091f-4234-a47e-b3a363163874)
+
+  -Segun la info obtenida con nmpa tenemos disponible el fichero robots.txt con una serie de directorios.
+
+    | http-robots.txt: 9 disallowed entries 
+    | /workshop/ /root/ /lol/ /agent/ /feed /crawler /boot 
+    |_/comingreallysoon /interesting
+
+    NOTA: 
+
+
+    
+                          
+
+  
 
 
