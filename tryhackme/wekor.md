@@ -83,7 +83,7 @@ Enunciado :
 
   ![image](https://github.com/Esevka/CTF/assets/139042999/ed54338e-091f-4234-a47e-b3a363163874)
 
-  -Segun la info obtenida con nmpa tenemos disponible el fichero robots.txt con una serie de directorios.
+  -Segun la info obtenida con nmap tenemos disponible el fichero robots.txt con una serie de directorios.
 
     | http-robots.txt: 9 disallowed entries 
     | /workshop/ /root/ /lol/ /agent/ /feed /crawler /boot 
