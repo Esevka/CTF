@@ -245,10 +245,22 @@ Enunciado :
 
   ![image](https://github.com/Esevka/CTF/assets/139042999/3bc5c76e-96c5-40d2-a879-c8529df725dc)
 
-##Escalada Horizontal de privilegios www-data to Orka
+## Escalada Horizontal de privilegios www-data to Orka
 
+- Despues de un rato enumerando,con la ayuda de netstat encontramos que la maquina victima tiene varios servicios a la escucha en la direccion local(127.0.0.1-Localhost)
 
-      
+      www-data@osboxes:/home$ netstat -tunlp
+      netstat -tunlp
+      (Not all processes could be identified, non-owned process info
+       will not be shown, you would have to be root to see it all.)
+      Active Internet connections (only servers)
+      Proto Recv-Q Send-Q Local Address           Foreign Address         State       PID/Program name
+      tcp        0      0 127.0.0.1:3010          0.0.0.0:*               LISTEN      -               
+      tcp        0      0 127.0.0.1:3306          0.0.0.0:*               LISTEN      -               
+      tcp        0      0 127.0.0.1:11211         0.0.0.0:*               LISTEN      -   ----> ESTE ES EL QUE NOS INTERESA ESTA CORRIENDO --> Memcached            
+      tcp        0      0 0.0.0.0:22              0.0.0.0:*               LISTEN      -               
+      tcp        0      0 127.0.0.1:631           0.0.0.0:*               LISTEN      -        
+        
          
            
         
