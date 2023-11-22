@@ -149,7 +149,7 @@ Enunciado :
          
 
 
-
+  6) Acabamos de obtener credenciales par wordpress,llegadoss a este punto sabemos que debe
 
          
       
