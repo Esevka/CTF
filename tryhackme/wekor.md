@@ -124,7 +124,31 @@ Enunciado :
       
          ![image](https://github.com/Esevka/CTF/assets/139042999/fda789a6-03c8-4450-a595-c4693afb8093)
 
-       - Obtenemos el nombre de las tablas de la BD -->Wordpress
+       - Obtenemos el nombre de las tablas de la BD (Wordpress), la tabla que nos interesa --> wp_users
+      
+         ![image](https://github.com/Esevka/CTF/assets/139042999/5f497c9d-1bd7-4406-989c-44c1dd46ad19)
+
+       - Obtenemos las columnas de la tabla wp_users, nos interesan las columnas(user_login, user_pass)
+
+         ![image](https://github.com/Esevka/CTF/assets/139042999/104f8f87-e673-4d13-853e-9ad73a7d3ec9)
+
+       - Obtenemos los valores de las columnas user_login y user_pass
+
+         ![image](https://github.com/Esevka/CTF/assets/139042999/3dfdff14-e73a-48c3-a7a7-e3c065334dfd)
+
+              Usuarios de WP y password(HASH MD5 worpress)
+         
+              admin:$P$BoyfR2QzhNjRNmQZpva6TuuD0EE31B.
+              wp_jeffrey:$P$BU8QpWD.kHZv3Vd1r52ibmO913hmj10
+              wp_yura:$P$B6jSC3m7WdMlLi1/NDb3OFhqv536SV/
+              wp_eagle:$P$BpyTRbmvfcKyTrbDzaK1zSPgM7J6QY/
+
+  5) Crakeamos las passwords con john.
+
+     Creamos un ficheros con estructura usuario:pass 
+         
+
+
 
 
          
