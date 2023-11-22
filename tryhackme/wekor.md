@@ -338,7 +338,7 @@ Enunciado :
           VALUE password 0 15
           OrkAiSC00L24/7$
 
-    Mencache almacenaba en este caso la ficha de identificacion del usuario Orka ---> Orka:OrkAiSC00L24/7$
+      Mencache almacenaba en este caso la ficha de identificacion del usuario Orka ---> Orka:OrkAiSC00L24/7$
 
 
 - Escalada horizontal, leemos flag de usuario.
