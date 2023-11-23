@@ -358,7 +358,58 @@ Enunciado :
 
 ## Escalada Vertical de privilegios  Orka to root
 
+- Listamos los comandos permitidos y prohibidos que se nos permiten ejecutar en la maquina, en este caso vemos que podemos ejecutar -->bitcoin  as user root.
 
+      Orka@osboxes:/home$ sudo -l
+      [sudo] password for Orka: OrkAiSC00L24/7$
+      
+      Matching Defaults entries for Orka on osboxes:
+          env_reset, mail_badpass, secure_path=/usr/local/sbin\:/usr/local/bin\:/usr/sbin\:/usr/bin\:/sbin\:/bin\:/snap/bin
+      
+      User Orka may run the following commands on osboxes:
+          (root) /home/Orka/Desktop/bitcoin
+      
+- Analizamos el fichero bitcoin
+
+    - Vemos que bitcoin es un archivo ejecutable 
+
+          Orka@osboxes:~/Desktop$ file bitcoin 
+          bitcoin: ELF 32-bit LSB executable, Intel 80386, version 1 (SYSV), dynamically linked, interpreter /lib/ld-linux.so.2, for GNU/Linux 2.6.32,       BuildID[sha1]=8280915d0ebb7225ed63f226c15cee11ce960b6b, not stripped
+
+    - Con el comando strings vamos a intentar obtener las cadenas de caracteres que contiene el fichero bitcoin.
+
+          [...]
+          User Manual:
+          Maximum Amount Of BitCoins Possible To Transfer at a time : 9 
+          Amounts with more than one number will be stripped off! 
+          And Lastly, be careful, everything is logged :) 
+          Amount Of BitCoins : 
+           Sorry, This is not a valid amount! 
+          python /home/Orka/Desktop/transfer.py %c    -->Aqui podemos ver que ejecuta transfer.py
+          ;*2$",
+          GCC: (Ubuntu 5.4.0-6ubuntu1~16.04.12) 5.4.0 20160609
+          [...]
+
+         Analizamos el fichero transfer.py nada que podamos hacer.
+
+    - Listamos permisos que tenemos sobre los ficheros, no tenemos permisos de escritura.
+      
+          Orka@osboxes:~/Desktop$ ls -la
+          ls -la
+          total 20
+          drwxrwxr-x  2 root root 4096 Jan 23  2021 .
+          drwxr-xr-- 18 Orka Orka 4096 Jan 26  2021 ..
+          -rwxr-xr-x  1 root root 7696 Jan 23  2021 bitcoin
+          -rwxr--r--  1 root root  588 Jan 23  2021 transfer.py
+
+    -  Volvemos un paso atras y vemos bitcoin ejecuta ''python /home...'', no utliza la ruta absoluta para ejecutar python.
+    
+            python /home/Orka/Desktop/transfer.py %c
+
+       -Podriamos crear un fichero llamado python con nuestro codigo y meterlo en una ruta del PATH anterior al actual para que al buscar python en el PATH encutre el nuestro primero.
+
+          
+      
 
 
 
