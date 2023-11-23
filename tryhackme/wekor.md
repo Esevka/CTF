@@ -261,9 +261,9 @@ Enunciado :
       tcp        0      0 0.0.0.0:22              0.0.0.0:*               LISTEN      -               
       tcp        0      0 127.0.0.1:631           0.0.0.0:*               LISTEN      -
 
-  Que es Mencached? [+] https://aws.amazon.com/es/memcached/
+  Que es Memcached? [+] https://aws.amazon.com/es/memcached/
 
-- Atacamos Mencached en busca de informacion.
+- Atacamos Memcached en busca de informacion.
 
   Info: https://book.hacktricks.xyz/v/es/network-services-pentesting/11211-memcache
 
@@ -338,7 +338,7 @@ Enunciado :
           VALUE password 0 15
           OrkAiSC00L24/7$
 
-      Mencache almacenaba en este caso la ficha de identificacion del usuario Orka ---> Orka:OrkAiSC00L24/7$
+      Memcache almacenaba en este caso la ficha de identificacion del usuario Orka ---> Orka:OrkAiSC00L24/7$
 
 
 - Escalada horizontal, leemos flag de usuario.
