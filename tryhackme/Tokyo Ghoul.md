@@ -170,7 +170,7 @@ Enunciado :
                 Hmm. I don't think this is what I was looking for.
                 Take a look inside of me. rabin2 -z
 
-            - Hacemos uso del comando 'strings' para obtener todas las cadenas de strings del binario.
+            - Hacemos uso del comando 'strings' para obtener todas las cadenas de string del binario.
               
                   ┌──(root㉿kali)-[/home/…/try_ctf/tokyo_ghoul/contenido/ftp]
                   └─# strings need_to_talk 
