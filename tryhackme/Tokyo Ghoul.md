@@ -82,5 +82,104 @@ Enunciado :
 
 --Puerto 21(ftp)
 
+  - Anonymous FTP login allowed, nos descargamos todo el contenido interesante del ftp.
+
+        ┌──(root㉿kali)-[/home/…/Desktop/ctf/try_ctf/tokyo_ghoul]
+        └─# ftp anonymous@10.10.44.28 -i
+        Connected to 10.10.44.28.
+        220 (vsFTPd 3.0.3)
+        230 Login successful.
+        Remote system type is UNIX.
+        Using binary mode to transfer files.
+        ftp> ls
+        229 Entering Extended Passive Mode (|||44814|)
+        150 Here comes the directory listing.
+        drwxr-xr-x    3 ftp      ftp          4096 Jan 23  2021 need_Help?
+        226 Directory send OK.
+        ftp> cd need_Help?
+        250 Directory successfully changed.
+        ftp> ls -la
+        229 Entering Extended Passive Mode (|||42985|)
+        150 Here comes the directory listing.
+        drwxr-xr-x    3 ftp      ftp          4096 Jan 23  2021 .
+        drwxr-xr-x    3 ftp      ftp          4096 Jan 23  2021 ..
+        -rw-r--r--    1 ftp      ftp           480 Jan 23  2021 Aogiri_tree.txt
+        drwxr-xr-x    2 ftp      ftp          4096 Jan 23  2021 Talk_with_me
+        ftp> mget Aogiri_tree.txt
+        local: Aogiri_tree.txt remote: Aogiri_tree.txt
+        229 Entering Extended Passive Mode (|||44571|)
+        150 Opening BINARY mode data connection for Aogiri_tree.txt (480 bytes).
+        100% |************************************************************************************|   480        8.80 MiB/s    00:00 ETA
+        226 Transfer complete.
+        480 bytes received in 00:00 (8.65 KiB/s)
+        ftp> cd Talk_with_me
+        250 Directory successfully changed.
+        ftp> ls -la
+        229 Entering Extended Passive Mode (|||40631|)
+        150 Here comes the directory listing.
+        drwxr-xr-x    2 ftp      ftp          4096 Jan 23  2021 .
+        drwxr-xr-x    3 ftp      ftp          4096 Jan 23  2021 ..
+        -rwxr-xr-x    1 ftp      ftp         17488 Jan 23  2021 need_to_talk
+        -rw-r--r--    1 ftp      ftp         46674 Jan 23  2021 rize_and_kaneki.jpg
+        226 Directory send OK.
+        ftp> mget *
+        local: need_to_talk remote: need_to_talk
+        229 Entering Extended Passive Mode (|||42016|)
+        150 Opening BINARY mode data connection for need_to_talk (17488 bytes).
+        100% |************************************************************************************| 17488       66.68 KiB/s    00:00 ETA
+        226 Transfer complete.
+        17488 bytes received in 00:00 (55.09 KiB/s)
+        local: rize_and_kaneki.jpg remote: rize_and_kaneki.jpg
+        229 Entering Extended Passive Mode (|||48594|)
+        150 Opening BINARY mode data connection for rize_and_kaneki.jpg (46674 bytes).
+        100% |************************************************************************************| 46674      109.29 KiB/s    00:00 ETA
+        226 Transfer complete.
+        46674 bytes received in 00:00 (96.90 KiB/s)
+        ftp> exit
+        221 Goodbye.
+    
+  - Analizamos todo lo encontrado en el ftp
+      
+        ┌──(root㉿kali)-[/home/…/try_ctf/tokyo_ghoul/contenido/ftp]
+        └─# ls -la
+        total 80
+        drwxr-xr-x 2 root root  4096 Nov 29 19:01 .
+        drwxr-xr-x 3 root root  4096 Nov 29 18:59 ..
+        -rw-r--r-- 1 root root   480 Jan 23  2021 Aogiri_tree.txt
+        -rw-r--r-- 1 root root 17488 Jan 23  2021 need_to_talk
+        -rw-r--r-- 1 root root 46674 Jan 23  2021 rize_and_kaneki.jpg
+
+      - Aogiri_tree.txt --> nada interesante.
+        
+      - need_to_talk(es un fichero ELF 64-bits).
+   
+        1) Damos permiso para poder ejecutarlo.
+               
+                ┌──(root㉿kali)-[/home/…/try_ctf/tokyo_ghoul/contenido/ftp]
+                └─# chmod +x need_to_talk
+        
+        2) Ejecutamos
+
+                ┌──(root㉿kali)-[/home/…/try_ctf/tokyo_ghoul/contenido/ftp]
+                └─# ./need_to_talk 
+                Hey Kaneki finnaly you want to talk 
+                Unfortunately before I can give you the kagune you need to give me the paraphrase
+                Do you have what I'm looking for?
+                
+                > exit
+                Hmm. I don't think this is what I was looking for.
+                Take a look inside of me. rabin2 -z
+
+            - Hacemos uso del comando 'strings' para obtener todas las cadenas de strings del binario.
+              
+                  ┌──(root㉿kali)-[/home/…/try_ctf/tokyo_ghoul/contenido/ftp]
+                  └─# strings need_to_talk 
+              ![image](https://github.com/Esevka/CTF/assets/139042999/a3bbf4be-e346-4418-a609-07744307ab2d)
+
+
+
+
+
+
 
 
