@@ -174,9 +174,21 @@ Enunciado :
               
                   ┌──(root㉿kali)-[/home/…/try_ctf/tokyo_ghoul/contenido/ftp]
                   └─# strings need_to_talk 
-              ![image](https://github.com/Esevka/CTF/assets/139042999/a3bbf4be-e346-4418-a609-07744307ab2d)
+              ![image](https://github.com/Esevka/CTF/assets/139042999/e0e8467f-9c8c-4c05-bd8c-9807de2bc0fa)
 
+              Volvemos a ejecutar y bingo obtenemos un string que por el momento no sabemos para que es.
 
+                  ┌──(root㉿kali)-[/home/…/try_ctf/tokyo_ghoul/contenido/ftp]
+                  └─# ./need_to_talk 
+                  Hey Kaneki finnaly you want to talk 
+                  Unfortunately before I can give you the kagune you need to give me the paraphrase
+                  Do you have what I'm looking for?
+                  
+                  > kamishiro
+                  Good job. I believe this is what you came for:
+                  You_found_1t
+              
+        3) 
 
 
 
