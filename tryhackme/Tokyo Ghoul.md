@@ -249,15 +249,58 @@ Enunciado :
       Encontramos que tanto si pulsamos 'NO' o 'SI', lo que hace 'index.php' es cargar en este caso un gif que se le pasa a la variable '?view=' como parametro.
       Podriamos intentar cargar otro fichero de la maquina mediante un LFI.
 
+      <div class="menu">
+	    <a href="index.php">Main Page</a>
+	    <a href="index.php?view=flower.gif">NO</a>
+	    <a href="index.php?view=flower.gif">YES</a>
+	    </div>
+
   Que es un LFI?
   
       (Local File Inclusion o inclusión de archivos locales) son vulnerabilidades que permiten leer cualquier archivo que se encuentre dentro del mismo servidor,
       incluso si el archivo se encuentra fuera del directorio web donde está alojada la página.
   
   1) Intentamos ejecutar un LFI en la web
-  
+
+     ![image](https://github.com/Esevka/CTF/assets/139042999/2e879853-b3a9-4124-acc2-4117c557dbe1)
+     
+
+  2) Parece que tiene un filtro para detectar los '.', por lo que vamos a urlencondear y ver si funciona.
+ 
+         Para urlencode un caracter simplemente tenemos que poner % y su valor en hexadecimal, para el '.' seria %2E
+ 
+     Vemos que ya no nos bloquea por lo que iremos bajando directorios hasta llegar a la raiz del sistema.
+     
+      ![image](https://github.com/Esevka/CTF/assets/139042999/b40845a1-a40b-4d03-abed-3c71c48718bf)
+
+      Conseguimos ejecutar LFI
+
+        ![image](https://github.com/Esevka/CTF/assets/139042999/634c0858-f778-4e4c-8da3-869ca374d2c4)
+
+  3) Mostramos el fichero /etc/passwd y bingo encontramos un hash de la password del usuario --> kamishiro
+      
+      ![image](https://github.com/Esevka/CTF/assets/139042999/b868b1aa-33f0-4c1c-a9e2-5fbc2dd3fd44)
+
+  4) Intentamos crakear el hash con john
+
+          ┌──(root㉿kali)-[/home/…/ctf/try_ctf/tokyo_ghoul/contenido]
+          └─# echo '$6$Tb/euwmK$OXA.dwMeOAcopwBl68boTG5zi65wIHsc84OWAIye5VITLLtVlaXvRDJXET..it8r.jbrlpfZeMdwD3B0fGxJI0' > hash_kamishiro
+
+          ┌──(root㉿kali)-[/home/…/ctf/try_ctf/tokyo_ghoul/contenido]
+          └─# john --wordlist=/usr/share/wordlists/rockyou.txt hash_kamishiro
+          Using default input encoding: UTF-8
+          Loaded 1 password hash (sha512crypt, crypt(3) $6$ [SHA512 128/128 SSE2 2x])
+          Cost 1 (iteration count) is 5000 for all loaded hashes
+          Will run 3 OpenMP threads
+          Press 'q' or Ctrl-C to abort, almost any other key for status
+          password123      (?)     
+          1g 0:00:00:00 DONE (2023-12-01 13:35) 0.9523g/s 1462p/s 1462c/s 1462C/s teacher..mexico1
+          Use the "--show" option to display all of the cracked passwords reliably
+          Session completed. 
+
+    Obtenemos credenciales ----> kamishiro:password123
 
 
-
+--Puerto 22 (SSH)
 
 
