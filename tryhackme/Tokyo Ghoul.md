@@ -298,7 +298,8 @@ Enunciado :
           Use the "--show" option to display all of the cracked passwords reliably
           Session completed. 
 
-    Obtenemos credenciales ----> kamishiro:password123
+
+  		Obtenemos credenciales ----> kamishiro:password123
 
 
 --Puerto 22 (SSH)
