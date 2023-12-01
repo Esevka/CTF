@@ -320,5 +320,17 @@ Enunciado :
 
 - Post-Explotacion elevamos privilegios kamishiro to root.
 
+	1) Enumeramos los comandos permitidos y prohibidos, que el usuario kamishiro puede ejecutar como superuser.
+
+			kamishiro@vagrant:~$ sudo -l
+			[sudo] password for kamishiro: 
+			Matching Defaults entries for kamishiro on vagrant.vm:
+			    env_reset, exempt_group=sudo, mail_badpass,
+			    secure_path=/usr/local/sbin\:/usr/local/bin\:/usr/sbin\:/usr/bin\:/sbin\:/bin\:/snap/bin
+			
+			User kamishiro may run the following commands on vagrant.vm:
+			    (ALL) /usr/bin/python3 /home/kamishiro/jail.py
+	
+
 
 
