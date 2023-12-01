@@ -177,6 +177,7 @@ Enunciado :
               ![image](https://github.com/Esevka/CTF/assets/139042999/e0e8467f-9c8c-4c05-bd8c-9807de2bc0fa)
 
               Volvemos a ejecutar y bingo obtenemos un string que por el momento no sabemos para que es.
+                Lo primero que hago es probar 'You_found_1t' como directorio en el puerto 80, sin exito.
 
                   ┌──(root㉿kali)-[/home/…/try_ctf/tokyo_ghoul/contenido/ftp]
                   └─# ./need_to_talk 
@@ -186,10 +187,40 @@ Enunciado :
                   
                   > kamishiro
                   Good job. I believe this is what you came for:
-                  You_found_1t
-              
-        3) 
+                  You_found_1t <---Dato obtenido
+                         
+           
+      - rize_and_kaneki.jpg comprobamos si contiene alguna informacion oculta.
+       
+                ┌──(root㉿kali)-[/home/…/try_ctf/tokyo_ghoul/contenido/ftp]
+                └─# steghide extract -sf rize_and_kaneki.jpg 
+                Enter passphrase: 
+                wrote extracted data to "yougotme.txt".
+                
+           - Como passphrase utilizamos 'You_found_1t', obtenemos yougotme.txt.
 
+                  ┌──(root㉿kali)-[/home/…/try_ctf/tokyo_ghoul/contenido/ftp]
+                  └─# cat yougotme.txt 
+                  haha you are so smart kaneki but can you talk my code 
+                  ..... .-
+                  ....- ....-
+                  ....- -....
+                  --... ----.
+                  ....- -..
+                  ...-- ..---
+                  ....- -..
+                  ...-- ...--
+
+             El codigo es claramente codigo Morse-->Hex-->Base64. Como resultado de la decodificacion obtenemos lo que si parece ser un directorio de la web que corre en el puerto 80.
+
+             ![image](https://github.com/Esevka/CTF/assets/139042999/8022cfe1-f903-4de2-9e60-5b1a13ad5cb3)
+             
+
+
+--Puerto 80 (HTTP)
+
+  - Empe
+        
 
 
 
