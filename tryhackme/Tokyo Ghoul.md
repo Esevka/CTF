@@ -219,8 +219,43 @@ Enunciado :
 
 --Puerto 80 (HTTP)
 
-  - Empe
-        
+- Cargamos el directorio en la web y la pista que nos da es evidente.
+
+    ![image](https://github.com/Esevka/CTF/assets/139042999/c814a8de-4097-465c-b414-6ffa10a0e0ef)
+  
+
+- Escaneamos el directorio anterior con gobuster en busca de otros directorios.
+    
+      ┌──(root㉿kali)-[/home/…/try_ctf/tokyo_ghoul/contenido/ftp]
+      └─# gobuster dir -u http://10.10.167.101/d1r3c70ry_center/ -w /usr/share/wordlists/dirb/common.txt -o ../fuzz
+      ===============================================================
+      Gobuster v3.6
+      by OJ Reeves (@TheColonial) & Christian Mehlmauer (@firefart)
+      ===============================================================
+      /.htaccess            (Status: 403) [Size: 278]
+      /.hta                 (Status: 403) [Size: 278]
+      /.htpasswd            (Status: 403) [Size: 278]
+      /claim                (Status: 301) [Size: 331] [--> http://10.10.167.101/d1r3c70ry_center/claim/]
+      /index.html           (Status: 200) [Size: 312]
+      Progress: 4614 / 4615 (99.98%)
+      ===============================================================
+
+- Cargamos el directorio /claim
+
+  ![image](https://github.com/Esevka/CTF/assets/139042999/4aa19092-f775-470f-bc3c-03ffbccba206)
+
+  Analizamos el codigo de la pagina.
+
+      Encontramos que tanto si pulsamos 'NO' o 'SI', lo que hace 'index.php' es cargar en este caso un gif que se le pasa a la variable '?view=' como parametro.
+      Podriamos intentar cargar otro fichero de la maquina mediante un LFI.
+
+  Que es un LFI?
+  
+      (Local File Inclusion o inclusión de archivos locales) son vulnerabilidades que permiten leer cualquier archivo que se encuentre dentro del mismo servidor,
+      incluso si el archivo se encuentra fuera del directorio web donde está alojada la página.
+  
+  1) Intentamos ejecutar un LFI en la web
+  
 
 
 
