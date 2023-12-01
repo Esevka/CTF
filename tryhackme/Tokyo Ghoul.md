@@ -304,4 +304,21 @@ Enunciado :
 
 --Puerto 22 (SSH)
 
+- Utilizamos las credenciales obtenidas para conectarnos a la maquina por el servicio SSH que esta corriendo en el puerto 22
+
+		┌──(root㉿kali)-[/home/…/ctf/try_ctf/tokyo_ghoul/contenido]
+		└─# ssh kamishiro@10.10.143.50
+		kamishiro@10.10.143.50's password:
+		Welcome to Ubuntu 16.04.7 LTS (GNU/Linux 4.4.0-197-generic x86_64)
+		Last login: Sat Jan 23 22:29:38 2021 from 192.168.77.1
+		kamishiro@vagrant:~$
+  
+- Leemos la flag de usuario
+
+		kamishiro@vagrant:~$ cat user.txt
+		e6215e25c0783-------693d9f073594a
+
+- Postexplotacion elevamos privilegios kamishiro to root.
+
+
 
