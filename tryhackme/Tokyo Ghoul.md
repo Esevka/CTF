@@ -318,7 +318,7 @@ Enunciado :
 		kamishiro@vagrant:~$ cat user.txt
 		e6215e25c0783-------693d9f073594a
 
-- Postexplotacion elevamos privilegios kamishiro to root.
+- Post-Explotacion elevamos privilegios kamishiro to root.
 
 
 
