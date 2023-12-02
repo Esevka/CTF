@@ -374,8 +374,8 @@ Enunciado :
 			9d790bb87898c-------b05a9e6000b
 
 
-
-
+---> Maquina  Tokyo Ghoul completa <---
+---
    		
   
 
