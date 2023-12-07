@@ -74,4 +74,41 @@ Enunciado :
     
 -Segun el lauchpad del servicio OpenSSH que tenemos corriendo en el puerto 22.
 
+![image](https://github.com/Esevka/CTF/assets/139042999/3da26bee-0bb5-4c52-950e-549db8d0f555)
+
+
+## Analizamos la informacion obtenida.
+
+--Puerto 21(ftp), permite el acceso anonimo.
+
+  - Obtenemos toda la info del servidor ftp.
+
+        ┌──(root㉿kali)-[/home/…/Desktop/ctf/try_ctf/chill_hack]
+        └─# ftp anonymous@10.10.52.28  
+        ftp> ls
+        229 Entering Extended Passive Mode (|||29161|)
+        150 Here comes the directory listing.
+        -rw-r--r--    1 1001     1001           90 Oct 03  2020 note.txt
+        226 Directory send OK.
+        ftp> get note.txt
+        local: note.txt remote: note.txt
+        229 Entering Extended Passive Mode (|||58849|)
+        150 Opening BINARY mode data connection for note.txt (90 bytes).
+        100% |******************************************************************************************************************|    90       79.90 KiB/s    00:00 ETA
+        226 Transfer complete.
+        90 bytes received in 00:00 (1.77 KiB/s)
+
+  - note.txt parece ser una pista que aun no entiendo su significado.
+
+        ┌──(root㉿kali)-[/home/…/Desktop/ctf/try_ctf/chill_hack]
+        └─# cat note.txt       
+        Anurodh told me that there is some filtering on strings being put in the command -- Apaar
+
+--Puerto 80(http)
+
+  - vi
+
+
+
+    
 
