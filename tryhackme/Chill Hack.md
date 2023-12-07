@@ -129,7 +129,34 @@ Enunciado :
         ===============================================================
         Finished
 
-  - Cargamos el directorio http://10.10.52.28/secret/
+  - Cargamos el directorio /secret
+
+    - Encontramos un formulario que aparentemente nos permite ejecutar comandos
+
+      ![image](https://github.com/Esevka/CTF/assets/139042999/19011e6f-3049-4154-a39c-e1c78d11f36a)
+
+    - Tras varias pruebas vemos que hay ciertos comandos que no estan permitidos, si recordamos el mensaje note.txt creo por hay van los tiros.
+
+      ![image](https://github.com/Esevka/CTF/assets/139042999/50861814-a9ff-4c22-acaa-1306f12d67c0)
+
+      ![image](https://github.com/Esevka/CTF/assets/139042999/dcc946a2-1eda-444c-a0ba-1d5b9cae53cd)
+
+    - Bypaseamos la lista negra de comandos no permitidos.
+   
+      - Los comandos que introducimos son tratados como un string es decir --> 'comando' este comando sera comparado casi seguro con una lista de comandos prohibidos.
+      - Podriamos escapar un caracter y la comparacion con la blacklist no seria correcta. ej--> 'l\s' es diferente a 'ls' a la hora de comparar el string en si, de cara a la ejecucion l\s se ejecutaria de la misma manera ya que con \ indicamos que queremos escapar el caracter 's' quedando --> 'ls'
+     
+        ![image](https://github.com/Esevka/CTF/assets/139042999/2a4709b9-6964-40a7-b2c6-ab288497dada)
+
+        ![image](https://github.com/Esevka/CTF/assets/139042999/e705ec3b-04d0-4b90-9c00-b561941585d8)
+
+        Teniendo claro esto vamos a ejecutar una reverse shell.
+
+## Obtenemos Shell en la maquina victima.
+   
+      
+      
+
 
     
 
