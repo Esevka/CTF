@@ -106,7 +106,32 @@ Enunciado :
 
 --Puerto 80(http)
 
-  - vi
+  - Cargamos la web pero no encontramos nada que nos interese.
+
+  - Realizamos Fuzzing web en busca de directorios.
+
+        ┌──(root㉿kali)-[/home/…/Desktop/ctf/try_ctf/chill_hack]
+        └─# gobuster dir -u http://10.10.52.28 -w /usr/share/wordlists/dirb/common.txt -o fuzz
+    
+        Gobuster v3.6
+        by OJ Reeves (@TheColonial) & Christian Mehlmauer (@firefart)
+        ===============================================================
+        /.hta                 (Status: 403) [Size: 276]
+        /.htaccess            (Status: 403) [Size: 276]
+        /.htpasswd            (Status: 403) [Size: 276]
+        /css                  (Status: 301) [Size: 308] [--> http://10.10.52.28/css/]
+        /fonts                (Status: 301) [Size: 310] [--> http://10.10.52.28/fonts/]
+        /images               (Status: 301) [Size: 311] [--> http://10.10.52.28/images/]
+        /index.html           (Status: 200) [Size: 35184]
+        /js                   (Status: 301) [Size: 307] [--> http://10.10.52.28/js/]
+        /secret               (Status: 301) [Size: 311] [--> http://10.10.52.28/secret/] ---> Este directorio es el que nos interesa.
+        /server-status        (Status: 403) [Size: 276]
+        ===============================================================
+        Finished
+
+
+
+    
 
 
 
