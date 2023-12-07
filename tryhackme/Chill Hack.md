@@ -124,12 +124,14 @@ Enunciado :
         /images               (Status: 301) [Size: 311] [--> http://10.10.52.28/images/]
         /index.html           (Status: 200) [Size: 35184]
         /js                   (Status: 301) [Size: 307] [--> http://10.10.52.28/js/]
-        /secret               (Status: 301) [Size: 311] [--> http://10.10.52.28/secret/] ---> Este directorio es el que nos interesa.
+        /secret               (Status: 301) [Size: 311] [--> http://10.10.52.28/secret/] ---> Directorio Interesante
         /server-status        (Status: 403) [Size: 276]
         ===============================================================
         Finished
 
+  - Cargamos el directorio http://10.10.52.28/secret/
 
+    
 
     
 
