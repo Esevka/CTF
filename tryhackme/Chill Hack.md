@@ -153,7 +153,11 @@ Enunciado :
         Teniendo claro esto vamos a ejecutar una reverse shell.
 
 ## Obtenemos Shell en la maquina victima.
-   
+
+  - Nos ponemos en escucha con netcat y ejecutamos el siguiente comando
+
+    ![image](https://github.com/Esevka/CTF/assets/139042999/ab5599ee-a6a0-4734-a012-f39d28ba2760)
+
       
       
 
