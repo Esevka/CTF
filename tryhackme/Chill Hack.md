@@ -414,8 +414,22 @@ Enunciado :
                             [...]
 
 
-    
-    
+                - Leemos el codigo y vemos que tenemos la password  codeada en bas64 del usuario Anurodh  
+        
+                      ┌──(root㉿kali)-[/home/…/ctf/try_ctf/chill_hack/contenido]
+                      └─# echo 'IWQwbnRLbjB3bVlwQHNzdzByZA==' | base64 -d       
+                      !d0ntKn0wmYp@ssw0rd
+        
+        
+                        Anurodh:!d0ntKn0wmYp@ssw0rd
+
+
+-LLegamsdkfkdf varias maneras de elevar segun orden. Elevamos privilegios horizontalmente www-data to anurodh y leemos flag
+
+      ww-data@ubuntu:/var/www/files/images$ su anurodh
+      Password: 
+      anurodh@ubuntu:/var/www/files/images$ id
+      uid=1002(anurodh) gid=1002(anurodh) groups=1002(anurodh),999(docker)
 
 
 
