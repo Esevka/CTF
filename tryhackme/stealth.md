@@ -303,21 +303,21 @@ Despues de analizar toda, empezaremos por el puerto 8080
   - Seguimos siendo el usuario "evader" pero en este caso tenemos el privilegio "SeImpersonatePrivilege ---> Enabled"
  
     1) Buscamos informacion de como elevar privilegios localmente, basandonos en los permisos y SO que tenemos disponibles.
-   
-          C:\xampp\htdocs\uploads>systeminfo
-          systeminfo
-          
-          Host Name:                 HOSTEVASION
-          OS Name:                   Microsoft Windows Server 2019 Datacenter
-          OS Version:                10.0.17763 N/A Build 17763
-          System Type:               x64-based PC
-          [...]
+     
+            C:\xampp\htdocs\uploads>systeminfo
+            systeminfo
+            
+            Host Name:                 HOSTEVASION
+            OS Name:                   Microsoft Windows Server 2019 Datacenter
+            OS Version:                10.0.17763 N/A Build 17763
+            System Type:               x64-based PC
+            [...]
 
-      [+]Informacion metodos: https://book.hacktricks.xyz/windows-hardening/windows-local-privilege-escalation/roguepotato-and-printspoofer
-      
-      [+]Metodo que vamos a utilizar: https://github.com/BeichenDream/GodPotato/releases
- 
-      Nota: Descargamos  GodPotato-NET4.exe
+          [+]Informacion metodos: https://book.hacktricks.xyz/windows-hardening/windows-local-privilege-escalation/roguepotato-and-printspoofer
+          
+          [+]Metodo que vamos a utilizar: https://github.com/BeichenDream/GodPotato/releases
+     
+          Nota: Descargamos  GodPotato-NET4.exe
 
     2) Subimos GodPotato-NET4.exe a la maquina windows como en procesos anteriores.
    
@@ -385,11 +385,11 @@ Despues de analizar toda, empezaremos por el puerto 8080
               
               C:\Windows\system32>
          
-      - Leemos Administrator Flag 
+        - Leemos Administrator Flag 
       
-            C:\Users\Administrator\Desktop>type flag.txt
-            type flag.txt
-            THM{10------ADMIN_ACCESS}
+              C:\Users\Administrator\Desktop>type flag.txt
+              type flag.txt
+              THM{10------ADMIN_ACCESS}
 
     
 
