@@ -138,7 +138,7 @@ Utilizamos un Script en bash simple pero de gran ayuda. Script--> https://github
 
 ## Analizamos la informacion obtenida sobre los puertos(Explotacion de la aplicacion obtenemos shell)
 
-Despues de analizar toda, empezaremos por el puerto 8080
+Despues de analizar todo, empezaremos por el puerto 8080
 
 --Puerto 8080(http)
 
@@ -150,7 +150,7 @@ Despues de analizar toda, empezaremos por el puerto 8080
 
       ![image](https://github.com/Esevka/CTF/assets/139042999/68c212b0-034d-40d8-96dd-248cc3f19942)
 
-  2) Nos ponemos en escucha  y la subimos a la maquina victima a traves de la aplicacion web.
+  2) Nos ponemos en escucha  y  subimos rs.ps1 a la maquina victima a traves de la aplicacion web.
 
       ![image](https://github.com/Esevka/CTF/assets/139042999/ffc118d8-fcff-4c0a-b1f6-d4cbf9487450)
 
@@ -391,9 +391,10 @@ Despues de analizar toda, empezaremos por el puerto 8080
               type flag.txt
               THM{10------ADMIN_ACCESS}
 
-    
 
-    
+---> Maquina  Stealth completa <---
+---
+   	
 
 
 
