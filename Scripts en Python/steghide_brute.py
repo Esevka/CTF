@@ -1,7 +1,6 @@
 import subprocess
 
 def brute(line):
-
 	result = subprocess.run(['steghide extract -sf **IMG** -p {}'.format(line)],shell=True,capture_output=True,text=True)
 
 	if 'steghide: could not extract any data' in result.stderr:
@@ -9,10 +8,8 @@ def brute(line):
 	else:
 		print('[+]Clave --> {}'.format(line))
 		exit()
-
-
+		
 def main():
-
 	with open('**Diccionario**','r') as passwd:
 		for line in passwd:
 			brute(line.strip())
