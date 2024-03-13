@@ -2,7 +2,7 @@ import subprocess
 
 def brute(line):
 
-	result = subprocess.run(['steghide extract -sf twitter.jpg_large -p {}'.format(line)],shell=True,capture_output=True,text=True)
+	result = subprocess.run(['steghide extract -sf **IMG** -p {}'.format(line)],shell=True,capture_output=True,text=True)
 
 	if 'steghide: could not extract any data' in result.stderr:
 		print('[-]Clave Incorrecta --> {}'.format(line))
@@ -13,7 +13,7 @@ def brute(line):
 
 def main():
 
-	with open('/usr/share/wordlists/rockyou_limpio.txt','r') as passwd:
+	with open('**Diccionario**','r') as passwd:
 		for line in passwd:
 			brute(line.strip())
 
