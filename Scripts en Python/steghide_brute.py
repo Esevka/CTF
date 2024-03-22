@@ -3,7 +3,7 @@ import subprocess
 def brute(line):
 	result = subprocess.run(['steghide extract -sf **IMG** -p {}'.format(line)],shell=True,capture_output=True,text=True)
 
-	if 'steghide: could not extract any data' in result.stderr:
+	if(result.returncode==0):
 		print('[-]Clave Incorrecta --> {}'.format(line))
 	else:
 		print('[+]Clave --> {}'.format(line))
